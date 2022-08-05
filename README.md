@@ -92,6 +92,7 @@ Decoy - applying outline to the model. Adding endless animated particle system, 
 Howto: Do not select eyes or other internal meshes, as it will add outline to it too. Adding floor bloom (currently works on flat surfaces). Select Bone object to parent effect to it. Best to parent before adding animation to the model.
 
 Credits: This mod was inspired by Outline Helper - https://felineentity.gumroad.com/l/ZmTIT. Partial pieces of code were taken from there and modified according to the needs.
+
 ![Mirage Decoy](https://i.ibb.co/K6vLcgV/Apex-toolbox-3.png)
 
 
@@ -111,4 +112,5 @@ Howto: Auto Parenting works only for the correct flatline model "flatline_v20_as
 4k Badge - adding in-game 4000 Damage badge made in 3D
 20 Bomb Badge - adding in-game 20 Kills badge made in 3D
 Credits: Thx to PeeT for sharing this cool model in Legion Discord.
+
 ![Badges](https://i.ibb.co/GkZnrGj/Apex-toolbox-5.png)
