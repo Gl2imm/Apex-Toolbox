@@ -113,6 +113,6 @@ Howto: Auto Parenting works only for the correct flatline model "flatline_v20_as
 20 Bomb Badge - adding in-game 20 Kills badge made in 3D
 Credits: Thx to PeeT for sharing this cool model in Legion Discord.
 
-![Badges](https://i.ibb.co/GkZnrGj/Apex-toolbox-5.png)
+![Badges](https://i.ibb.co/5BFqvdR/aa.png)
 
-...z
+...
