@@ -64,7 +64,7 @@ Credits: Apex Shader - taken from Apex Auto_tex. S/G Blender,
 		 Apex Cycles (Blue) - taken from the open sources.
 
 HDRI: A tool to Append and set HDRI for renders.
-Credits: Party crasher - Thx to @Space for sharing this HDRI on "3D Art Discord" https://discord.gg/VcZh5rC
+Credits: Party crasher, Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge - Thx to @Space for sharing this HDRI on "3D Art Discord" https://discord.gg/VcZh5rC
 
 
 
@@ -83,6 +83,16 @@ Credits: Inspired from this video https://www.youtube.com/watch?v=sMFYCJUix-Y, s
 ![Wraith Portal](https://i.ibb.co/SmKQT59/Apex-toolbox-2.png)
 
 
+
+####################################			
+             Gibraltar:
+####################################
+
+Dome Shield - spawns the Bubble (Friendly or Enemy) made procedurally with nodes. Animated
+Credits: Me - seems like the most talented Apex effect creator i ever met.
+
+
+
 ####################################			
              Mirage:
 ####################################
@@ -93,7 +103,17 @@ Howto: Do not select eyes or other internal meshes, as it will add outline to it
 
 Credits: This mod was inspired by Outline Helper - https://felineentity.gumroad.com/l/ZmTIT. Partial pieces of code were taken from there and modified according to the needs.
 
-![Mirage Decoy](https://i.ibb.co/K6vLcgV/Apex-toolbox-3.png)
+
+![Mirage Decoy](https://i.ibb.co/K6vLcgV/Apex-toolbox-3.png
+
+
+####################################			
+             Valkyrie:
+####################################
+
+Flames - spawns the Flames made procedurally with nodes. Can animate with "Flame Noise Animation 1" or "Flame Noise Animation 2". Can parent to model.
+Credits: @SirFloof. Free Material taken from his Gumroad page https://sirfloof.gumroad.com/l/YlFfa
+
 
 
 ####################################			
@@ -103,6 +123,7 @@ Credits: This mod was inspired by Outline Helper - https://felineentity.gumroad.
 Flatline - Reactive skin flames and bloom from Assimilation skin model. Can parent to model.
 Howto: Auto Parenting works only for the correct flatline model "flatline_v20_assim". Best to parent before adding animation to the model.
 ![Flatline - Reactive skin](https://i.ibb.co/sqV3fTh/Apex-toolbox-4.png)
+
 
 
 ####################################			
@@ -115,4 +136,11 @@ Credits: Thx to PeeT for sharing this cool model in Legion Discord.
 
 ![Badges](https://i.ibb.co/5BFqvdR/aa.png)
 
-...
+
+
+####################################			
+             Loot Items:
+####################################
+
+Body Armor - Adding animated armor (Ground loot)
+Helmet     - Adding animated helmet (Ground loot)
