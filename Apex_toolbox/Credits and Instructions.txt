@@ -14,6 +14,12 @@ v.1.0: Initial Release
 v.1.1: Adding effects: Flatline Reactive skin, Mirage Decoy Particle system, 4k Damage Badge, 20 Bomb Badge
 	   Other Items: Auto parenting for Mirage Effect and Flatline reactive skin
 	   Code: Figured out the way to pass custom variables from buttons to Operators. With this significantly reduced the numbers of custom operators as well as less lines of codes. One Operator handling multiple items now. Yay.
+v1.2:  Added 
+	   HDRI: Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge
+	   Effects: Gibraltar Bubble (Friendly and Enemy), Valkyrie Flames
+	   Loot Items: Armor and Helmet (White, Blue, Purple, Gold, Red)
+	   Code: Redone some parts to further reduce lines of code 
+	   Bug Fixes: After applying new HDRI and saving blend file default world will be deleted (no user set). Set Fake user for all HDRI and default World now.
 
 
 
@@ -72,7 +78,7 @@ Credits: Apex Shader - taken from Apex Auto_tex. S/G Blender,
 		 Apex Cycles (Blue) - taken from the open sources.
 
 HDRI: A tool to Append and set HDRI for renders.
-Credits: Party crasher - Thx to @Space for sharing this HDRI on "3D Art Discord" https://discord.gg/VcZh5rC
+Credits: Party crasher, Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge - Thx to @Space for sharing this HDRI on "3D Art Discord" https://discord.gg/VcZh5rC
 
 
 
@@ -92,6 +98,15 @@ Credits: Inspired from this video https://www.youtube.com/watch?v=sMFYCJUix-Y, s
 
 
 ####################################			
+             Gibraltar:
+####################################
+
+Dome Shield - spawns the Bubble (Friendly or Enemy) made procedurally with nodes. Animated
+Credits: Me - seems like the most talented Apex effect creator i ever met.
+
+
+
+####################################			
              Mirage:
 ####################################
 
@@ -100,6 +115,15 @@ Decoy - applying outline to the model. Adding endless animated particle system, 
 Howto: Do not select eyes or other internal meshes, as it will add outline to it too. Adding floor bloom (currently works on flat surfaces). Select Bone object to parent effect to it. Best to parent before adding animation to the model.
 
 Credits: This mod was inspired by Outline Helper - https://felineentity.gumroad.com/l/ZmTIT. Partial pieces of code were taken from there and modified according to the needs.
+
+
+
+####################################			
+             Valkyrie:
+####################################
+
+Flames - spawns the Flames made procedurally with nodes. Can animate with "Flame Noise Animation 1" or "Flame Noise Animation 2". Can parent to model.
+Credits: @SirFloof. Free Material taken from his Gumroad page https://sirfloof.gumroad.com/l/YlFfa
 
 
 
@@ -119,3 +143,12 @@ Howto: Auto Parenting works only for the correct flatline model "flatline_v20_as
 4k Badge - adding in-game 4000 Damage badge made in 3D
 20 Bomb Badge - adding in-game 20 Kills badge made in 3D
 Credits: Thx to PeeT for sharing this cool model in Legion Discord.
+
+
+
+####################################			
+             Loot Items:
+####################################
+
+Body Armor - Adding animated armor (Ground loot)
+Helmet     - Adding animated helmet (Ground loot)
