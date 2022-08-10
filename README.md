@@ -104,7 +104,7 @@ Howto: Do not select eyes or other internal meshes, as it will add outline to it
 Credits: This mod was inspired by Outline Helper - https://felineentity.gumroad.com/l/ZmTIT. Partial pieces of code were taken from there and modified according to the needs.
 
 
-![Mirage Decoy](https://i.ibb.co/K6vLcgV/Apex-toolbox-3.png
+![Mirage Decoy](https://i.ibb.co/K6vLcgV/Apex-toolbox-3.png)
 
 
 ####################################			
