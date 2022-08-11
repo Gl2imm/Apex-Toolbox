@@ -20,6 +20,10 @@ v1.2:  Added
 	   Loot Items: Armor and Helmet (White, Blue, Purple, Gold, Red)
 	   Code: Redone some parts to further reduce lines of code 
 	   Bug Fixes: After applying new HDRI and saving blend file default world will be deleted (no user set). Set Fake user for all HDRI and default World now.
+v1.3:  Added 
+	   S/G Blender option for Autotex
+	   Bug Fixes: Recolor option were not appending S/G Blender Shader. Fixed now
+	   Warning: You need to install v.1.2 before this fix. This is to reduce filesize. If you already using v1.2 - can just install v1.3 and restart Blender.  
 
 
 
@@ -45,7 +49,8 @@ v1.2:  Added
         Auto_tex:
 ####################################
  
-A little tool that will help you to texture Apex Models automatically. A small improvement being done to this addon. Previously if you select the objects and use the addon - it will Append "Apex Shader" and un-select all objects. Well, not anymore. :)
+A little tool that will help you to texture Apex Models automatically. A small improvement being done to this addon. Previously if you select the objects and use the addon - it will Append "Apex Shader" and un-select all objects. Well, not anymore. :) 
+Currently support Original "Apex Shader" that comes with Autotex and new Option S/G Blender. 
 
 Credits: Addon Created by llenoco. There is no link to the github, as the Addon were posted in Legion Discord https://discord.gg/ADek6fxVGe
 
@@ -94,6 +99,7 @@ Credits: Party crasher, Encore, Habitat, Kings Canyon, Olympus, Phase Runner, St
 Portal - spawns the portal made procedurally with nodes. Currently it is animated within 60 frames.
 To be done: If someone can modify it to endless cycle - pls share it in Legion Discord in #3D-shenanigans. I will be glad to update the shader and keep your credits.
 Credits: Inspired from this video https://www.youtube.com/watch?v=sMFYCJUix-Y, some nodes were taken from there and modified.
+![Wraith Portal](https://i.ibb.co/SmKQT59/Apex-toolbox-2.png)
 
 
 
@@ -117,6 +123,8 @@ Howto: Do not select eyes or other internal meshes, as it will add outline to it
 Credits: This mod was inspired by Outline Helper - https://felineentity.gumroad.com/l/ZmTIT. Partial pieces of code were taken from there and modified according to the needs.
 
 
+![Mirage Decoy](https://i.ibb.co/K6vLcgV/Apex-toolbox-3.png)
+
 
 ####################################			
              Valkyrie:
@@ -133,6 +141,7 @@ Credits: @SirFloof. Free Material taken from his Gumroad page https://sirfloof.g
 
 Flatline - Reactive skin flames and bloom from Assimilation skin model. Can parent to model.
 Howto: Auto Parenting works only for the correct flatline model "flatline_v20_assim". Best to parent before adding animation to the model.
+![Flatline - Reactive skin](https://i.ibb.co/sqV3fTh/Apex-toolbox-4.png)
 
 
 
@@ -143,6 +152,8 @@ Howto: Auto Parenting works only for the correct flatline model "flatline_v20_as
 4k Badge - adding in-game 4000 Damage badge made in 3D
 20 Bomb Badge - adding in-game 20 Kills badge made in 3D
 Credits: Thx to PeeT for sharing this cool model in Legion Discord.
+
+![Badges](https://i.ibb.co/5BFqvdR/aa.png)
 
 
 

@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (1, 1),
+    "version": (1, 3),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
@@ -28,7 +28,7 @@ import os
 from bpy.types import Scene
 from bpy.props import (BoolProperty,FloatProperty)
 
-ver = 1.1
+ver = 1.3
 loadImages = True
 texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
 
@@ -69,6 +69,15 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
                  ('OP2', "S/G-Blender", "")    
                 ]
         )
+        
+    cust_enum2 : bpy.props.EnumProperty(
+        name = "Shader",
+        description = "Shader for Autotex",
+        default='OP1',
+        items = [('OP1', "Apex Shader", ""),
+                 ('OP2', "S/G-Blender", "")    
+                ]
+        )
 
     cust_enum_shader : bpy.props.EnumProperty(
         name = "Shader",
@@ -86,7 +95,13 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         default='OP1',
         items = [('OP1', "Blender Default", ""),
                  ('OP2', "Party Crasher", ""),
-                 ('OP3', "Coming soon", "")     
+                 ('OP3', "Encore", ""),
+                 ('OP4', "Habitat", ""),
+                 ('OP5', "Kings Canyon", ""),
+                 ('OP6', "Olympus", ""),
+                 ('OP7', "Phase Runner", ""),
+                 ('OP8', "Storm Point", ""),
+                 ('OP9', "Worlds Edge", ""),     
                 ]
         )
         
@@ -110,92 +125,189 @@ class BUTTON_CUSTOM(bpy.types.Operator):
     
     
     def execute(self, context):
-        if bpy.data.node_groups.get('Apex Shader') == None:
-            selection = [obj.name for obj in bpy.context.selected_objects]
-            bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader')
-            for x in range(len(selection)):
-                bpy.data.objects[selection[x]].select_set(True)
-                x += 1
-        
-        for o in bpy.context.selected_objects:
-            if o.type == 'MESH':
-                for mSlot in o.material_slots:
-                    MatNodeTree = bpy.data.materials[mSlot.name]
-                    try:
-                        imageNode = MatNodeTree.node_tree.nodes["Image Texture"]
-                    except:
-                        print(MatNodeTree.name)
-                        continue
-                    try:
-                        image = os.path.basename(bpy.path.abspath(imageNode.image.filepath))
-                    except:
-                        print(mSlot.name, "missing texture.")
-                    imagepath = os.path.dirname(bpy.path.abspath(imageNode.image.filepath))
-                    imageType = imageNode.image.name.split(".")[0].split('_')[-1]
-                    imageName = MatNodeTree.name
-                    imageFormat = image.split('.')[1]
-                    
-                    if not any(imageType in x for x in texSets):
-                        print(image,"could not be mapped.")        
-                        continue
-
-
-                    MatNodeTree.node_tree.nodes.clear()
-                    
-                    for i in range(len(texSets)):
-                        for j in range(len(texSets[i])):
-                            texImageName = imageName + '_' + texSets[i][j] + '.' + imageFormat
-                            texImage = bpy.data.images.get(texImageName)
-                            texFile = imagepath + '\\' + texImageName
-                            if not texImage and loadImages:
-                                if os.path.isfile(texFile):
-                                    texImage = bpy.data.images.load(texFile)
-                            if texImage:
-                                if i > 2:
-                                    texImage.colorspace_settings.name = 'Non-Color'
-                                texImage.alpha_mode = 'CHANNEL_PACKED'
-                                texNode = MatNodeTree.node_tree.nodes.new('ShaderNodeTexImage')
-                                texNode.image = texImage
-                                texNode.name = str(i)
-                                texNode.location = (-50,50-260*i)
-                                break
-                            
-                            
-
-                    NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
-                    NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader')
-                    NodeGroup.location = (300,0)
-                    NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
-                    NodeOutput.location = (500,0)
-                    MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+        scene = context.scene
+        prefs = scene.my_prefs
+           
+    ########## OPTION - 1 (Apex Shader) ############
+        if prefs.cust_enum2 == 'OP1':        
+            if bpy.data.node_groups.get('Apex Shader') == None:
+                selection = [obj.name for obj in bpy.context.selected_objects]
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader')
+                for x in range(len(selection)):
+                    bpy.data.objects[selection[x]].select_set(True)
+                    x += 1
+            
+            for o in bpy.context.selected_objects:
+                if o.type == 'MESH':
+                    for mSlot in o.material_slots:
+                        MatNodeTree = bpy.data.materials[mSlot.name]
+                        try:
+                            imageNode = MatNodeTree.node_tree.nodes["Image Texture"]
+                        except:
+                            print(MatNodeTree.name)
+                            continue
+                        try:
+                            image = os.path.basename(bpy.path.abspath(imageNode.image.filepath))
+                        except:
+                            print(mSlot.name, "missing texture.")
+                        imagepath = os.path.dirname(bpy.path.abspath(imageNode.image.filepath))
+                        imageType = imageNode.image.name.split(".")[0].split('_')[-1]
+                        imageName = MatNodeTree.name
+                        imageFormat = image.split('.')[1]
                         
-                    ColorDict = {
-                        "0": "Albedo Map",
-                        "1": "Specular Map",
-                        "2": "Emission",
-                        "3": "SSS Map",
-                        "4": "Alpha",     
-                        "5": "Normal Map",
-                        "6": "Glossiness Map",
-                        "7": "AO"
-                    }
-                    AlphaDict = {
-                        "0": "Alpha",
-                        "3": "SSS Alpha",
-                    }
+                        if not any(imageType in x for x in texSets):
+                            print(image,"could not be mapped.")        
+                            continue
 
-                    for slot in AlphaDict:
+
+                        MatNodeTree.node_tree.nodes.clear()
+                        
+                        for i in range(len(texSets)):
+                            for j in range(len(texSets[i])):
+                                texImageName = imageName + '_' + texSets[i][j] + '.' + imageFormat
+                                texImage = bpy.data.images.get(texImageName)
+                                texFile = imagepath + '\\' + texImageName
+                                if not texImage and loadImages:
+                                    if os.path.isfile(texFile):
+                                        texImage = bpy.data.images.load(texFile)
+                                if texImage:
+                                    if i > 2:
+                                        texImage.colorspace_settings.name = 'Non-Color'
+                                    texImage.alpha_mode = 'CHANNEL_PACKED'
+                                    texNode = MatNodeTree.node_tree.nodes.new('ShaderNodeTexImage')
+                                    texNode.image = texImage
+                                    texNode.name = str(i)
+                                    texNode.location = (-50,50-260*i)
+                                    break
+                                
+                                
+
+                        NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                        NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader')
+                        NodeGroup.location = (300,0)
+                        NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                        NodeOutput.location = (500,0)
+                        MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+                            
+                        ColorDict = {
+                            "0": "Albedo Map",
+                            "1": "Specular Map",
+                            "2": "Emission",
+                            "3": "SSS Map",
+                            "4": "Alpha",     
+                            "5": "Normal Map",
+                            "6": "Glossiness Map",
+                            "7": "AO"
+                        }
+                        AlphaDict = {
+                            "0": "Alpha",
+                            "3": "SSS Alpha",
+                        }
+
+                        for slot in AlphaDict:
+                            try:
+                                MatNodeTree.node_tree.links.new(NodeGroup.inputs[AlphaDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Alpha"])
+                            except:
+                                pass
+                        for slot in ColorDict:
+                            try:
+                                MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                            except:
+                                pass
+                        mSlot.material.blend_method = 'HASHED'
+                        print("Textured",mSlot.name)
+                        
+    ########## OPTION - 2 (S/G Blender) ############
+        if prefs.cust_enum2 == 'OP2':        
+            if bpy.data.node_groups.get('S/G-Blender') == None:
+                selection = [obj.name for obj in bpy.context.selected_objects]
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='S/G-Blender')
+                for x in range(len(selection)):
+                    bpy.data.objects[selection[x]].select_set(True)
+                    x += 1
+            
+            for o in bpy.context.selected_objects:
+                if o.type == 'MESH':
+                    for mSlot in o.material_slots:
+                        MatNodeTree = bpy.data.materials[mSlot.name]
                         try:
-                            MatNodeTree.node_tree.links.new(NodeGroup.inputs[AlphaDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Alpha"])
+                            imageNode = MatNodeTree.node_tree.nodes["Image Texture"]
                         except:
-                            pass
-                    for slot in ColorDict:
+                            print(MatNodeTree.name)
+                            continue
                         try:
-                            MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                            image = os.path.basename(bpy.path.abspath(imageNode.image.filepath))
                         except:
-                            pass
-                    mSlot.material.blend_method = 'HASHED'
-                    print("Textured",mSlot.name)
+                            print(mSlot.name, "missing texture.")
+                        imagepath = os.path.dirname(bpy.path.abspath(imageNode.image.filepath))
+                        imageType = imageNode.image.name.split(".")[0].split('_')[-1]
+                        imageName = MatNodeTree.name
+                        imageFormat = image.split('.')[1]
+                        
+                        if not any(imageType in x for x in texSets):
+                            print(image,"could not be mapped.")        
+                            continue
+
+
+                        MatNodeTree.node_tree.nodes.clear()
+                        
+                        for i in range(len(texSets)):
+                            for j in range(len(texSets[i])):
+                                texImageName = imageName + '_' + texSets[i][j] + '.' + imageFormat
+                                texImage = bpy.data.images.get(texImageName)
+                                texFile = imagepath + '\\' + texImageName
+                                if not texImage and loadImages:
+                                    if os.path.isfile(texFile):
+                                        texImage = bpy.data.images.load(texFile)
+                                if texImage:
+                                    if i > 2:
+                                        texImage.colorspace_settings.name = 'Non-Color'
+                                    texImage.alpha_mode = 'CHANNEL_PACKED'
+                                    texNode = MatNodeTree.node_tree.nodes.new('ShaderNodeTexImage')
+                                    texNode.image = texImage
+                                    texNode.name = str(i)
+                                    texNode.location = (-50,50-260*i)
+                                    break
+                                
+                                
+
+                        NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                        NodeGroup.node_tree = bpy.data.node_groups.get('S/G-Blender')
+                        NodeGroup.location = (300,0)
+                        NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                        NodeOutput.location = (500,0)
+                        MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+                            
+                        ColorDict = {
+                            "0": "Diffuse map",
+                            "1": "Specular map",
+                            "2": "Emission input",
+                            "3": "Subsurface",
+                            "4": "Alpha input",     
+                            "5": "Normal map",
+                            "6": "Glossiness map",
+                            "7": "AO map",
+                            "8": "Cavity map",
+                        }
+                        AlphaDict = {
+                            "0": "Alpha",
+                            "3": "SSS Alpha",
+                        }
+                        
+
+                        for slot in AlphaDict:
+                            try:
+                                MatNodeTree.node_tree.links.new(NodeGroup.inputs[AlphaDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Alpha"])
+                            except:
+                                pass
+                        for slot in ColorDict:
+                            try:
+                                MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                            except:
+                                pass
+                        mSlot.material.blend_method = 'HASHED'
+                        print("Textured",mSlot.name)                        
+                        
         return {'FINISHED'}
         
 
@@ -314,7 +426,7 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
         if prefs.cust_enum == 'OP2':
             if bpy.data.node_groups.get('S/G-Blender') == None:
                 selection = [obj.name for obj in bpy.context.selected_objects]
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader')
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='S/G-Blender')
                 for x in range(len(selection)):
                     bpy.data.objects[selection[x]].select_set(True)
                     x += 1
@@ -458,24 +570,44 @@ class BUTTON_HDRI(bpy.types.Operator):
         prefs = scene.my_prefs
         
         if prefs.cust_enum_hdri == 'OP1':
-            if bpy.context.scene.world != "World":
-                blender_default = bpy.data.worlds['World']
-                scene.world = blender_default
-                print("Blender Default World has been applied")
-                    
+            hdri_name = "World"                    
         
         if prefs.cust_enum_hdri == 'OP2':
-            if 'Party crasher HDRI' not in bpy.data.worlds:
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_world, filename ='Party crasher HDRI')
-                party_crasher = bpy.data.worlds['Party crasher HDRI']
-                scene.world = party_crasher
-                print("Party crasher HDRI has been Appended and applied to the World")
-            else:
-                if bpy.context.scene.world != "Party crasher HDRI":
-                    party_crasher = bpy.data.worlds['Party crasher HDRI']
-                    scene.world = party_crasher
-                    print("Party crasher HDRI is already inside and it's been applied to the World")
-
+            hdri_name = "Party crasher HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP3':
+            hdri_name = "Encore HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP4':
+            hdri_name = "Habitat HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP5':
+            hdri_name = "Kings Canyon HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP6':
+            hdri_name = "Olympus HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP7':
+            hdri_name = "Phase Runner HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP8':
+            hdri_name = "Storm Point HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP9':
+            hdri_name = "Worlds Edge HDRI"                                                                                    
+            
+            
+        if hdri_name not in bpy.data.worlds:
+            bpy.ops.wm.append(directory =my_path + blend_file + ap_world, filename =hdri_name)
+            hdri = bpy.data.worlds[hdri_name]
+            scene.world = hdri
+            print(hdri_name + " has been Appended and applied to the World")            
+        else:
+            if bpy.context.scene.world != hdri_name:
+                hdri = bpy.data.worlds[hdri_name]
+                scene.world = hdri
+                print(hdri_name + " is already inside and it's been applied to the World")            
+        
         return {'FINISHED'}   
 
 
@@ -496,7 +628,54 @@ class WR_BUTTON_PORTAL(bpy.types.Operator):
             print("Wraith Portal already inside")
         return {'FINISHED'}      
    
-   
+
+
+######### Gibby Buttons ###########    
+
+class GB_BUTTON_ITEMS(bpy.types.Operator):
+    bl_label = "GB_BUTTON_ITEMS"
+    bl_idname = "object.gb_button_items"
+    bl_options = {'REGISTER', 'UNDO'}
+    gibby : bpy.props.StringProperty(name= "Added")
+
+
+    def execute(self, context):
+        scene = context.scene
+        prefs = scene.my_prefs
+        gibby = (self.gibby)
+        bubble_items_friendly = [
+                {'name': 'Gibby bubble friendly'}, 
+                {'name': 'Gibby bubble core friendly'}, 
+                {'name': 'Gibby bubble image friendly'},
+                {'name': 'Gibby bubble rod friendly'}
+                ]    
+        bubble_items_enemy = [
+                {'name': 'Gibby bubble enemy'}, 
+                {'name': 'Gibby bubble core enemy'}, 
+                {'name': 'Gibby bubble image enemy'},
+                {'name': 'Gibby bubble rod enemy'}
+                ]                   
+    
+           
+        #Gibby Dome Shield friendly
+        if gibby == "Gibby bubble friendly":
+            if bpy.data.objects.get(gibby) == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=bubble_items_friendly)
+                print("Gibby Friendly Bubble Appended")
+            else:
+                print("Gibby Friendly Bubble already exist")
+        
+        #Gibby Dome Shield enemy        
+        if gibby == "Gibby bubble enemy":
+            if bpy.data.objects.get(gibby) == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=bubble_items_enemy)
+                print("Gibby Enemy Bubble Appended")
+            else:
+                print("Gibby Enemy Bubble already exist")
+                
+        return {'FINISHED'} 
+    
+       
    
 ######### Mirage Buttons ###########    
     
@@ -655,6 +834,108 @@ class MR_BUTTON_DECOY(bpy.types.Operator):
         return {'FINISHED'} 
                 
 
+######### Valkyrie Buttons ###########    
+
+class VK_BUTTON_ITEMS(bpy.types.Operator):
+    bl_label = "VK_BUTTON_ITEMS"
+    bl_idname = "object.vk_button_items"
+    bl_options = {'REGISTER', 'UNDO'}
+    valk : bpy.props.StringProperty(name= "Added")
+
+
+    def execute(self, context):
+        scene = context.scene
+        prefs = scene.my_prefs
+        valk = (self.valk)
+        flames_items = [
+                {'name': 'Flames left'}, 
+                {'name': 'Flames right'} 
+                ]    
+    
+           
+        #Valk Flames
+        if valk == "Flames":
+            if bpy.data.objects.get('Flames left') == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=flames_items)
+                print("Valkyrie Flames Bubble Appended")
+            else:
+                print("Valkyrie Flames Bubble already exist")
+        
+
+        # Valk Flames Parenting #
+        if valk == "Flames_parent":
+            sel_objects = bpy.context.selected_objects
+            sel_names = [obj.name for obj in bpy.context.selected_objects]
+            
+                
+            if not bpy.context.selected_objects:
+                print("Nothing selected. Please select Model Bones in Object Mode")
+            else:
+                if len(sel_objects) > 1:
+                    print("More than 1 Object slected. Please select only 1 Bone Object")
+                else:
+                    for bones in sel_objects:
+                        if bones.type in ["ARMATURE"]:
+                            if bpy.data.objects.get('Flames left') == None:
+                                print("Flames Effect not Found. Pls add Effect first")
+                            else:
+                                #Deselect All and select only bones that were chosen
+                                bpy.ops.object.mode_set(mode='OBJECT')
+                                bpy.ops.object.select_all(action='DESELECT')
+                                bpy.context.view_layer.objects.active = None
+                                bpy.data.objects[sel_names[0]].select_set(True)
+                                bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]
+                                
+                                #Select left turbine bone in Bone Edit Mode       
+                                arm = bpy.data.objects[sel_names[0]]
+                                bpy.ops.object.mode_set(mode='EDIT')
+                                bones_to_select = ['def_l_turbine']
+                                for bone in arm.data.edit_bones:
+                                    if bone.name in bones_to_select:
+                                        bone.select = True 
+                                
+                                #Exit out Edit Mode and Deselect All    
+                                bpy.ops.object.mode_set(mode='OBJECT')
+                                bpy.ops.object.select_all(action='DESELECT')
+                                
+                                #Select Flames, Select bones that were chosen, set bones active and parent to them
+                                bpy.data.objects['Flames left'].select_set(True)
+                                bpy.data.objects[sel_names[0]].select_set(True)
+                                bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]
+                                bpy.ops.object.parent_set(type='BONE')
+                                
+                                #Deselect All and select only bones that were chosen    
+                                bpy.ops.object.select_all(action='DESELECT')
+                                bpy.data.objects[sel_names[0]].select_set(True)
+                                bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]] 
+                                
+                                #Select right turbine bone in Bone Edit Mode       
+                                arm = bpy.data.objects[sel_names[0]]
+                                bpy.ops.object.mode_set(mode='EDIT')
+                                bones_to_select = ['def_r_turbine']
+                                for bone in arm.data.edit_bones:
+                                    if bone.name in bones_to_select:
+                                        bone.select = True 
+                                
+                                #Exit out Edit Mode and Deselect All    
+                                bpy.ops.object.mode_set(mode='OBJECT')
+                                bpy.ops.object.select_all(action='DESELECT')
+                                
+                                #Select Flames, Select bones that were chosen, set bones active and parent to them
+                                bpy.data.objects['Flames right'].select_set(True)
+                                bpy.data.objects[sel_names[0]].select_set(True)
+                                bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]
+                                bpy.ops.object.parent_set(type='BONE') 
+                                
+                                bpy.ops.object.select_all(action='DESELECT')                                                              
+                                                                
+                                print("Parenting Flames to Valkyrie Done")
+                        else:
+                            print("Selected Object is Not a Bone. Pls Select Bones") 
+                
+        return {'FINISHED'} 
+    
+    
 
 ######### Badge Buttons ###########    
 class BDG_BUTTON_SPAWN(bpy.types.Operator):
@@ -742,6 +1023,88 @@ class WPN_BUTTON_SPAWN(bpy.types.Operator):
         return {'FINISHED'}   
               
 
+######### Loot Items Buttons ###########    
+class LT_BUTTON_SPAWN(bpy.types.Operator):
+    bl_label = "LT_BUTTON_SPAWN"
+    bl_idname = "object.lt_button_spawn"
+    bl_options = {'REGISTER', 'UNDO'}
+    loot : bpy.props.StringProperty(name= "Added")
+
+    def execute(self, context):
+        loot = (self.loot)
+
+        loot_items_body = [
+            {'name': 'w_loot_cha_shield_upgrade_body_LOD0_skel'}, 
+            {'name': 'w_loot_cha_shield_upgrade_body_LOD0_SEModelMesh.106'}, 
+            {'name': 'w_loot_cha_shield_upgrade_body_LOD0_SEModelMesh.107'}
+            ]
+            
+        loot_items_helmet = [
+            {'name': 'w_loot_cha_shield_upgrade_head_LOD0_skel'}, 
+            {'name': 'w_loot_cha_shield_upgrade_head_LOD0_SEModelMesh.108'}, 
+            {'name': 'w_loot_cha_shield_upgrade_head_LOD0_SEModelMesh.109'}
+            ]         
+        
+        if loot == "armor white" or loot == "armor blue" or loot == "armor purple" or loot == "armor gold" or loot == "armor red":
+            bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=loot_items_body)
+        if loot == "helmet white" or loot == "helmet blue" or loot == "helmet purple" or loot == "helmet gold" or loot == "helmet red":
+            bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=loot_items_helmet)    
+        selection = [obj.name for obj in bpy.context.selected_objects]
+            
+        for obj in bpy.context.selected_objects:
+            obj.select_set(False)
+        
+        bpy.data.objects[selection[1]].select_set(True)
+        mat = bpy.data.objects[selection[1]].active_material
+                    
+        nodes = mat.node_tree.nodes
+        links = mat.node_tree.links
+        node_gold = nodes['RGB']
+        node_blue = nodes['RGB.001']
+        node_purple = nodes['RGB.002']
+        node_red = nodes['RGB.003']
+        node_output = nodes['Armor shader']
+ 
+        
+        if loot == "armor white":    
+            print("White Body Armor Appended")
+            
+        if loot == "armor blue":
+            link = links.new(node_blue.outputs[0], node_output.inputs[0])
+            print("Blue Body Armor Appended")    
+         
+        if loot == "armor purple":
+            link = links.new(node_purple.outputs[0], node_output.inputs[0])
+            print("Purple Body Armor Appended")
+            
+        if loot == "armor gold":
+            link = links.new(node_gold.outputs[0], node_output.inputs[0])
+            print("Gold Body Armor Appended")
+            
+        if loot == "armor red":
+            link = links.new(node_red.outputs[0], node_output.inputs[0])
+            print("Red Body Armor Appended")
+            
+        if loot == "helmet white":    
+            print("White Helmet Appended")
+            
+        if loot == "helmet blue":
+            link = links.new(node_blue.outputs[0], node_output.inputs[0])
+            print("Blue Helmet Appended")    
+         
+        if loot == "helmet purple":
+            link = links.new(node_purple.outputs[0], node_output.inputs[0])
+            print("Purple Helmet Appended")
+            
+        if loot == "helmet gold":
+            link = links.new(node_gold.outputs[0], node_output.inputs[0])
+            print("Gold Helmet Appended")
+            
+        if loot == "helmet red":
+            link = links.new(node_red.outputs[0], node_output.inputs[0])
+            print("Red Helmet Appended")    
+            
+        return {'FINISHED'} 
 
     
     #PANEL UI
@@ -784,8 +1147,11 @@ class AUTOTEX_MENU(bpy.types.Panel):
         row.label(text = "Auto_tex (by llenoco)", icon= "TEXTURE")
         # some data on the subpanel
         if context.scene.subpanel_status_0:
-            box = layout.box()
-            box.operator("object.button_custom", text = "Texture Model")
+            row = layout.row()
+            layout.prop(prefs, "cust_enum2")
+            #ADD Button2
+            row = layout.row()
+            row.operator("object.button_custom", text = "Texture Model")
             row = layout.row()
             row.label(text = "------------------------------------------------------")
             
@@ -887,6 +1253,28 @@ class EFFECTS_PT_panel(bpy.types.Panel):
             """           
 
 
+        ######### Gibraltar #########
+        row = layout.row()
+        icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_gibby else 'RIGHTARROW'
+        row.prop(context.scene, 'subpanel_effects_gibby', icon=icon, icon_only=True)
+        row.label(text='Gibraltar')
+        # some data on the subpanel
+        if context.scene.subpanel_effects_gibby:
+            box = layout.box()
+            
+            # Gibraltar subpanel 1
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_gibby_prop1 else 'RIGHTARROW'
+            box.prop(context.scene, 'subpanel_effects_gibby_prop1', icon=icon, icon_only=False, text='Dome Shield                          ')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_gibby_prop1:
+                split = box.split(factor = 0.08)
+                col = split.column(align = True)
+                col.label(text='')
+                split.operator('object.gb_button_items', text = "Friendly").gibby = "Gibby bubble friendly"
+                split.operator('object.gb_button_items', text = "Enemy").gibby = "Gibby bubble enemy"
+                
+                
+
         ######### Mirage #########
         row = layout.row()
         icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_mirage else 'RIGHTARROW'
@@ -914,6 +1302,34 @@ class EFFECTS_PT_panel(bpy.types.Panel):
             box.operator("object.wr_button_portal", text = "Spawn Portal")
             """     
 
+
+        ######### Valkyrie #########
+        row = layout.row()
+        icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_valkyrie else 'RIGHTARROW'
+        row.prop(context.scene, 'subpanel_effects_valkyrie', icon=icon, icon_only=True)
+        row.label(text='Valkyrie')
+        # some data on the subpanel
+        if context.scene.subpanel_effects_valkyrie:
+            box = layout.box()
+            
+            # Mirage subpanel 1
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_valkyrie_prop1 else 'RIGHTARROW'
+            box.prop(context.scene, 'subpanel_effects_valkyrie_prop1', icon=icon, icon_only=False, text='Flames                                    ')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_valkyrie_prop1:
+                split = box.split(factor = 0.08)
+                col = split.column(align = True)
+                col.label(text='')
+                split.operator('object.vk_button_items', text = "Add Flames").valk = "Flames"
+                split.operator('object.vk_button_items', text = "Parent them").valk = "Flames_parent" 
+                box.label(text='*Sel Model Bones before Parenting')
+                
+            
+            """
+            # Mirage subpanel 2
+            box.operator("object.wr_button_portal", text = "Spawn Portal")
+            """    
+            
 
         ######### Weapons #########
         row = layout.row()
@@ -949,12 +1365,61 @@ class EFFECTS_PT_panel(bpy.types.Panel):
             # Badges
             box.operator('object.bdg_button_spawn', text = "4K Badge (3D)").badge = "Badge - 4k Damage"
             box.operator('object.bdg_button_spawn', text = "20 Bomb Badge (3D)").badge = "Badge - 20 Bombs"
+            
+            
+            
+        ######### Loot Items #########
+        row = layout.row()
+        icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_loot else 'RIGHTARROW'
+        row.prop(context.scene, 'subpanel_effects_loot', icon=icon, icon_only=True)
+        row.label(text='Loot Items')
+        # some data on the subpanel
+        if context.scene.subpanel_effects_loot:
+            box = layout.box()
+            
+            # Body Armor subpanel 1
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_loot_prop1 else 'RIGHTARROW'
+            box.prop(context.scene, 'subpanel_effects_loot_prop1', icon=icon, icon_only=False, text='Body Armor                          ')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_loot_prop1:
+                box.operator('object.lt_button_spawn', text = "White Armor").loot = "armor white"
+                box.operator('object.lt_button_spawn', text = "Blue Armor").loot = "armor blue"
+                box.operator('object.lt_button_spawn', text = "Purple Armor").loot = "armor purple"
+                box.operator('object.lt_button_spawn', text = "Gold Armor").loot = "armor gold"
+                box.operator('object.lt_button_spawn', text = "Red Armor").loot = "armor red"
+                
+            # Helmet subpanel 2
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_loot_prop2 else 'RIGHTARROW'
+            box.prop(context.scene, 'subpanel_effects_loot_prop2', icon=icon, icon_only=False, text='Helmet                                 ')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_loot_prop2:
+                box.operator('object.lt_button_spawn', text = "White Helmet").loot = "helmet white"
+                box.operator('object.lt_button_spawn', text = "Blue Helmet").loot = "helmet blue"
+                box.operator('object.lt_button_spawn', text = "Purple Helmet").loot = "helmet purple"
+                box.operator('object.lt_button_spawn', text = "Gold Helmet").loot = "helmet gold"
+                box.operator('object.lt_button_spawn', text = "Red Helmet").loot = "helmet red"            
 
 
 
     #CLASS REGISTER 
 ##########################################
-classes = (RECOLORSETTINGS, PROPERTIES_CUSTOM, BUTTON_CUSTOM, BUTTON_CUSTOM2, BUTTON_SHADERS, BUTTON_HDRI, WR_BUTTON_PORTAL, MR_BUTTON_DECOY, AUTOTEX_MENU, EFFECTS_PT_panel, BDG_BUTTON_SPAWN, WPN_BUTTON_SPAWN)
+classes = (
+        RECOLORSETTINGS, 
+        PROPERTIES_CUSTOM, 
+        BUTTON_CUSTOM, 
+        BUTTON_CUSTOM2, 
+        BUTTON_SHADERS, 
+        BUTTON_HDRI, 
+        WR_BUTTON_PORTAL, 
+        GB_BUTTON_ITEMS, 
+        MR_BUTTON_DECOY, 
+        AUTOTEX_MENU, 
+        EFFECTS_PT_panel, 
+        VK_BUTTON_ITEMS, 
+        BDG_BUTTON_SPAWN, 
+        WPN_BUTTON_SPAWN,
+        LT_BUTTON_SPAWN
+        )
 
 def register():
     for c in classes:
@@ -967,13 +1432,18 @@ def register():
     Scene.subpanel_status_2 = BoolProperty(default=False)
     Scene.subpanel_effects_wraith = BoolProperty(default=False)
     Scene.subpanel_effects_wraith_prop1 = BoolProperty(default=False)
+    Scene.subpanel_effects_gibby = BoolProperty(default=False)
+    Scene.subpanel_effects_gibby_prop1 = BoolProperty(default=False)    
     Scene.subpanel_effects_mirage = BoolProperty(default=False)
     Scene.subpanel_effects_mirage_prop1 = BoolProperty(default=False)
+    Scene.subpanel_effects_valkyrie = BoolProperty(default=False)
+    Scene.subpanel_effects_valkyrie_prop1 = BoolProperty(default=False)    
     Scene.subpanel_effects_weapons = BoolProperty(default=False)
     Scene.subpanel_effects_weapons_prop1 = BoolProperty(default=False)
     Scene.subpanel_effects_badges = BoolProperty(default=False)
-    
-    
+    Scene.subpanel_effects_loot = BoolProperty(default=False)
+    Scene.subpanel_effects_loot_prop1 = BoolProperty(default=False)
+    Scene.subpanel_effects_loot_prop2 = BoolProperty(default=False)    
 
 
 def unregister():
@@ -987,13 +1457,19 @@ def unregister():
     del Scene.subpanel_status_2
     del Scene.subpanel_effects_wraith
     del Scene.subpanel_effects_wraith_prop1
+    del Scene.subpanel_effects_gibby
+    del Scene.subpanel_effects_gibby_prop1    
     del Scene.subpanel_effects_mirage
     del Scene.subpanel_effects_mirage_prop1
+    del Scene.subpanel_effects_valkyrie
+    del Scene.subpanel_effects_valkyrie_prop1    
     del Scene.subpanel_effects_weapons
     del Scene.subpanel_effects_weapons_prop1
     del Scene.subpanel_effects_badges
-    
-
+    del Scene.subpanel_effects_loot
+    del Scene.subpanel_effects_loot_prop1
+    del Scene.subpanel_effects_loot_prop2    
+        
 
 if __name__ == "__main__":
     register()
