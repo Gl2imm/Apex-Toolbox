@@ -11,19 +11,34 @@ Hi All. This tool were created to assist and simplify workflow for Apex Legends 
                                             ####################################
 
 v.1.0: Initial Release
-v.1.1: Adding effects: Flatline Reactive skin, Mirage Decoy Particle system, 4k Damage Badge, 20 Bomb Badge
+v.1.1 Changes: 
+	   Adding effects: Flatline Reactive skin, Mirage Decoy Particle system, 4k Damage Badge, 20 Bomb Badge
 	   Other Items: Auto parenting for Mirage Effect and Flatline reactive skin
 	   Code: Figured out the way to pass custom variables from buttons to Operators. With this significantly reduced the numbers of custom operators as well as less lines of codes. One Operator handling multiple items now. Yay.
-v1.2:  Added 
+v1.2 Changes:  
+	   Added 
 	   HDRI: Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge
 	   Effects: Gibraltar Bubble (Friendly and Enemy), Valkyrie Flames
 	   Loot Items: Armor and Helmet (White, Blue, Purple, Gold, Red)
 	   Code: Redone some parts to further reduce lines of code 
 	   Bug Fixes: After applying new HDRI and saving blend file default world will be deleted (no user set). Set Fake user for all HDRI and default World now.
-v1.3:  Added 
+v1.3 Changes:  
+	   Added 
 	   S/G Blender option for Autotex
 	   Bug Fixes: Recolor option were not appending S/G Blender Shader. Fixed now
-	   Warning: You need to install v.1.2 before this fix. This is to reduce filesize. If you already using v1.2 - can just install v1.3 and restart Blender.  
+	   Warning: You need to install v.1.2 before this fix. This is to reduce filesize. If you already using v1.2 - can just install v1.3 and restart Blender. 
+v2.0 Changes:
+	   Major changes:
+	   Rewrite almost entire code to implement these changes:
+	   1. Now this addon is very light for those just want simple light functions. Swithed off those effects with big size (HDRI, Badges, Loot items)
+	      If you want to have additional effects - download Assets ZIP file from here: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
+		  extract the files in your desired location
+		  Inside addon in the "Readme First" Tab specify Assets folder location.
+		  Thats it. Once you specify location of the Assets - all additional options will appear
+	   2. Recolor now work with custom folders materials, can be with sub-folders or without it. Also added the option for Alpha channel
+	   To differentiate which update affecting your current addon - it will be called now "Lite" and "Extended"
+	   Extended Added:
+	   Badge - Predator S3
 
 
 
@@ -63,14 +78,18 @@ Credits: Addon Created by llenoco. There is no link to the github, as the Addon 
 Tool to re-color (re-texture) the model with the new or updated texture available in the game files. This is modified version of Auto_tex. Most of the code is same with small changes here and there.
 
 Howto:
-		a) Extract/Download new textures (it must have texture folders inside with endings like "_body", "_jumpkit", etc.)
-		b) Place new textures in the existing model "_image" folder
-		eg: Wraith have model with folder name "pilot_light_wraith_legendary_01" and the texture folder downloaded named "wraith_lgnd_v19_liberator_rc01"
-			place "wraith_lgnd_v19_liberator_rc01" folder inside "/pilot_light_wraith_legendary_01/_images/" folder
-		c) copy the name of the new textures folder (eg:"wraith_lgnd_v19_liberator_rc01") and place it in the addon field
-		d) select the shader that you like
-		e) press Re-texture
-To be done: Figure out the way for user to specify custom directory for textures
+		a) Extract/Download new textures
+		b) Specify the path to the texture folder (it must have a name like "wraith_lgnd_v19_liberator_rc01", not "_images" or other)
+		c) Select options if the texture folder have sub-folders with names like "wraith_lgnd_v19_liberator_rc01_body" or all images inside (no sub-folders)
+		d) Select option if you need Alpha channel to be plugged
+		e) Select which shader you want to use
+		f) Almost all Material do not have textures for eye, teeth, hair, you need to copy them out from the base model and place all that images into folder named "base"
+		   the folder structure should be like this 
+          -"Your_material_folder" -> base                                --> all base images here
+                                  -> wraith_lgnd_v19_liberator_rc01_body --> body images here
+                                  -> wraith_lgnd_v19_liberator_rc01_gear --> gear images here
+		   
+		g) press Re-texture
 
 
 
@@ -82,6 +101,7 @@ Shaders: A tool to Append shaders to your scene or set HDRI for renders.
 Credits: Apex Shader - taken from Apex Auto_tex. S/G Blender, 
 		 Apex Cycles (Blue) - taken from the open sources.
 
+(Extended version)
 HDRI: A tool to Append and set HDRI for renders.
 Credits: Party crasher, Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge - Thx to @Space for sharing this HDRI on "3D Art Discord" https://discord.gg/VcZh5rC
 
@@ -146,12 +166,15 @@ Howto: Auto Parenting works only for the correct flatline model "flatline_v20_as
 
 
 ####################################			
-             Badges:
+     Badges: (Extended version)
 ####################################
 
 4k Badge - adding in-game 4000 Damage badge made in 3D
 20 Bomb Badge - adding in-game 20 Kills badge made in 3D
 Credits: Thx to PeeT for sharing this cool model in Legion Discord.
+
+Predator S3 - adding Predator Season-3 badge made in 3D
+Credits: Thx to り- for sharing this cool model in 3D Art Discord. Twitter: @ZeroAx_
 
 ![Badges](https://i.ibb.co/5BFqvdR/aa.png)
 
