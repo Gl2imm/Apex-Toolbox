@@ -5,7 +5,9 @@ Small tool for Blender artists working with Apex Legends models
                                                        Apex Toolbox
                                             ####################################
 
-Hi All. This tool were created to assist and simplify workflow for Apex Legends models in Blender. Here i collect and organize useful tools/addons/operations all in one place.
+Hi All. This tool were created to assist and simplify workflow for Apex Legends models in Blender. Here i collect and organize useful tools/addons/operations all in one place. Now this addon is very light for those just want simple light functions. Swithed off those effects with big size (HDRI, Badges, Loot items)
+If you want to have additional effects - download Assets ZIP file from here:
+https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
 
 
 
