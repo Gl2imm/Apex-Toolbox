@@ -2,7 +2,12 @@
                                                        Apex Toolbox
                                             ####################################
 
-Hi All. This tool were created to assist and simplify workflow for Apex Legends models in Blender. Here i collect and organize useful tools/addons/operations all in one place.
+This tool were created to assist and simplify workflow for Apex Legends models in Blender since they cannot be simply exported from the game. Here i collect and organize useful tools/addons/operations all in one place. The addon itself is very light for those just want simple functions. 
+
+If you want to have additional effects like auto set HDRI, Badges, Loot items - download Assets ZIP file from here: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
+extract the files in your desired location
+Inside addon in the "Readme First" Tab specify Assets folder location.
+Thats it. Once you specify location of the Assets - all additional options will appear
 
 
 
@@ -39,6 +44,20 @@ v2.0 Changes:
 	   To differentiate which update affecting your current addon - it will be called now "Lite" and "Extended"
 	   Extended Added:
 	   Badge - Predator S3
+v2.1 Changes:
+	   Added to "Lite":
+	   Effects: Seer Ultimate (animated)
+	   Experimental: Skydive S9 (animated). 
+	   Added to "Extended":
+	   HDRI: Kings Canyon (New), Kings Canyon (Night), Apex Lobby, Sky (Not sure its from which map)
+	   Loot items: Basically all of them, heals, nades, backpacks, etc.
+	   Effects: Added animated energy to the Shield batteries and cells.
+	   Base files: Added Legends base material files (eye, teeth, hair, etc) so it will auto link when you recolor the models. (Recolor materials not included base files)
+	   fixes:
+	   Fixed Gibby bubble center icon.
+	   Fixed mSlot reference before assigning error in Re-color and Autotex.
+	   Changes:
+	   Rewrite the code for recolor - now it supposed to work completely in autopilot mode, recoloring Legends and also weapons. Just select the folder with images or material folder and it will do the job. The code is straight from the oven, so slight chance errors might pop up. Pls feedback if there are any.. For our Titanfall fans - this will also recolor TTF Legends. 
 
 
 
@@ -75,21 +94,23 @@ Credits: Addon Created by llenoco. There is no link to the github, as the Addon 
         Re-color:
 ####################################
 
-Tool to re-color (re-texture) the model with the new or updated texture available in the game files. This is modified version of Auto_tex. Most of the code is same with small changes here and there.
+Tool to re-color (re-texture) the Legend or the Weapon with the new or updated texture available in the game files. This is modified version of Auto_tex. Nodes plugging procedure taken from there.
 
 Howto:
 		a) Extract/Download new textures
-		b) Specify the path to the texture folder (it must have a name like "wraith_lgnd_v19_liberator_rc01", not "_images" or other)
-		c) Select options if the texture folder have sub-folders with names like "wraith_lgnd_v19_liberator_rc01_body" or all images inside (no sub-folders)
-		d) Select option if you need Alpha channel to be plugged
-		e) Select which shader you want to use
-		f) Almost all Material do not have textures for eye, teeth, hair, you need to copy them out from the base model and place all that images into folder named "base"
+		b) Specify the path to the texture folder
+		c) Select option if you need Alpha channel to be plugged
+		d) Select which shader you want to use
+		e) Almost all Material do not have textures for eye, teeth, hair, you need to copy them out from the base model and place all that images into folder named "base"
 		   the folder structure should be like this 
           -"Your_material_folder" -> base                                --> all base images here
                                   -> wraith_lgnd_v19_liberator_rc01_body --> body images here
                                   -> wraith_lgnd_v19_liberator_rc01_gear --> gear images here
-		   
-		g) press Re-texture
+								  
+		  If you have Assets folder installed - you may skip this step, base files included. 
+		f) press Re-texture
+		
+		PS: It is also compartible with Titanfall 2 Models (Beta)
 
 
 
@@ -103,7 +124,8 @@ Credits: Apex Shader - taken from Apex Auto_tex. S/G Blender,
 
 (Extended version)
 HDRI: A tool to Append and set HDRI for renders.
-Credits: Party crasher, Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge - Thx to @Space for sharing this HDRI on "3D Art Discord" https://discord.gg/VcZh5rC
+Apex Lobby, Party crasher, Encore, Habitat, Kings Canyon (Old), Kings Canyon (New), Kings Canyon (Night), Olympus, Phase Runner, Storm Point, Worlds Edge, Sky (Not sure its from which map)
+Credits: Thx to @Space for sharing this HDRI on "3D Art Discord" https://discord.gg/VcZh5rC
 
 
 
@@ -116,6 +138,7 @@ Credits: Party crasher, Encore, Habitat, Kings Canyon, Olympus, Phase Runner, St
              Wraith:
 ####################################
 
+(Both versions included)
 Portal - spawns the portal made procedurally with nodes. Currently it is animated within 60 frames.
 To be done: If someone can modify it to endless cycle - pls share it in Legion Discord in #3D-shenanigans. I will be glad to update the shader and keep your credits.
 Credits: Inspired from this video https://www.youtube.com/watch?v=sMFYCJUix-Y, some nodes were taken from there and modified.
@@ -127,6 +150,7 @@ Credits: Inspired from this video https://www.youtube.com/watch?v=sMFYCJUix-Y, s
              Gibraltar:
 ####################################
 
+(Both versions included)
 Dome Shield - spawns the Bubble (Friendly or Enemy) made procedurally with nodes. Animated
 Credits: Me - seems like the most talented Apex effect creator i ever met.
 
@@ -136,6 +160,7 @@ Credits: Me - seems like the most talented Apex effect creator i ever met.
              Mirage:
 ####################################
 
+(Both versions included)
 Decoy - applying outline to the model. Adding endless animated particle system, Decoy text, Floor with bloom and Icon that pop up when enemy shoot Decoy.
 		Can be parented to Legend.
 Howto: Do not select eyes or other internal meshes, as it will add outline to it too. Adding floor bloom (currently works on flat surfaces). Select Bone object to parent effect to it. Best to parent before adding animation to the model.
@@ -150,8 +175,18 @@ Credits: This mod was inspired by Outline Helper - https://felineentity.gumroad.
              Valkyrie:
 ####################################
 
+(Both versions included)
 Flames - spawns the Flames made procedurally with nodes. Can animate with "Flame Noise Animation 1" or "Flame Noise Animation 2". Can parent to model.
 Credits: @SirFloof. Free Material taken from his Gumroad page https://sirfloof.gumroad.com/l/YlFfa
+
+
+
+####################################			
+             Seer:
+####################################
+
+(Both versions included)
+Ultimate - spawns animated Seer ultimate cage
 
 
 
@@ -159,6 +194,7 @@ Credits: @SirFloof. Free Material taken from his Gumroad page https://sirfloof.g
              Weapons:
 ####################################
 
+(Both versions included)
 Flatline - Reactive skin flames and bloom from Assimilation skin model. Can parent to model.
 Howto: Auto Parenting works only for the correct flatline model "flatline_v20_assim". Best to parent before adding animation to the model.
 ![Flatline - Reactive skin](https://i.ibb.co/sqV3fTh/Apex-toolbox-4.png)
@@ -169,6 +205,7 @@ Howto: Auto Parenting works only for the correct flatline model "flatline_v20_as
      Badges: (Extended version)
 ####################################
 
+(Extended version)
 4k Badge - adding in-game 4000 Damage badge made in 3D
 20 Bomb Badge - adding in-game 20 Kills badge made in 3D
 Credits: Thx to PeeT for sharing this cool model in Legion Discord.
@@ -184,5 +221,22 @@ Credits: Thx to り- for sharing this cool model in 3D Art Discord. Twitter: @Ze
              Loot Items:
 ####################################
 
-Body Armor - Adding animated armor (Ground loot)
-Helmet     - Adding animated helmet (Ground loot)
+(Extended version)
+Spawns Ground Loot (Animated)
+Body Armor, Helmet, Shield Cell, Shield Battery
+
+Spawns Ground Loot (Normal)
+Phoenix Kit, Med Kit, Syringe, Health Injector, Grenade, Arc Star, Thermite, 
+Backpacks, Light Ammo, Heavy Ammo, Energy Ammo, Shotgun Ammo, Respawn, Beacon, 
+Knockdown Shield, Heat Shield, Death Box
+PS: Sniper ammo textures are broken, so no adding them.
+
+
+
+
+####################################			
+             Skydive (Experimental):
+####################################
+
+(Both versions included)
+Spawns Skydive from S9 (Sparks), animated. Can parent to Legend

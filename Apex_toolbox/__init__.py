@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (2, 0),
+    "version": (2, 1),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
@@ -28,7 +28,7 @@ import os
 from bpy.types import Scene
 from bpy.props import (BoolProperty,FloatProperty)
 
-ver = 2.0
+ver = 2.1
 loadImages = True
 texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
 
@@ -43,14 +43,76 @@ ap_world = ("\\World")
 mode = 1 #0 - Test Mode; 1 - Live mode
 
 if mode == 0:
-    my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
-    #asset_folder = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
-    asset_folder = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    #my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
+    #ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
+    #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
+    
+    
+    my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
+    ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    #rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
+    #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
+    rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
 else:
     my_path = (os.path.dirname(os.path.realpath(__file__)))
 
 
+all_loot_items = {
+    '0': 'White Armor',
+    '1': 'Blue Armor',
+    '2': 'Purple Armor',
+    '3': 'Gold Armor',
+    '4': 'Red Armor',
+    '5': 'White Helmet',
+    '6': 'Blue Helmet',
+    '7': 'Purple Helmet',
+    '8': 'Gold Helmet',
+    '9': 'Red Helmet',
+    '10': 'Phoenix Kit',
+    '11': 'Shield Battery',
+    '12': 'Shield Cell',
+    '13': 'Med Kit',
+    '14': 'Syringe',
+    '15': 'Health Injector',
+    '16': 'Grenade',
+    '17': 'Arc Star',
+    '18': 'Thermite',
+    '19': 'Backpack Lv.4',
+    '20': 'Backpack Lv.3',
+    '21': 'Backpack Lv.2',
+    '22': 'Backpack Lv.1',
+    '23': 'Light Ammo',
+    '24': 'Heavy Ammo',
+    '25': 'Energy Ammo',
+    '26': 'Shotgun Ammo',
+    '27': 'Respawn Beacon',
+    '28': 'Knockdown Shield',
+    '29': 'Heat Shield',
+    '30': 'Death Box',
+    }
+            
 
+### add +1 to item end range ###
+armor_range = (0,5)
+helmet_range = (5,10)    
+meds_range = (10,16)
+nades_range = (16,19)
+bag_range = (19,23)
+ammo_range = (23,27)
+other_range = (27,31)
+
+all_seer_items = {
+    '0': 'Seer Ultimate',
+    }
+    
+all_skydive_items = {
+    '0': 'Skydive Ranked S9 Diamond',
+    '1': 'Skydive Ranked S9 Master',
+    '2': 'Skydive Ranked S9 Predator',
+    }         
+    
+    
     #OPERATOR         
 ########################################   
 class apexToolsPreferences(bpy.types.AddonPreferences):
@@ -63,8 +125,7 @@ class apexToolsPreferences(bpy.types.AddonPreferences):
                                         subtype="DIR_PATH")
                                         
     if mode == 0:
-        #asset_folder = "E:\G-Drive\Blender\0. Setups\Apex\Apex_toolbox\Apex_Toolbox_Assets\\"
-        asset_folder = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+        asset_folder = ast_fldr
         
  
 class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
@@ -111,17 +172,13 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
                                         maxlen=1024,
                                         subtype="DIR_PATH")
                                         
-    rec_subf : BoolProperty(
-    name="Have Sub-folders?",
-    description="Recolor folder property",
-    default = True
-    ) 
     
     rec_alpha : BoolProperty(
     name="Plug Alpha?",
     description="Recolor Alpha property",
     default = True
-    )                                                        
+    ) 
+    
 
     cust_enum_shader : bpy.props.EnumProperty(
         name = "Shader",
@@ -139,14 +196,18 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         description = "Append HDRI",
         default='OP1',
         items = [('OP1', "Blender Default", ""),
-                 ('OP2', "Party Crasher", ""),
-                 ('OP3', "Encore", ""),
-                 ('OP4', "Habitat", ""),
-                 ('OP5', "Kings Canyon", ""),
-                 ('OP6', "Olympus", ""),
-                 ('OP7', "Phase Runner", ""),
-                 ('OP8', "Storm Point", ""),
-                 ('OP9', "Worlds Edge", ""),     
+                 ('OP2', "Apex Lobby", ""),
+                 ('OP3', "Party Crasher", ""),
+                 ('OP4', "Encore", ""),
+                 ('OP5', "Habitat", ""),
+                 ('OP6', "Kings Canyon (Old)", ""),
+                 ('OP7', "Kings Canyon (New)", ""),
+                 ('OP8', "Kings Canyon (Night)", ""),
+                 ('OP9', "Olympus", ""),
+                 ('OP10', "Phase Runner", ""),
+                 ('OP11', "Storm Point", ""),
+                 ('OP12', "Worlds Edge", ""),
+                 ('OP13', "Sky", ""),     
                 ]
         )
 
@@ -163,7 +224,8 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
     default = False
     )    
     
-    
+
+############   AUTOTEX   ##############    
 class BUTTON_CUSTOM(bpy.types.Operator):
     bl_label = "BUTTON CUSTOM"
     bl_idname = "object.button_custom"
@@ -261,7 +323,7 @@ class BUTTON_CUSTOM(bpy.types.Operator):
                             except:
                                 pass
                         mSlot.material.blend_method = 'HASHED'
-        print("Textured",mSlot.name)
+                        print("Textured",mSlot.name)
                         
     ########## OPTION - 2 (S/G Blender) ############
         if prefs.cust_enum2 == 'OP2':        
@@ -352,29 +414,63 @@ class BUTTON_CUSTOM(bpy.types.Operator):
                             except:
                                 pass
                         mSlot.material.blend_method = 'HASHED'
-        print("Textured",mSlot.name)                        
+                        print("Textured",mSlot.name)                        
                         
         return {'FINISHED'}
         
 
     
-    
+############   RECOLOR   ##############     
 class BUTTON_CUSTOM2(bpy.types.Operator):
     bl_label = "BUTTON CUSTOM2"
     bl_idname = "object.button_custom2"
     bl_options = {'REGISTER', 'UNDO'}
-    
+
     def execute(self, context):
         scene = context.scene
         prefs = scene.my_prefs
-        rec_subf = prefs.rec_subf
         rec_alpha = prefs.rec_alpha
+        texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
+        ttf_texSets = [['col'],['spc'],['ilm'],['nml'],['gls'],['ao']]
+        
         if mode == 0:
-            recolor_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\")
-            #recolor_folder = ("E:\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\")
+            recolor_folder = rec_folder
         else:
             recolor_folder = prefs.recolor_folder
             
+            
+        ######## Check if Asset Folder installed ######## 
+        if mode == 0:
+            asset_folder_set = ast_fldr
+        else:
+            asset_folder_set =bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
+        assets_set = 0
+        if os.path.exists(asset_folder_set) == True:
+            asset_folder_set = asset_folder_set.split("\\")[-2]
+            if asset_folder_set == "Apex_Toolbox_Assets":
+                if mode == 0:
+                    asset_folder_set = ast_fldr
+                else:
+                    asset_folder_set =bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
+                assets_set = 1            
+        
+        print("asset_folder_set: " + asset_folder_set)       
+        
+        body_parts = [
+                "head",
+                "helmet",
+                "hair",
+                "eye",
+                "eyecornea",
+                "eyeshadow",
+                "teeth",
+                "body",
+                "v_arms",
+                "boots",
+                "gauntlet",
+                "jumpkit",
+                "gear"
+                ]    
             
     ########## OPTION - 1 (Apex Shader) ############
         if prefs.cust_enum == 'OP1':
@@ -386,119 +482,8 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                     bpy.data.objects[selection[x]].select_set(True)
                     x += 1
                 print("Appended Apex Shader")
-                    
-            for o in bpy.context.selected_objects:
-                if o.type == 'MESH':
-                    for mSlot in o.material_slots:
-                        MatNodeTree = bpy.data.materials[mSlot.name] #mSlot.name material name
-                        
-                        foldername = recolor_folder.split("\\")[-2] #folder name
-                        imgBodyPart = mSlot.name.split('_')[-1] #part name
-                        folderpath = recolor_folder + "\\" + foldername + "_" + imgBodyPart
-                        img = folderpath + "_" + texSets[0][0] + '.png'
-                        eyefolderpath = recolor_folder + '\\' + 'base'
-                        eyeimg = recolor_folder + '\\' + mSlot.name + "_" + texSets[0][0] + '.png'
-                        exist = 0
-                        
-                            
-                        if rec_subf == False:
-                            if os.path.exists(img) == True: #Consider only 1st image with albedo
-                                exist = 1
-                            else:
-                                if mSlot.name == "wraith_base_eye" or mSlot.name == "teeth" or mSlot.name == "wraith_base_eyecornea" or mSlot.name == "wraith_base_eyeshadow" or mSlot.name == "wraith_base_hair":
-                                    if os.path.exists(eyeimg) == True: #Consider only 1st image with albedo
-                                        exist = 1
-                                    else:
-                                        print("Copy base images 'teeth_albedoTexture.png', 'wraith_base_eye_albedoTexture.png', etc. into " + "--" + recolor_folder + "--") 
-                        else:
-                            if os.path.exists(folderpath) == True: 
-                                exist = 1
-                            else:
-                                if mSlot.name == "wraith_base_eye" or mSlot.name == "teeth" or mSlot.name == "wraith_base_eyecornea" or mSlot.name == "wraith_base_eyeshadow" or mSlot.name == "wraith_base_hair":
-                                    if os.path.exists(eyefolderpath) == True:
-                                        exist = 1
-                                    else:
-                                        print("Create folder named 'base' in " + "--" + recolor_folder + "--" + " Copy base images there 'teeth_albedoTexture.png', 'wraith_base_eye_albedoTexture.png', etc. ") 
-                                        
-                        if exist == 0:                                                                                                    
-                            print("Textures for " + "--" + mSlot.name + "--" + " cannot be found")
-                            print("Skipping") 
-                            
-                        if exist == 1:                            
-                            MatNodeTree.node_tree.nodes.clear()
-         
-                            for i in range(len(texSets)):
-                                for j in range(len(texSets[i])):
-                                    if mSlot.name == "wraith_base_eye" or mSlot.name == "teeth" or mSlot.name == "wraith_base_eyecornea" or mSlot.name == "wraith_base_eyeshadow" or mSlot.name == "wraith_base_hair":
-                                        texImageName = mSlot.name + '_' + texSets[i][j] + '.png'
-                                        if rec_subf == True:
-                                            texFile = recolor_folder + '\\' + 'base' + '\\' + texImageName
-                                        else:
-                                            texFile = recolor_folder + '\\' + texImageName
-                                    else:
-                                        texImageName = foldername + '_' + imgBodyPart + '_' + texSets[i][j] + '.png'
-                                        #print("texImageName: " + texImageName)
-                                        if rec_subf == True:
-                                            texFile = recolor_folder + '\\' + foldername + '_' + imgBodyPart + '\\' + texImageName
-                                        else:
-                                            texFile = recolor_folder + '\\' + texImageName
-                                            
-          
-                                    try:
-                                        texImage = bpy.data.images.load(texFile)
-                                    except:
-                                        print("Unable to load image: " + texImageName)
-                                        continue
-                                            
-                                    if texImage:
-                                        if i > 2:
-                                            texImage.colorspace_settings.name = 'Non-Color'
-                                        texImage.alpha_mode = 'CHANNEL_PACKED'
-                                        texNode = MatNodeTree.node_tree.nodes.new('ShaderNodeTexImage')
-                                        texNode.image = texImage
-                                        texNode.name = str(i)
-                                        texNode.location = (-50,50-260*i)
-                                        break
 
-                            NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
-                            NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader')
-                            NodeGroup.location = (300,0)
-                            NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
-                            NodeOutput.location = (500,0)
-                            MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
-                            
-                            ColorDict = {
-                                "0": "Albedo Map",
-                                "1": "Specular Map",
-                                "2": "Emission",
-                                "3": "SSS Map",
-                                "4": "Alpha",     
-                                "5": "Normal Map",
-                                "6": "Glossiness Map",
-                                "7": "AO"
-                            }
-                            AlphaDict = {
-                                "0": "Alpha",
-                                "3": "SSS Alpha",
-                            }
-                            
-                            if rec_alpha == True:
-                                for slot in AlphaDict:
-                                    try:
-                                        MatNodeTree.node_tree.links.new(NodeGroup.inputs[AlphaDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Alpha"])
-                                    except:
-                                        pass
-                            else:
-                                pass
-                            for slot in ColorDict:
-                                try:
-                                    MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                except:
-                                    pass
-                            mSlot.material.blend_method = 'HASHED'
-                            print("Textured",mSlot.name)
-                        
-    
+
     ########## OPTION - 2 (S/G-Blender) ############
         if prefs.cust_enum == 'OP2':
             print("\n######## RECOLORING MODEL: ########")
@@ -508,71 +493,111 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                 for x in range(len(selection)):
                     bpy.data.objects[selection[x]].select_set(True)
                     x += 1
-                print("Appended Apex Shader")
+                print("S/G Blender Shader")
+                
+                
+        for o in bpy.context.selected_objects:
+            if o.type == 'MESH':
+                for mSlot in o.material_slots:
+                    MatNodeTree = bpy.data.materials[mSlot.name] #mSlot.name material name
                     
-            for o in bpy.context.selected_objects:
-                if o.type == 'MESH':
-                    for mSlot in o.material_slots:
-                        MatNodeTree = bpy.data.materials[mSlot.name] #mSlot.name material name
-                        
+                    mSlot_clean = mSlot.name
+                    if "." in mSlot.name:
+                        mSlot_clean = mSlot.name.split(".")[0] 
+
+                    #rec_folder2 = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
+                    #rec_folder2 = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
+                    #rec_folder2 = ("C:\\Users\\User\\Downloads\\pilots\\materials\\") #TTF2 recolour folder
+                    #rec_folder2 = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\Wraith\\pov_pilot_light_wraith_legendary_01\\_images\\") #POV recolour folder
+                    #rec_folder2 = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
+                    #rec_folder2 = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\_images\\") #recolour folder
+                    #recolor_folder = rec_folder2
+
+                    try: 
                         foldername = recolor_folder.split("\\")[-2] #folder name
-                        imgBodyPart = mSlot.name.split('_')[-1] #part name
-                        folderpath = recolor_folder + "\\" + foldername + "_" + imgBodyPart
-                        img = folderpath + "_" + texSets[0][0] + '.png'
-                        eyefolderpath = recolor_folder + '\\' + 'base'
-                        eyeimg = recolor_folder + '\\' + mSlot.name + "_" + texSets[0][0] + '.png'
-                        exist = 0
+                    except:
+                        print("Materials Folder not selected")
+                    else:    
+                        foldernameSplit = foldername.split("_")[-1] #folder suffix _main _body to check forattachments
+                        folderpath = recolor_folder 
+                        imgBodyPart = mSlot_clean.split('_')[-1] #part name 
+                        try:
+                            ttf = mSlot_clean.split('_')[-2]  #ttf2 models
+                        except:
+                            continue
+                        exist = 0                            
+                        weapon = 1
                         
-                            
-                        if rec_subf == False:
-                            if os.path.exists(img) == True: #Consider only 1st image with albedo
-                                exist = 1
-                            else:
-                                if mSlot.name == "wraith_base_eye" or mSlot.name == "teeth" or mSlot.name == "wraith_base_eyecornea" or mSlot.name == "wraith_base_eyeshadow" or mSlot.name == "wraith_base_hair":
-                                    if os.path.exists(eyeimg) == True: #Consider only 1st image with albedo
-                                        exist = 1
-                                    else:
-                                        print("Copy base images 'teeth_albedoTexture.png', 'wraith_base_eye_albedoTexture.png', etc. into " + "--" + recolor_folder + "--") 
+                        for b in range(len(body_parts)):
+                            if body_parts[b] in mSlot_clean:
+                                weapon = 0
+                                break    
+                                                                                    
+                        ######## Weapon Codes ########
+                        if weapon == 1:
+                            if foldername == "_images": #normal autotex
+                                foldername = mSlot_clean
+                                
+                            if foldernameSplit != imgBodyPart: #check if this is attachment
+                                foldername = mSlot_clean
+                        
+                        ######## Legend Codes ########    
+                        if weapon == 0:
+                            if foldername == "_images":              #normal autotex
+                                foldername = mSlot_clean  
+                            else:                                    #with sub folders
+                                if body_parts[b] == "v_arms":        #with sub folders and check for v_arms in name
+                                    folderpath = recolor_folder + foldername + "_" + body_parts[b]
+                                    foldername = foldername + "_" + body_parts[b]  
+                                else: 
+                                    folderpath = recolor_folder + foldername + "_" + imgBodyPart
+                                    foldername = foldername + "_" + imgBodyPart                                     
+                                    if ttf == "skn":   #TTF Texturing
+                                        folderpath = recolor_folder + mSlot_clean
+                                        foldername = mSlot_clean
+                                        texSets = ttf_texSets
+           
+                        
+                        texFile = folderpath + '\\' + foldername + '_' + texSets[0][0] + ".png" #check if albedo image exist, if not dont proceed clear nodes
+                        
+                        if os.path.isfile(texFile):
+                            exist = 1
                         else:
-                            if os.path.exists(folderpath) == True: 
-                                exist = 1
-                            else:
-                                if mSlot.name == "wraith_base_eye" or mSlot.name == "teeth" or mSlot.name == "wraith_base_eyecornea" or mSlot.name == "wraith_base_eyeshadow" or mSlot.name == "wraith_base_hair":
-                                    if os.path.exists(eyefolderpath) == True:
-                                        exist = 1
+                            if weapon == 0:
+                                if assets_set == 1:
+                                    texFile = asset_folder_set + "0. Legend_base" + '\\' + mSlot_clean + '_' + texSets[0][0] + ".png" #Set path for Base files from assets folder
+                                else:
+                                    texFile = recolor_folder + "base" + '\\' + mSlot_clean + '_' + texSets[0][0] + ".png" #check legend base files in the "Base" folder
+                                if os.path.isfile(texFile):
+                                    if assets_set == 1:
+                                        folderpath = asset_folder_set + "0. Legend_base"
+                                        foldername = mSlot_clean                                        
                                     else:
-                                        print("Create folder named 'base' in " + "--" + recolor_folder + "--" + " Copy base images there 'teeth_albedoTexture.png', 'wraith_base_eye_albedoTexture.png', etc. ") 
+                                        folderpath = recolor_folder + "base"
+                                        foldername = mSlot_clean
+                                    exist = 1
+                                if ttf == "skn":                                #TTF Try look different skin folders
+                                    skn_name = mSlot_clean.rsplit('_', 2)[0]
+                                    for s in ("_skn_02", "_skn_31"):
+                                        texFile = recolor_folder + skn_name + s + '\\' + skn_name + s + '_' + texSets[0][0] + ".png" #Set path for Base files from assets folder
+                                        if os.path.isfile(texFile):
+                                            print(texFile)
+                                            folderpath = recolor_folder + skn_name + s
+                                            foldername = skn_name + s
+                                            exist = 1
+                                            break
                                         
-                        if exist == 0:                                                                                                    
-                            print("Textures for " + "--" + mSlot.name + "--" + " cannot be found")
-                            print("Skipping") 
-                            
-                        if exist == 1:                            
+                        if exist == 1: 
                             MatNodeTree.node_tree.nodes.clear()
-         
+                            
                             for i in range(len(texSets)):
                                 for j in range(len(texSets[i])):
-                                    if mSlot.name == "wraith_base_eye" or mSlot.name == "teeth" or mSlot.name == "wraith_base_eyecornea" or mSlot.name == "wraith_base_eyeshadow" or mSlot.name == "wraith_base_hair":
-                                        texImageName = mSlot.name + '_' + texSets[i][j] + '.png'
-                                        if rec_subf == True:
-                                            texFile = recolor_folder + '\\' + 'base' + '\\' + texImageName
-                                        else:
-                                            texFile = recolor_folder + '\\' + texImageName
-                                    else:
-                                        texImageName = foldername + '_' + imgBodyPart + '_' + texSets[i][j] + '.png'
-                                        #print("texImageName: " + texImageName)
-                                        if rec_subf == True:
-                                            texFile = recolor_folder + '\\' + foldername + '_' + imgBodyPart + '\\' + texImageName
-                                        else:
-                                            texFile = recolor_folder + '\\' + texImageName
-                                            
-          
-                                    try:
+                                    texFile = folderpath + '\\' + foldername + '_' + texSets[i][j] + ".png"
+                                    if os.path.isfile(texFile):                         #if texture is absent - skip it
                                         texImage = bpy.data.images.load(texFile)
-                                    except:
-                                        print("Unable to load image: " + texImageName)
-                                        continue
-                                            
+                                    else:
+                                        print(foldername + '_' + texSets[i][j] + ".png" + " Not in folder. Skipping.")
+                                        texImage = None
                                     if texImage:
                                         if i > 2:
                                             texImage.colorspace_settings.name = 'Non-Color'
@@ -581,31 +606,77 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                                         texNode.image = texImage
                                         texNode.name = str(i)
                                         texNode.location = (-50,50-260*i)
-                                        break
-
-                            NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
-                            NodeGroup.node_tree = bpy.data.node_groups.get('S/G-Blender')
-                            NodeGroup.location = (300,0)
-                            NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
-                            NodeOutput.location = (500,0)
-                            MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
-                            
-                            ColorDict = {
-                                "0": "Diffuse map",
-                                "1": "Specular map",
-                                "2": "Emission input",
-                                "3": "Subsurface",
-                                "4": "Alpha input",     
-                                "5": "Normal map",
-                                "6": "Glossiness map",
-                                "7": "AO map",
-                                "8": "Cavity map",
-                            }
-                            AlphaDict = {
-                                "0": "Alpha input",
-                                "3": "SSS Alpha",
-                            }
-                            
+                                        break 
+                                    
+                            ########## OPTION - 1 (Apex Shader) ############        
+                            if prefs.cust_enum == 'OP1':        
+                                NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                                NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader')
+                                NodeGroup.location = (300,0)
+                                NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                                NodeOutput.location = (500,0)
+                                MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+                                
+                                if ttf == "skn":
+                                    ColorDict = {
+                                        "0": "Albedo Map",
+                                        "1": "Specular Map",
+                                        "2": "Emission",
+                                        "3": "Normal Map",
+                                        "4": "Glossiness Map",     
+                                        "5": "AO"
+                                    }                                    
+                                else:
+                                    ColorDict = {
+                                        "0": "Albedo Map",
+                                        "1": "Specular Map",
+                                        "2": "Emission",
+                                        "3": "SSS Map",
+                                        "4": "Alpha",     
+                                        "5": "Normal Map",
+                                        "6": "Glossiness Map",
+                                        "7": "AO"
+                                    }
+                                AlphaDict = {
+                                    "0": "Alpha",
+                                    "3": "SSS Alpha",
+                                }
+                                
+                            ########## OPTION - 2 (S/G-Blender) ############
+                            if prefs.cust_enum == 'OP2': 
+                                NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                                NodeGroup.node_tree = bpy.data.node_groups.get('S/G-Blender')
+                                NodeGroup.location = (300,0)
+                                NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                                NodeOutput.location = (500,0)
+                                MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+                                
+                                if ttf == "skn":
+                                    ColorDict = {
+                                        "0": "Diffuse map",
+                                        "1": "Specular map",
+                                        "2": "Emission input",
+                                        "3": "Normal map",
+                                        "4": "Glossiness map",     
+                                        "5": "AO map"
+                                    }                                    
+                                else:
+                                    ColorDict = {
+                                        "0": "Diffuse map",
+                                        "1": "Specular map",
+                                        "2": "Emission input",
+                                        "3": "Subsurface",
+                                        "4": "Alpha input",     
+                                        "5": "Normal map",
+                                        "6": "Glossiness map",
+                                        "7": "AO map",
+                                        "8": "Cavity map",
+                                    }
+                                AlphaDict = {
+                                    "0": "Alpha input",
+                                    "3": "SSS Alpha",
+                                }
+                                
                             if rec_alpha == True:
                                 for slot in AlphaDict:
                                     try:
@@ -620,12 +691,23 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                                 except:
                                     pass
                             mSlot.material.blend_method = 'HASHED'
-                            print("Textured",mSlot.name)            
+                            print("Textured",mSlot_clean) 
+                            print("  ")                               
+
+                        else:
+                            print("Material '" + mSlot_clean + "' Cannot be Textured") 
+                            print("Image '" + foldername + '_' + texSets[0][0] + ".png' Not found in '" + folderpath + "'")
+                            print("######### LOG FOR DEBUGGING #########")
+                            print("recolor_folder: " + recolor_folder)
+                            print("mSlot_clean: " + mSlot_clean)
+                            print("foldername: " + foldername)
+                            print("foldernameSplit: " + foldernameSplit)
+                            print("imgBodyPart: " + imgBodyPart)
+                            print("ttf: " + ttf)
+                            print("texFile: " + texFile)
+                            print("  ")  
 
         return {'FINISHED'}
-        
-
-
 
 class BUTTON_SHADERS(bpy.types.Operator):
     bl_label = "BUTTON_SHADERS"
@@ -674,38 +756,49 @@ class BUTTON_HDRIFULL(bpy.types.Operator):
         blend_file = ("\\Assets.blend")
 
         if mode == 0:
-            #asset_folder = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
-            asset_folder = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+            asset_folder = ast_fldr
         else:
             asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
-        
-            
+ 
+ 
         if prefs.cust_enum_hdri == 'OP1':
             hdri_name = "World"                    
-        
+
         if prefs.cust_enum_hdri == 'OP2':
+            hdri_name = "Apex Lobby HDRI" 
+                    
+        if prefs.cust_enum_hdri == 'OP3':
             hdri_name = "Party crasher HDRI"
             
-        if prefs.cust_enum_hdri == 'OP3':
+        if prefs.cust_enum_hdri == 'OP4':
             hdri_name = "Encore HDRI"
             
-        if prefs.cust_enum_hdri == 'OP4':
+        if prefs.cust_enum_hdri == 'OP5':
             hdri_name = "Habitat HDRI"
             
-        if prefs.cust_enum_hdri == 'OP5':
+        if prefs.cust_enum_hdri == 'OP6':
             hdri_name = "Kings Canyon HDRI"
             
-        if prefs.cust_enum_hdri == 'OP6':
-            hdri_name = "Olympus HDRI"
-            
         if prefs.cust_enum_hdri == 'OP7':
-            hdri_name = "Phase Runner HDRI"
+            hdri_name = "Kings Canyon New HDRI"
             
         if prefs.cust_enum_hdri == 'OP8':
-            hdri_name = "Storm Point HDRI"
+            hdri_name = "Kings Canyon Night HDRI"                        
             
         if prefs.cust_enum_hdri == 'OP9':
-            hdri_name = "Worlds Edge HDRI"      
+            hdri_name = "Olympus HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP10':
+            hdri_name = "Phase Runner HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP11':
+            hdri_name = "Storm Point HDRI"
+            
+        if prefs.cust_enum_hdri == 'OP12':
+            hdri_name = "Worlds Edge HDRI" 
+            
+        if prefs.cust_enum_hdri == 'OP13':
+            hdri_name = "Sky HDRI"                  
             
 
         if hdri_name not in bpy.data.worlds:
@@ -1060,8 +1153,7 @@ class BDG_BUTTON_SPAWN(bpy.types.Operator):
         blend_file = ("\\Assets.blend")
 
         if mode == 0:
-            #asset_folder = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
-            asset_folder = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+            asset_folder = ast_fldr
         else:
             asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
 
@@ -1072,9 +1164,140 @@ class BDG_BUTTON_SPAWN(bpy.types.Operator):
         else:
             print(self.badge + " already inside")
   
-        return {'FINISHED'}                 
+        return {'FINISHED'} 
+    
+    
+######### Legends Effects Seer ###########    
+class SEER_BUTTON_SPAWN(bpy.types.Operator):
+    bl_label = "SEER_BUTTON_SPAWN"
+    bl_idname = "object.seer_button_spawn"
+    bl_options = {'REGISTER', 'UNDO'}
+    lgnd_effect : bpy.props.StringProperty(name= "Added")
 
 
+    def execute(self, context):
+        lgnd_effect = self.lgnd_effect
+        
+        lgnd_effect_items = {
+            'Seer Ultimate': [
+                {'name': 'Seer Ultimate'},            
+            ],
+            }  
+
+        #### Main loop for Seer items ####    
+        for i in range(len(all_seer_items)):
+            item = all_seer_items.get(str(i))
+            split_item = item.split()
+
+            if lgnd_effect == all_seer_items.get(str(i)):
+                
+                ### Ultimate ###
+                if i == 0:
+                    bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=lgnd_effect_items.get(item))
+                    
+                print(item + " Appended") 
+                break
+            
+        
+        return {'FINISHED'}                       
+
+
+######### Skydive Effects ###########    
+class SKY_BUTTON_SPAWN(bpy.types.Operator):
+    bl_label = "SKY_BUTTON_SPAWN"
+    bl_idname = "object.sky_button_spawn"
+    bl_options = {'REGISTER', 'UNDO'}
+    sky_effect : bpy.props.StringProperty(name= "Added")
+
+
+    def execute(self, context):
+        sky_effect = self.sky_effect
+        
+        sky_effect_items = {
+            'Skydive Ranked S9': [
+                {'name': 'Skydive Ranked S9'}, 
+                {'name': 'Skydive Ranked S9 trails'},           
+            ],
+            } 
+
+        
+        # Skydive Parenting #
+        if sky_effect == "Skydive_parent":
+            sel_objects = bpy.context.selected_objects
+            sel_names = [obj.name for obj in bpy.context.selected_objects]
+            
+                
+            if not bpy.context.selected_objects:
+                print("Nothing selected. Please select Model Bones in Object Mode")
+            else:
+                if len(sel_objects) > 1:
+                    print("More than 1 Object slected. Please select only 1 Bone Object")
+                else:
+                    for bones in sel_objects:
+                        if bones.type in ["ARMATURE"]:
+                            if bpy.data.objects.get('Skydive Ranked S9') == None:
+                                print("Skydive not Found. Pls add Effect first")
+                            else:
+                                #Deselect All and select only bones that were chosen
+                                bpy.ops.object.mode_set(mode='OBJECT')
+                                bpy.ops.object.select_all(action='DESELECT')
+                                bpy.context.view_layer.objects.active = None
+                                bpy.data.objects[sel_names[0]].select_set(True)
+                                bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]
+                                
+                                #Select POV bone in Bone Edit Mode       
+                                arm = bpy.data.objects[sel_names[0]]
+                                bpy.ops.object.mode_set(mode='EDIT')
+                                arm.data.edit_bones['jx_c_pov'].select = True  
+                                
+                                #Exit out Edit Mode and Deselect All    
+                                bpy.ops.object.mode_set(mode='OBJECT')
+                                bpy.ops.object.select_all(action='DESELECT')
+                                
+                                #Select Skydive, Select bones that were chosen, set bones active and parent to them
+                                bpy.data.objects['Skydive Ranked S9'].select_set(True)
+                                bpy.data.objects[sel_names[0]].select_set(True)
+                                bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]
+                                bpy.ops.object.parent_set(type='BONE')
+
+                                bpy.ops.object.select_all(action='DESELECT')                                                              
+                                                                
+                                print("Parenting Skydive Done")
+                        else:
+                            print("Selected Object is Not a Bone. Pls Select Bones") 
+        else:
+            def color():
+                selection = [obj.name for obj in bpy.context.selected_objects]
+                for obj in bpy.context.selected_objects:
+                    obj.select_set(False)
+                bpy.data.objects[selection[0]].select_set(True)
+                mat = bpy.data.objects[selection[0]].active_material
+                nodes = mat.node_tree.nodes['Skydive Group Color S9'].node_tree.nodes
+                links = mat.node_tree.nodes['Skydive Group Color S9'].node_tree.links
+                node_output = nodes['Group Output']
+                colours = {
+                    'Diamond': nodes['RGB.001'],
+                    'Master': nodes['RGB.002'],
+                    'Predator': nodes['RGB.003'],
+                    } 
+                node_color = colours.get(split_item[1])
+                link = links.new(node_color.outputs[0], node_output.inputs[0])
+                
+                                
+            #### Main loop for Skydive items ####    
+            for i in range(len(all_skydive_items)):
+                item = all_skydive_items.get(str(i))
+                split_item = item.rsplit(" ",1)
+
+                if sky_effect == all_skydive_items.get(str(i)):
+                     ### Ranked S9 ###
+                    bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=sky_effect_items.get(split_item[0]))
+                    color()
+                        
+                    print(item + " Appended")             
+            
+        return {'FINISHED'}  
+    
 
 ######### Weapons Buttons ###########    
 class WPN_BUTTON_SPAWN(bpy.types.Operator):
@@ -1149,89 +1372,180 @@ class LT_BUTTON_SPAWN(bpy.types.Operator):
     bl_idname = "object.lt_button_spawn"
     bl_options = {'REGISTER', 'UNDO'}
     loot : bpy.props.StringProperty(name= "Added")
+ 
 
     def execute(self, context):
         loot = (self.loot)
         
-        blend_file = ("\\Assets.blend")
-
+        blend_file = ("\\Assets.blend") #items shifted to assets
+        
+        #### this one for test purposes ####
         if mode == 0:
-            #asset_folder = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
-            asset_folder = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
-        else:
-            asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder        
+            asset_folder = ast_fldr
+        else:    
+            asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
 
-        loot_items_body = [
-            {'name': 'w_loot_cha_shield_upgrade_body_LOD0_skel'}, 
-            {'name': 'w_loot_cha_shield_upgrade_body_LOD0_SEModelMesh.106'}, 
-            {'name': 'w_loot_cha_shield_upgrade_body_LOD0_SEModelMesh.107'}
-            ]
+
+        loot_items = {
+            'Armor': [
+                {'name': 'w_loot_cha_shield_upgrade_body_LOD0_skel'},            
+                {'name': 'w_loot_cha_shield_upgrade_body_LOD0_SEModelMesh.106'}, 
+                {'name': 'w_loot_cha_shield_upgrade_body_LOD0_SEModelMesh.107'}
+            ],
+            'Helmet': [
+                {'name': 'w_loot_cha_shield_upgrade_head_LOD0_skel'}, 
+                {'name': 'w_loot_cha_shield_upgrade_head_LOD0_SEModelMesh.108'}, 
+                {'name': 'w_loot_cha_shield_upgrade_head_LOD0_SEModelMesh.109'}
+            ],
+            'Phoenix Kit': [
+                {'name': 'w_loot_wep_iso_phoenix_kit_v1_LOD0_skel'}, 
+                {'name': 'w_loot_wep_iso_phoenix_kit_v1_LOD0_SEModelMesh.135'}, 
+                {'name': 'w_loot_wep_iso_phoenix_kit_v1_LOD0_SEModelMesh.136'}
+            ],
+            'Shield Battery': [
+                {'name': 'w_loot_wep_iso_shield_battery_large_LOD0_skel'}, 
+                {'name': 'w_loot_wep_iso_shield_battery_large_LOD0_SEModelMesh.137'}, 
+                {'name': 'w_loot_wep_iso_shield_battery_large_LOD0_SEModelMesh.138'}
+            ],
+            'Shield Cell': [
+                {'name': 'w_loot_wep_iso_shield_battery_small_LOD0_skel'}, 
+                {'name': 'w_loot_wep_iso_shield_battery_small_LOD0_SEModelMesh.139'}, 
+                {'name': 'w_loot_wep_iso_shield_battery_small_LOD0_SEModelMesh.140'}
+            ],
+            'Med Kit': [
+                {'name': 'w_loot_wep_iso_health_main_large_LOD0_skel'}, 
+                {'name': 'w_loot_wep_iso_health_main_large_LOD0_SEModelMesh.133'}
+            ],
+            'Syringe': [
+                {'name': 'w_loot_wep_iso_health_main_small_LOD0_skel'}, 
+                {'name': 'w_loot_wep_iso_health_main_small_LOD0_SEModelMesh.134'}
+            ],
+            'Health Injector': [
+                {'name': 'w_health_injector_LOD0_skel'}, 
+                {'name': 'w_health_injector_LOD0_SEModelMesh.084'}
+            ],            
+            'Grenade': [
+                {'name': 'm20_f_grenade_LOD0_skel'}, 
+                {'name': 'm20_f_grenade_LOD0_SEModelMesh.147'}
+            ],
+            'Arc Star': [
+                {'name': 'w_loot_wep_iso_shuriken_LOD0_skel'}, 
+                {'name': 'w_loot_wep_iso_shuriken_LOD0_SEModelMesh.142'}
+            ],
+            'Thermite': [
+                {'name': 'w_thermite_grenade_LOD0_skel'}, 
+                {'name': 'w_thermite_grenade_LOD0_SEModelMesh.143'}
+            ], 
+            'Backpack Lv.3': [
+                {'name': 'w_loot_char_backpack_heavy_LOD0_skel'}, 
+                {'name': 'w_loot_char_backpack_heavy_LOD0_SEModelMesh.118'}
+            ],    
+            'Backpack Lv.2': [
+                {'name': 'w_loot_char_backpack_medium_LOD0_skel'}, 
+                {'name': 'w_loot_char_backpack_medium_LOD0_SEModelMesh.120'}
+            ],    
+            'Backpack Lv.1': [
+                {'name': 'w_loot_char_backpack_light_LOD0_skel'}, 
+                {'name': 'w_loot_char_backpack_light_LOD0_SEModelMesh.119'}
+            ], 
+            'Light Ammo': [
+                {'name': 'w_loot_wep_ammo_sc_LOD0_skel'}, 
+                {'name': 'w_loot_wep_ammo_sc_LOD0_SEModelMesh.123'}
+            ], 
+            'Heavy Ammo': [
+                {'name': 'w_loot_wep_ammo_hc_LOD0_skel'}, 
+                {'name': 'w_loot_wep_ammo_hc_LOD0_SEModelMesh.121'}
+            ], 
+            'Energy Ammo': [
+                {'name': 'w_loot_wep_ammo_nrg_LOD0_skel'}, 
+                {'name': 'w_loot_wep_ammo_nrg_LOD0_SEModelMesh.122'}
+            ],
+            'Shotgun Ammo': [
+                {'name': 'w_loot_wep_ammo_shg_LOD0_skel'}, 
+                {'name': 'w_loot_wep_ammo_shg_LOD0_SEModelMesh.124'}
+            ], 
+            'Respawn Beacon': [
+                {'name': 'beacon_capsule_01_LOD0_skel'}, 
+                {'name': 'beacon_capsule_01_LOD0_SEModelMesh.144'}
+            ],  
+            'Knockdown Shield': [
+                {'name': 'w_loot_wep_iso_shield_down_v1_LOD0_skel'}, 
+                {'name': 'w_loot_wep_iso_shield_down_v1_LOD0_SEModelMesh.141'}
+            ],  
+            'Heat Shield': [
+                {'name': 'loot_void_ring_LOD0_skel'}, 
+                {'name': 'loot_void_ring_LOD0_SEModelMesh.146'}
+            ],  
+            'Death Box': [
+                {'name': 'death_box_01_gladcard_LOD0_skel.001'}, 
+                {'name': 'death_box_01_gladcard_LOD0_SEModelMesh.145'}
+            ],                                                                                                                                                                       
+            }  
+
             
-        loot_items_helmet = [
-            {'name': 'w_loot_cha_shield_upgrade_head_LOD0_skel'}, 
-            {'name': 'w_loot_cha_shield_upgrade_head_LOD0_SEModelMesh.108'}, 
-            {'name': 'w_loot_cha_shield_upgrade_head_LOD0_SEModelMesh.109'}
-            ]         
+        def armor_color():
+            selection = [obj.name for obj in bpy.context.selected_objects]
+            for obj in bpy.context.selected_objects:
+                obj.select_set(False)
+            bpy.data.objects[selection[1]].select_set(True)
+            mat = bpy.data.objects[selection[1]].active_material
+            nodes = mat.node_tree.nodes
+            links = mat.node_tree.links
+            node_output = nodes['Armor shader']
+            colours = {
+                'Blue': nodes['RGB.001'],
+                'Purple': nodes['RGB.002'],
+                'Gold': nodes['RGB'],
+                'Red': nodes['RGB.003'],
+                } 
+            if split_item[0] == "White":
+                pass
+            else:
+                node_color = colours.get(split_item[0])
+                link = links.new(node_color.outputs[0], node_output.inputs[0]) 
+                
         
-        if loot == "armor white" or loot == "armor blue" or loot == "armor purple" or loot == "armor gold" or loot == "armor red":
-            bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=loot_items_body)
-        if loot == "helmet white" or loot == "helmet blue" or loot == "helmet purple" or loot == "helmet gold" or loot == "helmet red":
-            bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=loot_items_helmet)    
-        selection = [obj.name for obj in bpy.context.selected_objects]
-            
-        for obj in bpy.context.selected_objects:
-            obj.select_set(False)
-        
-        bpy.data.objects[selection[1]].select_set(True)
-        mat = bpy.data.objects[selection[1]].active_material
+        #### Main loop for Loot items ####    
+        for i in range(len(all_loot_items)):
+            item = all_loot_items.get(str(i))
+            split_item = item.split()
+
+            if loot == all_loot_items.get(str(i)):
+                
+                ### Body Armor ###
+                if i in range(*armor_range):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=loot_items.get(split_item[1]))
+                    armor_color()
                     
-        nodes = mat.node_tree.nodes
-        links = mat.node_tree.links
-        node_gold = nodes['RGB']
-        node_blue = nodes['RGB.001']
-        node_purple = nodes['RGB.002']
-        node_red = nodes['RGB.003']
-        node_output = nodes['Armor shader']
- 
-        
-        if loot == "armor white":    
-            print("White Body Armor Appended")
+                ### Helmet ###                    
+                if i in range(*helmet_range):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=loot_items.get(split_item[1]))
+                    armor_color()
+                
+                ### Meds ###                    
+                if i in range(*meds_range):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=loot_items.get(item))
+
+                ### Nades ###                    
+                if i in range(*nades_range):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=loot_items.get(item))
+
+                ### Ammo ###                    
+                if i in range(*ammo_range):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=loot_items.get(item))
+
+                ### Backpack ###                    
+                if i in range(*bag_range):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=loot_items.get(item))
+                  
+                ### Backpack ###                    
+                if i in range(*other_range):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=loot_items.get(item))
+                                      
+                print(item + " Appended") 
+                break
             
-        if loot == "armor blue":
-            link = links.new(node_blue.outputs[0], node_output.inputs[0])
-            print("Blue Body Armor Appended")    
-         
-        if loot == "armor purple":
-            link = links.new(node_purple.outputs[0], node_output.inputs[0])
-            print("Purple Body Armor Appended")
-            
-        if loot == "armor gold":
-            link = links.new(node_gold.outputs[0], node_output.inputs[0])
-            print("Gold Body Armor Appended")
-            
-        if loot == "armor red":
-            link = links.new(node_red.outputs[0], node_output.inputs[0])
-            print("Red Body Armor Appended")
-            
-        if loot == "helmet white":    
-            print("White Helmet Appended")
-            
-        if loot == "helmet blue":
-            link = links.new(node_blue.outputs[0], node_output.inputs[0])
-            print("Blue Helmet Appended")    
-         
-        if loot == "helmet purple":
-            link = links.new(node_purple.outputs[0], node_output.inputs[0])
-            print("Purple Helmet Appended")
-            
-        if loot == "helmet gold":
-            link = links.new(node_gold.outputs[0], node_output.inputs[0])
-            print("Gold Helmet Appended")
-            
-        if loot == "helmet red":
-            link = links.new(node_red.outputs[0], node_output.inputs[0])
-            print("Red Helmet Appended")    
-            
+
         return {'FINISHED'} 
 
     
@@ -1250,6 +1564,7 @@ class AUTOTEX_MENU(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
         prefs = scene.my_prefs
+            
         if mode == 0:
             addon_assets = prefs
             folder = 'recolor_folder'
@@ -1259,6 +1574,7 @@ class AUTOTEX_MENU(bpy.types.Panel):
         
         ######## Check if Asset Folder installed ######## 
         if mode == 0:
+            asset_folder = ast_fldr
             asset_folder_set = asset_folder
         else:
             asset_folder_set =bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
@@ -1332,7 +1648,6 @@ class AUTOTEX_MENU(bpy.types.Panel):
             box.label(text = "Select Texture Folder")
 
             box.prop(prefs, 'recolor_folder')
-            box.prop(prefs, 'rec_subf')
             box.prop(prefs, 'rec_alpha')
             box.prop(prefs, 'cust_enum')
             split = box.split(factor = 0.5)
@@ -1390,6 +1705,7 @@ class EFFECTS_PT_panel(bpy.types.Panel):
         
         
         if mode == 0:
+            asset_folder = ast_fldr
             asset_folder_set = asset_folder
         else:
             asset_folder_set =bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
@@ -1424,7 +1740,6 @@ class EFFECTS_PT_panel(bpy.types.Panel):
                 col.label(text='1.')
                 split.operator("object.wr_button_portal", text = "Spawn Portal") 
             """           
-
 
         ######### Gibraltar #########
         row = layout.row()
@@ -1504,6 +1819,34 @@ class EFFECTS_PT_panel(bpy.types.Panel):
             """    
             
 
+        ######### Seer #########
+        row = layout.row()
+        icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_seer else 'RIGHTARROW'
+        row.prop(context.scene, 'subpanel_effects_seer', icon=icon, icon_only=True)
+        row.label(text='Seer')
+        # some data on the subpanel
+        if context.scene.subpanel_effects_seer:
+            box = layout.box()
+            
+            # Wraith subpanel 1
+            for n in range(len(all_seer_items)):
+                if n == 0:
+                    box.operator('object.seer_button_spawn', text = all_seer_items.get(str(n))).lgnd_effect = all_seer_items.get(str(n))            
+            #box.operator("object.seer_button_spawn", text = "Seer Ultimate").lgnd_effect = "Seer Ultimate"
+
+            """
+            # Wraith subpanel 2
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_wraith_prop1 else 'RIGHTARROW'
+            box.prop(context.scene, 'subpanel_effects_wraith_prop1', icon=icon, icon_only=False, text='Wraith with properties')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_wraith_prop1:
+                split = box.split(factor = 0.08)
+                col = split.column(align = True)
+                col.label(text='1.')
+                split.operator("object.wr_button_portal", text = "Spawn Portal") 
+            """     
+            
+            
         ######### Weapons #########
         row = layout.row()
         icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_weapons else 'RIGHTARROW'
@@ -1556,24 +1899,101 @@ class EFFECTS_PT_panel(bpy.types.Panel):
                 box.prop(context.scene, 'subpanel_effects_loot_prop1', icon=icon, icon_only=False, text='Body Armor                          ')
                 # some data on the subpanel
                 if context.scene.subpanel_effects_loot_prop1:
-                    box.operator('object.lt_button_spawn', text = "White Armor").loot = "armor white"
-                    box.operator('object.lt_button_spawn', text = "Blue Armor").loot = "armor blue"
-                    box.operator('object.lt_button_spawn', text = "Purple Armor").loot = "armor purple"
-                    box.operator('object.lt_button_spawn', text = "Gold Armor").loot = "armor gold"
-                    box.operator('object.lt_button_spawn', text = "Red Armor").loot = "armor red"
+                    for n in range(len(all_loot_items)):
+                        if n in range(*armor_range):
+                            box.operator('object.lt_button_spawn', text = all_loot_items.get(str(n))).loot = all_loot_items.get(str(n))
                     
                 # Helmet subpanel 2
                 icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_loot_prop2 else 'RIGHTARROW'
                 box.prop(context.scene, 'subpanel_effects_loot_prop2', icon=icon, icon_only=False, text='Helmet                                 ')
                 # some data on the subpanel
                 if context.scene.subpanel_effects_loot_prop2:
-                    box.operator('object.lt_button_spawn', text = "White Helmet").loot = "helmet white"
-                    box.operator('object.lt_button_spawn', text = "Blue Helmet").loot = "helmet blue"
-                    box.operator('object.lt_button_spawn', text = "Purple Helmet").loot = "helmet purple"
-                    box.operator('object.lt_button_spawn', text = "Gold Helmet").loot = "helmet gold"
-                    box.operator('object.lt_button_spawn', text = "Red Helmet").loot = "helmet red"            
+                     for n in range(len(all_loot_items)):
+                        if n in range(*helmet_range):
+                            box.operator('object.lt_button_spawn', text = all_loot_items.get(str(n))).loot = all_loot_items.get(str(n)) 
+                    
+                # Heals subpanel 3
+                icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_loot_prop3 else 'RIGHTARROW'
+                box.prop(context.scene, 'subpanel_effects_loot_prop3', icon=icon, icon_only=False, text='Heals                                    ')
+                # some data on the subpanel
+                if context.scene.subpanel_effects_loot_prop3:
+                    for n in range(len(all_loot_items)):
+                        if n in range(*meds_range):
+                            box.operator('object.lt_button_spawn', text = all_loot_items.get(str(n))).loot = all_loot_items.get(str(n))
+                            
+                # Nades subpanel 4
+                icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_loot_prop4 else 'RIGHTARROW'
+                box.prop(context.scene, 'subpanel_effects_loot_prop4', icon=icon, icon_only=False, text='Nades                                    ')
+                # some data on the subpanel
+                if context.scene.subpanel_effects_loot_prop4:
+                    for n in range(len(all_loot_items)):
+                        if n in range(*nades_range):
+                            box.operator('object.lt_button_spawn', text = all_loot_items.get(str(n))).loot = all_loot_items.get(str(n)) 
+                            
+                # Ammo subpanel 5
+                icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_loot_prop5 else 'RIGHTARROW'
+                box.prop(context.scene, 'subpanel_effects_loot_prop5', icon=icon, icon_only=False, text='Ammo                                    ')
+                # some data on the subpanel
+                if context.scene.subpanel_effects_loot_prop5:
+                    for n in range(len(all_loot_items)):
+                        if n in range(*ammo_range):
+                            box.operator('object.lt_button_spawn', text = all_loot_items.get(str(n))).loot = all_loot_items.get(str(n))                               
+                            
+                # Backpacks subpanel 6
+                icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_loot_prop6 else 'RIGHTARROW'
+                box.prop(context.scene, 'subpanel_effects_loot_prop6', icon=icon, icon_only=False, text='Backpacks                              ')
+                # some data on the subpanel
+                if context.scene.subpanel_effects_loot_prop6:
+                    for n in range(len(all_loot_items)):
+                        if n in range(*bag_range):
+                            box.operator('object.lt_button_spawn', text = all_loot_items.get(str(n))).loot = all_loot_items.get(str(n))  
+                            
+                # Others subpanel 7
+                icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_loot_prop7 else 'RIGHTARROW'
+                box.prop(context.scene, 'subpanel_effects_loot_prop7', icon=icon, icon_only=False, text='Other                                       ')
+                # some data on the subpanel
+                if context.scene.subpanel_effects_loot_prop7:
+                    for n in range(len(all_loot_items)):
+                        if n in range(*other_range):
+                            box.operator('object.lt_button_spawn', text = all_loot_items.get(str(n))).loot = all_loot_items.get(str(n))                                                                                  
+                        
 
 
+        ######### Skydive #########
+        row = layout.row()
+        icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_sky else 'RIGHTARROW'
+        row.prop(context.scene, 'subpanel_effects_sky', icon=icon, icon_only=True)
+        row.label(text='Skydive (Experimental)')
+        # some data on the subpanel
+        if context.scene.subpanel_effects_sky:
+            box = layout.box()
+
+            for n in range(len(all_skydive_items)):
+                split = box.split(factor = 0.08)
+                col = split.column(align = True)
+                col.label(text='')
+                split.operator('object.sky_button_spawn', text = all_skydive_items.get(str(n))).sky_effect = all_skydive_items.get(str(n))
+            split = box.split(factor = 0.6)
+            col = split.column(align = True)
+            col.label(text='')         
+            split.operator('object.sky_button_spawn', text = "Parent it").sky_effect = "Skydive_parent" 
+            box.label(text='*Sel Model Bones before Parenting') 
+            box.label(text='*Parent before import animation')           
+
+
+            """
+            # Wraith subpanel 2
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_wraith_prop1 else 'RIGHTARROW'
+            box.prop(context.scene, 'subpanel_effects_wraith_prop1', icon=icon, icon_only=False, text='Wraith with properties')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_wraith_prop1:
+                split = box.split(factor = 0.08)
+                col = split.column(align = True)
+                col.label(text='1.')
+                split.operator("object.wr_button_portal", text = "Spawn Portal") 
+            """    
+            
+            
 
     #CLASS REGISTER 
 ##########################################
@@ -1584,7 +2004,9 @@ classes = (
         BUTTON_CUSTOM2, 
         BUTTON_SHADERS, 
         BUTTON_HDRIFULL, 
-        WR_BUTTON_PORTAL, 
+        WR_BUTTON_PORTAL,
+        SEER_BUTTON_SPAWN,
+        SKY_BUTTON_SPAWN, 
         GB_BUTTON_ITEMS, 
         MR_BUTTON_DECOY, 
         AUTOTEX_MENU, 
@@ -1594,6 +2016,7 @@ classes = (
         WPN_BUTTON_SPAWN,
         LT_BUTTON_SPAWN
         )
+        
 
 def register():
     for c in classes:
@@ -1610,13 +2033,20 @@ def register():
     Scene.subpanel_effects_mirage = BoolProperty(default=False)
     Scene.subpanel_effects_mirage_prop1 = BoolProperty(default=False)
     Scene.subpanel_effects_valkyrie = BoolProperty(default=False)
-    Scene.subpanel_effects_valkyrie_prop1 = BoolProperty(default=False)    
+    Scene.subpanel_effects_valkyrie_prop1 = BoolProperty(default=False)
+    Scene.subpanel_effects_seer = BoolProperty(default=False)    
     Scene.subpanel_effects_weapons = BoolProperty(default=False)
     Scene.subpanel_effects_weapons_prop1 = BoolProperty(default=False)
     Scene.subpanel_effects_badges = BoolProperty(default=False)
     Scene.subpanel_effects_loot = BoolProperty(default=False)
     Scene.subpanel_effects_loot_prop1 = BoolProperty(default=False)
-    Scene.subpanel_effects_loot_prop2 = BoolProperty(default=False)    
+    Scene.subpanel_effects_loot_prop2 = BoolProperty(default=False)
+    Scene.subpanel_effects_loot_prop3 = BoolProperty(default=False) 
+    Scene.subpanel_effects_loot_prop4 = BoolProperty(default=False) 
+    Scene.subpanel_effects_loot_prop5 = BoolProperty(default=False) 
+    Scene.subpanel_effects_loot_prop6 = BoolProperty(default=False)
+    Scene.subpanel_effects_loot_prop7 = BoolProperty(default=False)
+    Scene.subpanel_effects_sky = BoolProperty(default=False)
 
 
 def unregister():
@@ -1634,13 +2064,20 @@ def unregister():
     del Scene.subpanel_effects_mirage
     del Scene.subpanel_effects_mirage_prop1
     del Scene.subpanel_effects_valkyrie
-    del Scene.subpanel_effects_valkyrie_prop1    
+    del Scene.subpanel_effects_valkyrie_prop1
+    del Scene.subpanel_effects_seer    
     del Scene.subpanel_effects_weapons
     del Scene.subpanel_effects_weapons_prop1
     del Scene.subpanel_effects_badges
     del Scene.subpanel_effects_loot
     del Scene.subpanel_effects_loot_prop1
-    del Scene.subpanel_effects_loot_prop2    
+    del Scene.subpanel_effects_loot_prop2
+    del Scene.subpanel_effects_loot_prop3 
+    del Scene.subpanel_effects_loot_prop4 
+    del Scene.subpanel_effects_loot_prop5
+    del Scene.subpanel_effects_loot_prop6
+    del Scene.subpanel_effects_loot_prop7 
+    del Scene.subpanel_effects_sky 
         
 
 if __name__ == "__main__":
