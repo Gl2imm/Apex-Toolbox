@@ -43,17 +43,17 @@ ap_world = ("\\World")
 mode = 1 #0 - Test Mode; 1 - Live mode
 
 if mode == 0:
-    #my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
-    #ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
+    ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
     #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
-    #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
+    rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     
     
-    my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
-    ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    #my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
+    #ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
     #rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
-    rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
+    #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
 else:
     my_path = (os.path.dirname(os.path.realpath(__file__)))
 
@@ -98,7 +98,7 @@ armor_range = (0,5)
 helmet_range = (5,10)    
 meds_range = (10,16)
 nades_range = (16,19)
-bag_range = (19,23)
+bag_range = (20,23)
 ammo_range = (23,27)
 other_range = (27,31)
 
@@ -1216,10 +1216,40 @@ class SKY_BUTTON_SPAWN(bpy.types.Operator):
         sky_effect_items = {
             'Skydive Ranked S9': [
                 {'name': 'Skydive Ranked S9'}, 
-                {'name': 'Skydive Ranked S9 trails'},           
+                {'name': 'Skydive Ranked S9 trails'}, 
+                {'name': 'Skydive Ranked S9 Smoke'},           
             ],
             } 
 
+        def color():
+            selection = [obj.name for obj in bpy.context.selected_objects]
+            for obj in bpy.context.selected_objects:
+                obj.select_set(False)
+            bpy.data.objects[selection[2]].select_set(True)
+            mat = bpy.data.objects[selection[2]].active_material
+            nodes = mat.node_tree.nodes['Skydive Group Color S9'].node_tree.nodes
+            links = mat.node_tree.nodes['Skydive Group Color S9'].node_tree.links
+            node_output = nodes['Group Output']
+            colours = {
+                'Diamond': nodes['RGB.001'],
+                'Master': nodes['RGB.002'],
+                'Predator': nodes['RGB.003'],
+                } 
+            node_color = colours.get(split_item[1])
+            link = links.new(node_color.outputs[0], node_output.inputs[0])
+            
+                            
+        #### Main loop for Skydive items ####    
+        for i in range(len(all_skydive_items)):
+            item = all_skydive_items.get(str(i))
+            split_item = item.rsplit(" ",1)
+
+            if sky_effect == all_skydive_items.get(str(i)):
+                 ### Ranked S9 ###
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=sky_effect_items.get(split_item[0]))
+                color()
+                    
+                print(item + " Appended")    
         
         # Skydive Parenting #
         if sky_effect == "Skydive_parent":
@@ -1242,59 +1272,35 @@ class SKY_BUTTON_SPAWN(bpy.types.Operator):
                                 bpy.ops.object.mode_set(mode='OBJECT')
                                 bpy.ops.object.select_all(action='DESELECT')
                                 bpy.context.view_layer.objects.active = None
-                                bpy.data.objects[sel_names[0]].select_set(True)
-                                bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]
-                                
-                                #Select POV bone in Bone Edit Mode       
-                                arm = bpy.data.objects[sel_names[0]]
-                                bpy.ops.object.mode_set(mode='EDIT')
-                                arm.data.edit_bones['jx_c_pov'].select = True  
-                                
-                                #Exit out Edit Mode and Deselect All    
-                                bpy.ops.object.mode_set(mode='OBJECT')
-                                bpy.ops.object.select_all(action='DESELECT')
-                                
-                                #Select Skydive, Select bones that were chosen, set bones active and parent to them
                                 bpy.data.objects['Skydive Ranked S9'].select_set(True)
                                 bpy.data.objects[sel_names[0]].select_set(True)
                                 bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]
-                                bpy.ops.object.parent_set(type='BONE')
 
+                                
+
+                                arm = bpy.data.objects['Skydive Ranked S9']
+                                bpy.ops.object.mode_set(mode='EDIT')
+                                bpy.ops.armature.select_all(action='DESELECT')
+                                
+
+                                bones_to_select = ['Bone']
+                                for bone in arm.data.edit_bones:
+                                    if bone.name in bones_to_select:
+                                        bone.select = True
+                                        
+                                arm = bpy.data.objects[sel_names[0]]
+                                bones_to_select = ['jx_c_pov']
+                                for bone in arm.data.edit_bones:
+                                    if bone.name in bones_to_select:
+                                        bone.select = True 
+                                        
+                                bpy.ops.object.mode_set(mode='OBJECT')
+                                bpy.ops.object.parent_set(type='BONE')
                                 bpy.ops.object.select_all(action='DESELECT')                                                              
                                                                 
                                 print("Parenting Skydive Done")
                         else:
                             print("Selected Object is Not a Bone. Pls Select Bones") 
-        else:
-            def color():
-                selection = [obj.name for obj in bpy.context.selected_objects]
-                for obj in bpy.context.selected_objects:
-                    obj.select_set(False)
-                bpy.data.objects[selection[0]].select_set(True)
-                mat = bpy.data.objects[selection[0]].active_material
-                nodes = mat.node_tree.nodes['Skydive Group Color S9'].node_tree.nodes
-                links = mat.node_tree.nodes['Skydive Group Color S9'].node_tree.links
-                node_output = nodes['Group Output']
-                colours = {
-                    'Diamond': nodes['RGB.001'],
-                    'Master': nodes['RGB.002'],
-                    'Predator': nodes['RGB.003'],
-                    } 
-                node_color = colours.get(split_item[1])
-                link = links.new(node_color.outputs[0], node_output.inputs[0])
-                
-                                
-            #### Main loop for Skydive items ####    
-            for i in range(len(all_skydive_items)):
-                item = all_skydive_items.get(str(i))
-                split_item = item.rsplit(" ",1)
-
-                if sky_effect == all_skydive_items.get(str(i)):
-                     ### Ranked S9 ###
-                    bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=sky_effect_items.get(split_item[0]))
-                    color()
-                        
-                    print(item + " Appended")             
             
         return {'FINISHED'}  
     
