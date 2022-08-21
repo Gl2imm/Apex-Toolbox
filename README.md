@@ -1,6 +1,6 @@
 # Apex-Toolbox
 
-This tool were created to assist and simplify workflow for Apex Legends models in Blender since they cannot be simply exported from the game. Here i collect and organize useful tools/addons/operations all in one place. The addon itself is very light for those just want simple functions. If you want to have additional effects like auto set HDRI, Badges, Loot items - download Assets ZIP file from here: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
+This tool were created to assist and simplify workflow for Apex Legends effects in Blender since they cannot be simply exported from the game. Here i collect and organize useful tools/addons/operations all in one place. The addon itself is very light for those just want simple functions. If you want to have additional effects like auto set HDRI, Badges, Loot items - download Assets ZIP file from here: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
 
 - All Credites, version update log, Instruction on effects usage can be found here: https://github.com/Gl2imm/Apex-Toolbox/blob/main/Apex_toolbox/Credits%20and%20Instructions.txt (It also comes with the plugin inside zip file)
 
