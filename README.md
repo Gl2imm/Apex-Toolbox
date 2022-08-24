@@ -29,3 +29,19 @@ The effects are done by me in my free time, some items are shared by useres in t
 - 3D Art Discord: https://discord.gg/VcZh5rC (#apex-legion)
 
 If you have a good looking effect that you want to share and include in the addon - you may do so in one of the above discords.
+
+### Huge thanks to people helped and contributed to this addon:
+- llenoco - the source code for Autotexture, i used same nodes plugging process when developing Re-colour mode
+https://github.com/llennoco22
+
+- LEGION+ Discord for providing space to share development process 
+https://discord.gg/ADek6fxVGe
+
+- Garlicus - for creating Apex skin names translator sheet and allowing to merge it into Toolbox and sharing videos with effects during development
+https://bit.ly/3K1cItR 
+
+- @Devo and @Floxay from LEGION+ Discord - given the idea to Automate Re-colour function
+https://discord.gg/ADek6fxVGe
+
+- Individual creators, for sharing ready made badges, HDRI:
+@PeeT, @り(Twitter: @ZeroAx_), @Space
