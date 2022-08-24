@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (2, 1),
+    "version": (2, 2),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
@@ -27,10 +27,16 @@ import bpy
 import os
 from bpy.types import Scene
 from bpy.props import (BoolProperty,FloatProperty)
+import requests
+import webbrowser
 
-ver = 2.1
+
+ver = "v.2.2"
 loadImages = True
 texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
+lgnd_list = []
+ver_list = []
+lts_ver = ver
 
 blend_file = ("\\ApexShader.blend")
 ap_node = ("\\NodeTree")
@@ -43,14 +49,14 @@ ap_world = ("\\World")
 mode = 1 #0 - Test Mode; 1 - Live mode
 
 if mode == 0:
-    my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
-    ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    #my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
+    #ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
     #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
-    rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
+    #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     
     
-    #my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
-    #ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
+    ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
     #rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
     #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
@@ -218,13 +224,102 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
     default = False
     )
     
-    my_bool2 : BoolProperty(
-    name="Parent to Bone? (Not done yet)",
-    description="Flatline Bone parent property",
-    default = False
-    )    
     
+    Horizon : BoolProperty(name="", description="Horizon Skins", default = False)
+    Ash : BoolProperty(name="", description="Ash Skins", default = False)
+    Wraith : BoolProperty(name="", description="Wraith Skins", default = False)
+    Vantage : BoolProperty(name="", description="Vantage Skins", default = False)
+    Seer : BoolProperty(name="", description="Seer Skins", default = False)
+    Pathfinder : BoolProperty(name="", description="Pathfinder Skins", default = False)
+    Valkyrie : BoolProperty(name="", description="Valkyrie Skins", default = False)
+    Newcastle : BoolProperty(name="", description="Newcastle Skins", default = False)
+    Rampart : BoolProperty(name="", description="Rampart Skins", default = False)
+    Octane : BoolProperty(name="", description="Octane Skins", default = False)
+    Fuse : BoolProperty(name="", description="Fuse Skins", default = False)
+    Mad_Maggie : BoolProperty(name="", description="Maggie Skins", default = False)
+    Revenant : BoolProperty(name="", description="Revenant Skins", default = False)
+    Bangalore : BoolProperty(name="", description="Bangalore Skins", default = False)
+    Mirage : BoolProperty(name="", description="Mirage Skins", default = False)
+    Loba : BoolProperty(name="", description="Loba Skins", default = False)
+    Lifeline : BoolProperty(name="", description="Lifeline Skins", default = False)
+    Wattson : BoolProperty(name="", description="Wattson Skins", default = False) 
+    Caustic : BoolProperty(name="", description="Caustic Skins", default = False) 
+    Bloodhound : BoolProperty(name="", description="Bloodhound Skins", default = False) 
+    Crypto : BoolProperty(name="", description="Crypto Skins", default = False) 
+    Gibraltar : BoolProperty(name="", description="Gibraltar Skins", default = False) 
+    
+    
+    ####   Check for update   ####
+    url = 'https://github.com/Gl2imm/Apex-Toolbox/releases.atom'
+    try:
+        full_text = requests.get(url, allow_redirects=True).text
+    except:
+        pass
+    else:
+        global lts_ver
+        split_1 = full_text.split('521118368/')[1]
+        lts_ver = split_1.split('</id>')[0]
+    
+    
+############   URL HANDLER OPERATOR   ##############    
+class LGNDTRANSLATE_URL(bpy.types.Operator):
+    bl_label = "BUTTON CUSTOM"
+    bl_idname = "object.lgndtranslate_url"
+    bl_options = {'REGISTER', 'UNDO'}
+    link : bpy.props.StringProperty(name= "Added")
 
+
+    def execute(self, context):
+        link = (self.link)
+        
+        if link == "update":
+            
+            webbrowser.open_new("https://github.com/Gl2imm/Apex-Toolbox/releases")
+            '''
+            text = "https://github.com/Gl2imm/Apex-Toolbox/releases"
+            t = bpy.data.texts.new("Your Favourite Addon Link")
+            t.write(text)
+            bpy.context.area.ui_type = 'TEXT_EDITOR'
+            bpy.context.space_data.text = bpy.data.texts['Your Favourite Addon Link']
+            '''
+        else:    
+            url = 'https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/gviz/tq?tqx=out:json&tq&gid=0'
+            full_text = requests.get(url, allow_redirects=True).text
+            split_1 = full_text.split('"rows":[')[1]
+            replace_1 = split_1.replace('],"parsedNumHeaders":0}});', '|')
+            replace_2 = replace_1.replace("}]},{", "}]}|{")
+            replace_3 = replace_2.replace('null', '"null"')
+            replace_4 = replace_3.replace('["null",{"v":', '["null",')
+            replace_5 = replace_4.replace('},{', ',')
+            replace_6 = replace_5.replace('","v":"', '","')
+            replace_7 = replace_6.replace('"},"', '","')
+            replace_8 = replace_7.replace('{"v":"', '"')
+            replace_9 = replace_8.replace('}]}', ']}')
+            replace_10 = replace_9.replace('{"c":["', '"')
+            replace_11 = replace_10.replace('"]}', '"').rstrip('|')
+            replace_12 = replace_11.replace('Octane// Pendejo', 'Octane')
+            replace_13 = replace_12.replace('Mad Maggie ', 'Mad_Maggie')
+            replace_14 = replace_13.replace('Caustic // Gas daddy', 'Caustic')
+            split_2 = replace_14.split('|')
+            global lgnd_list
+            global ver_list
+            del lgnd_list[:]
+            del ver_list[:]
+            
+            i = 0
+            for x in split_2:
+                if i < 3:
+                    ver_list.append(x.strip('"').split('","'))
+                else:
+                    lgnd_list.append(x.strip('"').split('","'))
+                i +=1    
+            
+            #for x in range(len(lgnd_list)):
+            #    print(lgnd_list[x][0])
+
+        return {'FINISHED'}
+        
+    
 ############   AUTOTEX   ##############    
 class BUTTON_CUSTOM(bpy.types.Operator):
     bl_label = "BUTTON CUSTOM"
@@ -1558,7 +1653,7 @@ class LT_BUTTON_SPAWN(bpy.types.Operator):
     #PANEL UI
 ####################################
 class AUTOTEX_MENU(bpy.types.Panel):
-    bl_label = "Apex Toolbox (v." + str(ver) + ")"
+    bl_label = "Apex Toolbox (" + ver + ")"
     bl_idname = "OBJECT_PT_panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -1570,7 +1665,13 @@ class AUTOTEX_MENU(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
         prefs = scene.my_prefs
+
+        if lts_ver != ver:
+            box = layout.box()
+            #box.label(text = "Addon Update Available: " + lts_ver, icon='IMPORT') 
+            box.operator('object.lgndtranslate_url', text = "Addon Update Available: " + lts_ver, icon='IMPORT').link = "update"
             
+        ######## Update Notifier ########                
         if mode == 0:
             addon_assets = prefs
             folder = 'recolor_folder'
@@ -1592,11 +1693,15 @@ class AUTOTEX_MENU(bpy.types.Panel):
                 assets_set = 1            
         
         if assets_set != 1:
-            row = layout.row()
-            row.label(text = "Extra Assets Disabled", icon= "PANEL_CLOSE")
+            mode_ver = '"Lite"'
+            mode_ico = 'PANEL_CLOSE'
         else:
-            row = layout.row()
-            row.label(text = "Extra Assets Enabled", icon= "CHECKMARK")
+            mode_ver = '"Extended"'
+            mode_ico = 'CHECKMARK'
+            
+        row = layout.row()
+        row.label(text = "Current Mode:  " + mode_ver, icon=mode_ico)
+          
                         
         ######### Readme First ###########
         row = layout.row()
@@ -1631,14 +1736,14 @@ class AUTOTEX_MENU(bpy.types.Panel):
         row.prop(context.scene, 'subpanel_status_0', icon=icon, icon_only=True)
         row.label(text = "Auto_tex (by llenoco)", icon= "TEXTURE")
         # some data on the subpanel
-        if context.scene.subpanel_status_0:
+        if context.scene.subpanel_status_0:           
+            box = layout.box()
+            box.prop(prefs, "cust_enum2")
+            split = box.split(factor = 0.5)
+            col = split.column(align = True)
+            split.operator("object.button_custom", text = "Texture Model")
             row = layout.row()
-            layout.prop(prefs, "cust_enum2")
-            #ADD Button2
-            row = layout.row()
-            row.operator("object.button_custom", text = "Texture Model")
-            row = layout.row()
-            row.label(text = "------------------------------------------------------")
+            row.label(text = "------------------------------------------------------")            
             
                     
         
@@ -1997,15 +2102,90 @@ class EFFECTS_PT_panel(bpy.types.Panel):
                 col = split.column(align = True)
                 col.label(text='1.')
                 split.operator("object.wr_button_portal", text = "Spawn Portal") 
-            """    
-            
-            
+            """ 
+             
+
+              
+
+######### Legends/Weapons Translate Tab ########### 
+class TRANSLATE_PT_panel(bpy.types.Panel):
+    bl_parent_id = "OBJECT_PT_panel"
+    bl_label = "LEGION MODELS TRANSLATE"  
+    bl_space_type = 'VIEW_3D' 
+    bl_region_type = 'UI'
+    bl_options = {"DEFAULT_CLOSED"}
+    
+
+    
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        prefs = scene.my_prefs
+
+        
+        row = layout.row()
+        row.operator('object.lgndtranslate_url', text = "Fetch Data", icon='FILE_REFRESH')  
+        row = layout.row()
+
+        try: 
+            row = layout.row()
+            split = row.split(factor = 0.9)
+            col = split.column(align = True)
+            col.label(text=ver_list[0][0])  
+            split.label(text="") 
+            row = layout.row()
+            split = row.split(factor = 0.9)
+            col = split.column(align = True)
+            col.label(text=ver_list[0][2])  
+            split.label(text="")
+        except:
+            pass
+        
+        else:
+            for x in range(len(lgnd_list)):
+                if lgnd_list[x][0] != "null":
+                    row = layout.row()
+                    row.prop(prefs, lgnd_list[x][0], text=lgnd_list[x][0], icon = 'DOWNARROW_HLT' if getattr(prefs, lgnd_list[x][0]) else 'RIGHTARROW')
+                    if getattr(prefs, lgnd_list[x][0]):
+                        try:
+                            row = layout.row()
+                            split = row.split(factor = 0.4)
+                            col = split.column(align = True)
+                            col.label(text=lgnd_list[x][1]) 
+                            split.label(text=lgnd_list[x][2])
+                            x +=1
+                        except:
+                            pass    
+                        else:
+                            for x in range(x,len(lgnd_list)):
+                                if lgnd_list[x][0] == "null":
+                                    row = layout.row()
+                                    split = row.split(factor = 0.4)
+                                    col = split.column(align = True)
+                                    col.label(text=lgnd_list[x][1]) 
+                                    split.label(text=lgnd_list[x][2])
+                                    if lgnd_list[x][3] != "null":
+                                        row = layout.row()
+                                        split = row.split(factor = 0.4)
+                                        col = split.column(align = True)
+                                        col.label(text="") 
+                                        split.label(text="*Material*  " + lgnd_list[x][3])                                     
+                                    x +=1
+                                else:
+                                    break                       
+
+        #0 - Legend Name
+        #1 - In game name	
+        #2 - Legion name	
+        #3 - Material (If needed)        
+
 
     #CLASS REGISTER 
 ##########################################
 classes = (
         apexToolsPreferences,
         PROPERTIES_CUSTOM, 
+        LGNDTRANSLATE_URL,
         BUTTON_CUSTOM, 
         BUTTON_CUSTOM2, 
         BUTTON_SHADERS, 
@@ -2016,7 +2196,8 @@ classes = (
         GB_BUTTON_ITEMS, 
         MR_BUTTON_DECOY, 
         AUTOTEX_MENU, 
-        EFFECTS_PT_panel, 
+        EFFECTS_PT_panel,
+        TRANSLATE_PT_panel, 
         VK_BUTTON_ITEMS, 
         BDG_BUTTON_SPAWN, 
         WPN_BUTTON_SPAWN,

@@ -57,6 +57,7 @@ v2.1 Changes:
 	   HDRI: Kings Canyon (New), Kings Canyon (Night), Apex Lobby, Sky (Not sure its from which map)
 	   Loot items: Basically all of them, heals, nades, backpacks, etc.
 	   Effects: Added animated energy to the Shield batteries and cells.
+	   Badges: S3 Predator
 	   Base files: Added Legends base material files (eye, teeth, hair, etc) so it will auto link when you recolor the models. (Recolor materials not included base files)
 	   
 	   fixes:
@@ -65,6 +66,12 @@ v2.1 Changes:
 	   Changes:
 	   Rewrite the code for recolor - now it supposed to work completely in autopilot mode, recoloring Legends and also weapons. Just select the folder with images or material folder and it will do the job. The code is straight from the oven, so slight chance errors might pop up. Pls feedback if there are any.. For our Titanfall fans - this will also recolor TTF Legends. 
 	   
+	   Restart Blender after update.
+	   
+v2.1 Changes:
+	   Added to Both Versions:
+	   Addon new updates notification panel, so you wont miss new update
+	   Linked addon to Garlicus Legion Models/Skins Translate list (https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/edit#gid=0)
 	   Restart Blender after update.
 
 
@@ -248,3 +255,12 @@ PS: Sniper ammo textures are broken, so no adding them.
 
 (Both versions included)
 Spawns Skydive from S9 (Sparks), animated. Can parent to Legend
+
+
+
+
+                                            ####################################			
+                                                Legion Models Translate List:
+                                            ####################################
+Addon is linked to external translation list done by Garlicus from LEGION+ Discord. All data shown in this tab is populated from that list. 
+Original list can be found here https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/edit#gid=0
