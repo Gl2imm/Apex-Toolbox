@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (2, 2),
+    "version": (2, 3),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
@@ -29,14 +29,28 @@ from bpy.types import Scene
 from bpy.props import (BoolProperty,FloatProperty)
 import requests
 import webbrowser
+import sys
 
-
-ver = "v.2.2"
+## Toolbox vars ##
+ver = "v.2.3"
+lts_ver = ver
 loadImages = True
 texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
+## Garlicus List vars ##
 lgnd_list = []
 ver_list = []
-lts_ver = ver
+## Legion update vars ##
+legion_cur_ver = '0'
+legion_lts_ver = '0'
+legion_folder_exist = 0
+## Addons update vars ##
+addon_name = []
+addon_ver = []
+io_anim_lts_ver = '0'
+cast_lts_ver = '0'
+semodel_lts_ver = '0'
+mprt_lts_ver = '0'
+
 
 blend_file = ("\\ApexShader.blend")
 ap_node = ("\\NodeTree")
@@ -49,14 +63,17 @@ ap_world = ("\\World")
 mode = 1 #0 - Test Mode; 1 - Live mode
 
 if mode == 0:
-    #my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
-    #ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
+    ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    #lgn_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\")
+    lgn_fldr = ''
     #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
     #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     
     
-    my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
-    ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    #my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
+    #ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+    #lgn_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\")
     #rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
     #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
@@ -117,7 +134,13 @@ all_skydive_items = {
     '1': 'Skydive Ranked S9 Master',
     '2': 'Skydive Ranked S9 Predator',
     }         
-    
+
+addon = [
+    'io_anim_seanim',
+    'io_scene_cast',
+    'io_model_semodel',
+    'ApexMapImporter'
+    ]    
     
     #OPERATOR         
 ########################################   
@@ -130,15 +153,21 @@ class apexToolsPreferences(bpy.types.AddonPreferences):
                                         maxlen=1024,
                                         subtype="DIR_PATH")
                                         
+    legion_folder: bpy.props.StringProperty(name="Folder",
+                                        description="Select Legion folder",
+                                        default="",
+                                        maxlen=1024,
+                                        subtype="DIR_PATH")                                        
+                                                                        
+                                        
     if mode == 0:
         asset_folder = ast_fldr
+        legion_folder = lgn_fldr
         
  
 class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
     
-    name : bpy.props.StringProperty(name= "Name", default="folder_name", maxlen=40) #not in use
-    
-                
+    name : bpy.props.StringProperty(name= "ver", default="", maxlen=40) #not in use            
                     
     ### For Autotex ####
     cust_enum : bpy.props.EnumProperty(
@@ -249,7 +278,7 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
     Gibraltar : BoolProperty(name="", description="Gibraltar Skins", default = False) 
     
     
-    ####   Check for update   ####
+    ####   Check for update addon  ####
     url = 'https://github.com/Gl2imm/Apex-Toolbox/releases.atom'
     try:
         full_text = requests.get(url, allow_redirects=True).text
@@ -260,6 +289,22 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         split_1 = full_text.split('521118368/')[1]
         lts_ver = split_1.split('</id>')[0]
     
+
+    global addon_name
+    global addon_ver 
+    temp_ver = []   
+    for mod_name in bpy.context.preferences.addons.keys():
+        mod_name_split = mod_name.split("-")[0]
+        for x in range(len(addon)):
+            if mod_name_split == addon[x]:
+                addon_name.append(mod_name_split)
+                mod = sys.modules[mod_name]
+                mod_ver = mod.bl_info.get('version', (-1, -1, -1))
+                for i in range(len(mod_ver)):
+                    temp_ver.append(str(mod_ver[i]))
+                addon_ver.append('.'.join(temp_ver))
+                del temp_ver[:]
+                
     
 ############   URL HANDLER OPERATOR   ##############    
 class LGNDTRANSLATE_URL(bpy.types.Operator):
@@ -272,8 +317,80 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
     def execute(self, context):
         link = (self.link)
         
-        if link == "update":
+
+        if link == "check_update":
+            global legion_lts_ver
+            global io_anim_lts_ver
+            global cast_lts_ver
+            global semodel_lts_ver
+            global mprt_lts_ver
+            legion_url = 'https://github.com/r-ex/LegionPlus/releases.atom'        
+            try:
+                full_text = requests.get(legion_url, allow_redirects=True).text
+            except:
+                print("Apex Toolbox Addon: Something Went Wrong While checking Legion+ Online version")
+            else:
+                split_1 = full_text.split('437133675/')[1]
+                legion_lts_ver = split_1.split('</id>')[0]          
             
+            
+            ####   Check for update Addons  ####
+            if addon_name != None:
+                for x in range(len(addon_name)):
+                    for i in range(len(addon)):
+                        if addon_name[x] == addon[i]:
+                            if i == 0:
+                                url = 'https://github.com/SE2Dev/io_anim_seanim/releases.atom'        
+                                try:
+                                    full_text = requests.get(url, allow_redirects=True).text
+                                except:
+                                    print("Apex Toolbox Addon: Something Went Wrong While checking io_anim_seanim Online version")
+                                else:
+                                    split_1 = full_text.split('72251837/')[1]
+                                    io_anim_lts_ver = split_1.split('</id>')[0] 
+                            if i == 1:
+                                url = 'https://github.com/dtzxporter/cast/releases.atom'        
+                                try:
+                                    full_text = requests.get(url, allow_redirects=True).text
+                                except:
+                                    print("Apex Toolbox Addon: Something Went Wrong While checking io_scene_cast Online version")
+                                else:
+                                    split_1 = full_text.split('<title>[Plugins] Blender ')[1]
+                                    cast_lts_ver = split_1.split(', Maya')[0]
+                            if i == 2:
+                                url = 'https://github.com/dtzxporter/io_model_semodel/tree/blender-28' 
+                                semodel_lts_ver = "0.0.3"                                                                                                 
+                            if i == 3: 
+                                url = 'https://github.com/llennoco22/Apex-mprt-importer-for-Blender/releases.atom'        
+                                try:
+                                    full_text = requests.get(url, allow_redirects=True).text
+                                except:
+                                    print("Apex Toolbox Addon: Something Went Wrong While checking ApexMapImporter Online version")
+                                else:
+                                    split_1 = full_text.split('433190309/')[1]
+                                    mprt_lts_ver = split_1.split('</id>')[0]         
+        
+        
+
+        if link == "biast_archive":
+            webbrowser.open_new("https://bit.ly/337Cfw2")
+            
+        if link == "io_anim_seanim":
+            webbrowser.open_new("https://github.com/SE2Dev/io_anim_seanim/releases")
+            
+        if link == "cast":
+            webbrowser.open_new("https://github.com/dtzxporter/cast/releases")
+            
+        if link == "io_model_semodel":
+            webbrowser.open_new("https://github.com/SE2Dev/io_anim_seanim/releases")
+            
+        if link == "mprt":
+            webbrowser.open_new("https://github.com/llennoco22/Apex-mprt-importer-for-Blender/releases")                                                
+
+        if link == "legion_update":
+            webbrowser.open_new("https://github.com/r-ex/LegionPlus/releases")
+                    
+        if link == "update":
             webbrowser.open_new("https://github.com/Gl2imm/Apex-Toolbox/releases")
             '''
             text = "https://github.com/Gl2imm/Apex-Toolbox/releases"
@@ -1665,13 +1782,15 @@ class AUTOTEX_MENU(bpy.types.Panel):
         layout = self.layout
         scene = context.scene
         prefs = scene.my_prefs
-
+        
+        
+        ######## Update Notifier ########
         if lts_ver != ver:
             box = layout.box()
             #box.label(text = "Addon Update Available: " + lts_ver, icon='IMPORT') 
             box.operator('object.lgndtranslate_url', text = "Addon Update Available: " + lts_ver, icon='IMPORT').link = "update"
             
-        ######## Update Notifier ########                
+        ######## ASSETS ########                
         if mode == 0:
             addon_assets = prefs
             folder = 'recolor_folder'
@@ -1796,6 +1915,11 @@ class AUTOTEX_MENU(bpy.types.Panel):
             
             row = layout.row()
             row.label(text = "------------------------------------------------------")
+ 
+
+        row = layout.row()  
+        row = layout.row()   
+        row.operator('object.lgndtranslate_url', text = "Biast12 Apex PC Assets Archive", icon='URL').link = "biast_archive"    
 
 
 
@@ -2180,6 +2304,112 @@ class TRANSLATE_PT_panel(bpy.types.Panel):
         #3 - Material (If needed)        
 
 
+
+######### Updates Tracker ########### 
+class UPDATE_PT_panel(bpy.types.Panel):
+    bl_parent_id = "OBJECT_PT_panel"
+    bl_label = "UPDATES TRACKER"  
+    bl_space_type = 'VIEW_3D' 
+    bl_region_type = 'UI'
+    bl_options = {"DEFAULT_CLOSED"}
+    
+
+    
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        prefs = scene.my_prefs
+
+        
+        ####   Check for update Legion+  #### 
+        if mode == 0:
+            legion_folder = lgn_fldr
+        else:
+            legion_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.legion_folder
+        
+
+        if os.path.isdir(legion_folder) != True:
+            print("Apex Toolbox Addon: Legion folder not selected")
+        else: 
+            global legion_cur_ver
+            global legion_lts_ver
+            global legion_folder_exist             
+            if legion_folder_exist == 0:                   
+                dir = os.listdir(legion_folder)
+                for x in range(len(dir)):
+                    i = dir[x].split("+")[0]
+                    if i == 'Legion':
+                        legion_cur_ver = dir[x].split("+")[1]
+                        print("Apex Toolbox Addon: Installed Legion+ Version: " + legion_cur_ver)
+                        legion_folder_exist = 1
+                        break
+               
+ 
+        if legion_folder_exist == 0:
+            print("Apex Toolbox Addon: Legion folder not found")
+                
+                
+        ######## Legion Settings ########                               
+        if mode == 0:
+            legion_folder = lgn_fldr
+            legion_folder_prefs = prefs
+            lgn_folder = 'recolor_folder'
+        else:
+            legion_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.legion_folder
+            legion_folder_prefs =bpy.context.preferences.addons['Apex_toolbox'].preferences
+            lgn_folder = 'legion_folder'
+
+        box = layout.box()
+        if legion_cur_ver == '0':
+            box.label(text = "Select Folder with Legion+ FOLDER")
+            box.label(text = "NOT Folder with LegionPlus.exe")
+            box.label(text = "Example: MyFolder/Legion+1.4.1/LegionPlus.exe")
+            box.label(text = "select 'MyFolder'")
+            box.prop(legion_folder_prefs, lgn_folder) 
+            try:
+                if os.path.exists(legion_folder) == True:
+                    if legion_folder_exist == 0:
+                        box.label(text = "Legion+ Folder Not Found")
+            except:
+                pass
+            box.label(text = "--------------------------------------------------")
+     
+
+        ######## Installed Addons ########
+        if legion_cur_ver != '0':
+            box.label(text="Installed Software:")
+            split = box.split(factor = 0.7)
+            col = split.column(align = True)
+            col.label(text="Legion+")  
+            split.label(text="v." + legion_cur_ver)
+            if legion_lts_ver > legion_cur_ver:
+                box.operator('object.lgndtranslate_url', text = "Legion+ New Ver." + str(legion_lts_ver), icon='IMPORT').link = "legion_update"
+            box.label(text="")    
+        if addon_name != None:
+            box.label(text = "Installed Addons:")
+            for x in range(len(addon_name)):
+                split = box.split(factor = 0.7)
+                col = split.column(align = True)
+                col.label(text=addon_name[x])  
+                split.label(text="v." + addon_ver[x])
+                if addon_name[x] == addon[0]:
+                    if io_anim_lts_ver > addon_ver[x]:
+                        box.operator('object.lgndtranslate_url', text = addon_name[x] + " New Ver." + str(io_anim_lts_ver), icon='IMPORT').link = "io_anim_seanim"
+                if addon_name[x] == addon[1]:
+                    if cast_lts_ver > addon_ver[x]:
+                        box.operator('object.lgndtranslate_url', text = addon_name[x] + " New Ver." + str(cast_lts_ver), icon='IMPORT').link = "cast"
+                if addon_name[x] == addon[2]:
+                    if semodel_lts_ver > addon_ver[x]:
+                        box.operator('object.lgndtranslate_url', text = addon_name[x] + " New Ver." + str(semodel_lts_ver), icon='IMPORT').link = "io_model_semodel"
+                if addon_name[x] == addon[3]:
+                    if mprt_lts_ver > addon_ver[x]:
+                        box.operator('object.lgndtranslate_url', text = addon_name[x] + " New Ver." + str(mprt_lts_ver), icon='IMPORT').link = "mprt" 
+        split = box.split(factor = 0.4)
+        col = split.column(align = True)
+        col.label(text="")  
+        split.operator('object.lgndtranslate_url', text ="Check for Updates", icon='URL').link = "check_update"                                                                                                   
+
+
     #CLASS REGISTER 
 ##########################################
 classes = (
@@ -2196,12 +2426,13 @@ classes = (
         GB_BUTTON_ITEMS, 
         MR_BUTTON_DECOY, 
         AUTOTEX_MENU, 
-        EFFECTS_PT_panel,
-        TRANSLATE_PT_panel, 
+        EFFECTS_PT_panel, 
         VK_BUTTON_ITEMS, 
         BDG_BUTTON_SPAWN, 
         WPN_BUTTON_SPAWN,
-        LT_BUTTON_SPAWN
+        LT_BUTTON_SPAWN,
+        TRANSLATE_PT_panel,
+        UPDATE_PT_panel
         )
         
 

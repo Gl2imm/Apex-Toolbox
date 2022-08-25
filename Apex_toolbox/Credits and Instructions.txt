@@ -10,72 +10,6 @@ Inside addon in the "Readme First" Tab specify Assets folder location.
 Thats it. Once you specify location of the Assets - all additional options will appear
 
 
-
-                                            ####################################			
-                                                      Version History:
-                                            ####################################
-
-v.1.0: Initial Release
-v.1.1 Changes: 
-	   Adding effects: Flatline Reactive skin, Mirage Decoy Particle system, 4k Damage Badge, 20 Bomb Badge
-	   Other Items: Auto parenting for Mirage Effect and Flatline reactive skin
-	   Code: Figured out the way to pass custom variables from buttons to Operators. With this significantly reduced the numbers of custom operators as well as less lines of codes. One Operator handling multiple items now. Yay.
-v1.2 Changes:  
-	   Added 
-	   HDRI: Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge
-	   Effects: Gibraltar Bubble (Friendly and Enemy), Valkyrie Flames
-	   Loot Items: Armor and Helmet (White, Blue, Purple, Gold, Red)
-	   Code: Redone some parts to further reduce lines of code 
-	   Bug Fixes: After applying new HDRI and saving blend file default world will be deleted (no user set). Set Fake user for all HDRI and default World now.
-v1.3 Changes:  
-	   Added 
-	   S/G Blender option for Autotex
-	   Bug Fixes: Recolor option were not appending S/G Blender Shader. Fixed now
-	   Warning: You need to install v.1.2 before this fix. This is to reduce filesize. If you already using v1.2 - can just install v1.3 and restart Blender. 
-v2.0 Changes:
-	   Major changes:
-	   Rewrite almost entire code to implement these changes:
-	   1. Now this addon is very light for those just want simple light functions. Swithed off those effects with big size (HDRI, Badges, Loot items)
-	      If you want to have additional effects - download Assets ZIP file from here: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
-		  extract the files in your desired location
-		  Inside addon in the "Readme First" Tab specify Assets folder location.
-		  Thats it. Once you specify location of the Assets - all additional options will appear
-	   2. Recolor now work with custom folders materials, can be with sub-folders or without it. Also added the option for Alpha channel
-	   To differentiate which update affecting your current addon - it will be called now "Lite" and "Extended"
-	   Extended Added:
-	   Badge - Predator S3
-
-v2.1 Changes:
-	   Note: if you updating from v2.0 - pls re-download updated assets: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
-	   Or if you have limited data - download only updated files and manually replace in your asset folder: https://drive.google.com/file/d/17r_R_vVTcQ__XxR9TV9joz1GZW_ca3jU/view?usp=sharing
-	   
-	   Added to "Lite":
-	   Effects: Seer Ultimate (animated)
-	   Experimental: Skydive S9 (animated). 
-
-	   Added to "Extended":
-	   HDRI: Kings Canyon (New), Kings Canyon (Night), Apex Lobby, Sky (Not sure its from which map)
-	   Loot items: Basically all of them, heals, nades, backpacks, etc.
-	   Effects: Added animated energy to the Shield batteries and cells.
-	   Badges: S3 Predator
-	   Base files: Added Legends base material files (eye, teeth, hair, etc) so it will auto link when you recolor the models. (Recolor materials not included base files)
-	   
-	   fixes:
-	   Fixed Gibby bubble center icon not displayed.
-	   Fixed mSlot reference before assigning error in Re-color and Autotex.
-	   Changes:
-	   Rewrite the code for recolor - now it supposed to work completely in autopilot mode, recoloring Legends and also weapons. Just select the folder with images or material folder and it will do the job. The code is straight from the oven, so slight chance errors might pop up. Pls feedback if there are any.. For our Titanfall fans - this will also recolor TTF Legends. 
-	   
-	   Restart Blender after update.
-	   
-v2.1 Changes:
-	   Added to Both Versions:
-	   Addon new updates notification panel, so you wont miss new update
-	   Linked addon to Garlicus Legion Models/Skins Translate list (https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/edit#gid=0)
-	   Restart Blender after update.
-
-
-
                                             ####################################			
                                                      USAGE INSTRUCTIONS:
                                             ####################################
@@ -101,7 +35,7 @@ v2.1 Changes:
 A little tool that will help you to texture Apex Models automatically. A small improvement being done to this addon. Previously if you select the objects and use the addon - it will Append "Apex Shader" and un-select all objects. Well, not anymore. :) 
 Currently support Original "Apex Shader" that comes with Autotex and new Option S/G Blender. 
 
-Credits: Addon Created by llenoco. There is no link to the github, as the Addon were posted in Legion Discord https://discord.gg/ADek6fxVGe
+Credits: Addon Created by llenoco. There is no link to the github, as the Addon were posted in Legion+ Discord https://discord.gg/ADek6fxVGe
 
 
 
@@ -141,6 +75,17 @@ Credits: Apex Shader - taken from Apex Auto_tex. S/G Blender,
 HDRI: A tool to Append and set HDRI for renders.
 Apex Lobby, Party crasher, Encore, Habitat, Kings Canyon (Old), Kings Canyon (New), Kings Canyon (Night), Olympus, Phase Runner, Storm Point, Worlds Edge, Sky (Not sure its from which map)
 Credits: Thx to @Space for sharing this HDRI on "3D Art Discord" https://discord.gg/VcZh5rC
+
+
+
+####################################			
+  Biast12 Apex PC Assets Archive:
+####################################
+
+(Both versions included)
+Quick link button to Biast12 Apex PC Assets Archive
+Original link: https://bit.ly/3ArgvxY
+Credits: Thx to @UIIAoodle my beloved for this Great Archive and also for permission to include link in ApexToolbox "Legion+" Discord https://discord.gg/ADek6fxVGe
 
 
 
@@ -264,3 +209,13 @@ Spawns Skydive from S9 (Sparks), animated. Can parent to Legend
                                             ####################################
 Addon is linked to external translation list done by Garlicus from LEGION+ Discord. All data shown in this tab is populated from that list. 
 Original list can be found here https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/edit#gid=0
+
+
+
+                                            ####################################			
+                                                	Updates Tracker:
+                                            ####################################
+Attempt to make everyones life easier and also to reduce the insane amount of issues related to outdated addons or Legion+ software
+For Legion+ settings - select the folder with Legion+ FOLDER, not Folder with LegionPlus.exe (Example: "MyFolder"/"Legion+1.4.1"/"LegionPlus.exe", so select "MyFolder")
+Legion folder with LegionPlus.exe MUST remain same name as you extracted from zip (like Legion+1.4.1), dont change the name.
+For Addons - this should go autopilot
