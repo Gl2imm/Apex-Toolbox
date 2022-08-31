@@ -2,7 +2,7 @@
 
 This tool were created to assist and simplify workflow for Apex Legends effects in Blender since they cannot be simply exported from the game. Here i collect and organize useful tools/addons/operations all in one place. 
 
-### This addon have 2 modes "Lite" and "Extended". 
+### This addon have 2 modes "Lite" and "Extended" (both versions support MacOs now, v.3.0 and above). 
 - Lite - small sized addon for those just want simple functions. 
 - Extended - if you want to have additional effects like auto set HDRI, Badges, Loot items. You just need to download Assets ZIP file from here: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing and link extracted folder in the addon, additional features will be automatically activated.
 
@@ -36,10 +36,12 @@ If you have a good looking effect that you want to share and include in the addo
 - llenoco - the source code for Autotexture, i used same nodes plugging process when developing Re-colour mode
 https://github.com/llennoco22
 
+- @deepak_kaku - assist in testing the addon for MacOs
+
 - LEGION+ Discord for providing space to share development process 
 https://discord.gg/ADek6fxVGe
 
-- Garlicus - for creating Apex skin names translator sheet and allowing to merge it into Toolbox and sharing videos with effects during development
+- @Garlicus - for creating Apex skin names translator sheet and allowing to merge it into Toolbox and sharing videos with effects during development
 https://bit.ly/3K1cItR 
 
 - @Devo and @Floxay from LEGION+ Discord - given the idea to Automate Re-colour function
