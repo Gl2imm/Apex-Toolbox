@@ -155,8 +155,9 @@ Ultimate - spawns animated Seer ultimate cage
 ####################################
 
 (Both versions included)
-Flatline - Reactive skin flames and bloom from Assimilation skin model. Can parent to model.
-Howto: Auto Parenting works only for the correct flatline model "flatline_v20_assim". Best to parent before adding animation to the model.
+Flatline normal - Reactive skin flames and bloom from Assimilation skin model. Can parent to model.
+Flatline POV - Reactive skin flames and bloom from Assimilation skin model. Reactive animation (Fixed, because it exports broken from Legion+). Can parent to model.
+Howto: Auto Parenting works only for the correct flatline model "flatline_v20_assim_w" for normal model and "flatline_v20_assim_v" for POV model. Best to parent before adding animation to the model.
 ![Flatline - Reactive skin](https://i.ibb.co/sqV3fTh/Apex-toolbox-4.png)
 
 
@@ -191,6 +192,23 @@ Backpacks, Light Ammo, Heavy Ammo, Energy Ammo, Shotgun Ammo, Respawn, Beacon,
 Knockdown Shield, Heat Shield, Death Box
 PS: Sniper ammo textures are broken, so no adding them.
 
+
+
+####################################			
+             Lobby Items:
+####################################
+
+(Extended version)
+Spawns Lobby items: Heirloom Shards, Epic Shards, Rare Shards, Loot Drone
+
+
+
+####################################			
+             Other Items:
+####################################
+
+(Extended version)
+Spawns Other items: Respawn Beacon Holo Effect (Animated), Loot Ball
 
 
 

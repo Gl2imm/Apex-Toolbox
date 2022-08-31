@@ -30,6 +30,7 @@ from bpy.props import (BoolProperty,FloatProperty)
 import requests
 import webbrowser
 import sys
+import platform
 
 ## Toolbox vars ##
 ver = "v.2.3"
@@ -52,22 +53,15 @@ semodel_lts_ver = '0'
 mprt_lts_ver = '0'
 
 
-blend_file = ("\\ApexShader.blend")
-ap_node = ("\\NodeTree")
-ap_object = ("\\Object")
-ap_collection = ("\\Collection")
-ap_material = ("\\Material")
-ap_world = ("\\World")
-
-
 mode = 1 #0 - Test Mode; 1 - Live mode
+
 
 if mode == 0:
     my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
     ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
-    #lgn_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\")
-    lgn_fldr = ''
-    #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
+    lgn_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\")
+    #lgn_fldr = ''
+    rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
     #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     
     
@@ -77,8 +71,34 @@ if mode == 0:
     #rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
     #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
+    
+    fbs = '\\' #forward/back slashes (Windows)
 else:
-    my_path = (os.path.dirname(os.path.realpath(__file__)))
+    if platform.system() == 'Windows':
+        my_path = (os.path.dirname(os.path.realpath(__file__)))
+        fbs = '\\'
+        blend_file = ("\\ApexShader.blend")
+        ap_node = ("\\NodeTree")
+        ap_object = ("\\Object")
+        ap_collection = ("\\Collection")
+        ap_material = ("\\Material")
+        ap_world = ("\\World")
+        ap_action = ("\\Action")
+    else:
+        fbs = '/'   #forward/back slashes (MacOs)
+        blend_file = ("/ApexShader.blend")
+        ap_node = ("/NodeTree")
+        ap_object = ("/Object")
+        ap_collection = ("/Collection")
+        ap_material = ("/Material")
+        ap_world = ("/World")
+        ap_action = ("/Action")            
+
+
+print("**********************************************")
+print("OS Platform: " + platform.system())
+print("**********************************************")
+
 
 
 all_loot_items = {
@@ -392,6 +412,33 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
                     
         if link == "update":
             webbrowser.open_new("https://github.com/Gl2imm/Apex-Toolbox/releases")
+            
+        if link == "instructions":
+            instructions = my_path + fbs + "Credits and Instructions.txt"
+            with open(instructions) as f:
+                text = f.read()
+            t = bpy.data.texts.new("Instructions")
+            t.write("To switch back to normal view switch from 'TEXT EDITOR' to '3D Viewport'. Or just press 'Shift+F5' \n \n \n")
+            t.write(text)
+            bpy.context.area.ui_type = 'TEXT_EDITOR'
+            bpy.context.space_data.text = bpy.data.texts['Instructions']
+            bpy.ops.text.jump(line=1)            
+            
+        if link == "version":
+            instructions = my_path + fbs + "Version_log.txt"
+            with open(instructions) as f:
+                text = f.read()
+            t = bpy.data.texts.new("Version_log")
+            t.write("To switch back to normal view switch from 'TEXT EDITOR' to '3D Viewport'. Or just press 'Shift+F5' \n \n \n")
+            t.write(text)
+            bpy.context.area.ui_type = 'TEXT_EDITOR'
+            bpy.context.space_data.text = bpy.data.texts['Version_log']
+            bpy.ops.text.jump(line=1)             
+
+
+        if link == "asset_file":
+            webbrowser.open_new("https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing")            
+                
             '''
             text = "https://github.com/Gl2imm/Apex-Toolbox/releases"
             t = bpy.data.texts.new("Your Favourite Addon Link")
@@ -486,7 +533,7 @@ class BUTTON_CUSTOM(bpy.types.Operator):
                             for j in range(len(texSets[i])):
                                 texImageName = imageName + '_' + texSets[i][j] + '.' + imageFormat
                                 texImage = bpy.data.images.get(texImageName)
-                                texFile = imagepath + '\\' + texImageName
+                                texFile = imagepath + fbs + texImageName
                                 if not texImage and loadImages:
                                     if os.path.isfile(texFile):
                                         texImage = bpy.data.images.load(texFile)
@@ -575,7 +622,7 @@ class BUTTON_CUSTOM(bpy.types.Operator):
                             for j in range(len(texSets[i])):
                                 texImageName = imageName + '_' + texSets[i][j] + '.' + imageFormat
                                 texImage = bpy.data.images.get(texImageName)
-                                texFile = imagepath + '\\' + texImageName
+                                texFile = imagepath + fbs + texImageName
                                 if not texImage and loadImages:
                                     if os.path.isfile(texFile):
                                         texImage = bpy.data.images.load(texFile)
@@ -658,7 +705,7 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
             asset_folder_set =bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
         assets_set = 0
         if os.path.exists(asset_folder_set) == True:
-            asset_folder_set = asset_folder_set.split("\\")[-2]
+            asset_folder_set = asset_folder_set.split(fbs)[-2]
             if asset_folder_set == "Apex_Toolbox_Assets":
                 if mode == 0:
                     asset_folder_set = ast_fldr
@@ -726,7 +773,7 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                     #recolor_folder = rec_folder2
 
                     try: 
-                        foldername = recolor_folder.split("\\")[-2] #folder name
+                        foldername = recolor_folder.split(fbs)[-2] #folder name
                     except:
                         print("Materials Folder not selected")
                     else:    
@@ -770,16 +817,16 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                                         texSets = ttf_texSets
            
                         
-                        texFile = folderpath + '\\' + foldername + '_' + texSets[0][0] + ".png" #check if albedo image exist, if not dont proceed clear nodes
+                        texFile = folderpath + fbs + foldername + '_' + texSets[0][0] + ".png" #check if albedo image exist, if not dont proceed clear nodes
                         
                         if os.path.isfile(texFile):
                             exist = 1
                         else:
                             if weapon == 0:
                                 if assets_set == 1:
-                                    texFile = asset_folder_set + "0. Legend_base" + '\\' + mSlot_clean + '_' + texSets[0][0] + ".png" #Set path for Base files from assets folder
+                                    texFile = asset_folder_set + "0. Legend_base" + fbs + mSlot_clean + '_' + texSets[0][0] + ".png" #Set path for Base files from assets folder
                                 else:
-                                    texFile = recolor_folder + "base" + '\\' + mSlot_clean + '_' + texSets[0][0] + ".png" #check legend base files in the "Base" folder
+                                    texFile = recolor_folder + "base" + fbs + mSlot_clean + '_' + texSets[0][0] + ".png" #check legend base files in the "Base" folder
                                 if os.path.isfile(texFile):
                                     if assets_set == 1:
                                         folderpath = asset_folder_set + "0. Legend_base"
@@ -791,7 +838,7 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                                 if ttf == "skn":                                #TTF Try look different skin folders
                                     skn_name = mSlot_clean.rsplit('_', 2)[0]
                                     for s in ("_skn_02", "_skn_31"):
-                                        texFile = recolor_folder + skn_name + s + '\\' + skn_name + s + '_' + texSets[0][0] + ".png" #Set path for Base files from assets folder
+                                        texFile = recolor_folder + skn_name + s + fbs + skn_name + s + '_' + texSets[0][0] + ".png" #Set path for Base files from assets folder
                                         if os.path.isfile(texFile):
                                             print(texFile)
                                             folderpath = recolor_folder + skn_name + s
@@ -804,7 +851,7 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                             
                             for i in range(len(texSets)):
                                 for j in range(len(texSets[i])):
-                                    texFile = folderpath + '\\' + foldername + '_' + texSets[i][j] + ".png"
+                                    texFile = folderpath + fbs + foldername + '_' + texSets[i][j] + ".png"
                                     if os.path.isfile(texFile):                         #if texture is absent - skip it
                                         texImage = bpy.data.images.load(texFile)
                                     else:
@@ -964,8 +1011,10 @@ class BUTTON_HDRIFULL(bpy.types.Operator):
         scene = context.scene
         prefs = scene.my_prefs
         
-        
-        blend_file = ("\\Assets.blend")
+        if platform.system() == 'Windows':
+            blend_file = ("\\Assets.blend")
+        else:
+            blend_file = ("/Assets.blend")
 
         if mode == 0:
             asset_folder = ast_fldr
@@ -1362,7 +1411,10 @@ class BDG_BUTTON_SPAWN(bpy.types.Operator):
 
 
     def execute(self, context):
-        blend_file = ("\\Assets.blend")
+        if platform.system() == 'Windows':
+            blend_file = ("\\Assets.blend")
+        else:
+            blend_file = ("/Assets.blend")
 
         if mode == 0:
             asset_folder = ast_fldr
@@ -1530,13 +1582,14 @@ class WPN_BUTTON_SPAWN(bpy.types.Operator):
         prefs = scene.my_prefs
         weapon = (self.weapon)
            
-        #Flatline flame button
+        #Flatline flame button normal
         if weapon == "flatline_s4_glow_hex_LOD0_SEModelMesh.125":
             if bpy.data.objects.get(weapon) == None:
                 bpy.ops.wm.append(directory =my_path + blend_file + ap_object, filename =weapon)
                 print("Flatline Flames Effect Appended")
             else:
                 print("Flatline Flames Effect already exist")
+
         
         #Flatline flame parent button
         if weapon == "flatline_parent_flame":
@@ -1546,6 +1599,24 @@ class WPN_BUTTON_SPAWN(bpy.types.Operator):
                 if bpy.data.objects.get("flatline_v20_assim_w_LOD0_skel") == None:
                     print("Flatline model <<flatline_v20_assim_w>> not detected. Add the model then click Parent it")
                 else:
+                    bpy.ops.object.select_all(action='DESELECT')
+                    bpy.context.view_layer.objects.active = None 
+                    bpy.data.objects['flatline_s4_glow_hex_LOD0_skel'].select_set(True) 
+                    bpy.context.view_layer.objects.active = bpy.data.objects['flatline_s4_glow_hex_LOD0_skel']        
+                    boneToSelect = bpy.data.objects['flatline_s4_glow_hex_LOD0_skel'].pose.bones['static_prop'].bone
+                    bpy.context.object.data.bones.active = boneToSelect
+                    
+                    bpy.context.view_layer.objects.active = None 
+                    bpy.data.objects['flatline_v20_assim_w_LOD0_skel'].select_set(True) 
+                    bpy.context.view_layer.objects.active = bpy.data.objects['flatline_v20_assim_w_LOD0_skel']        
+                    boneToSelect2 = bpy.data.objects['flatline_v20_assim_w_LOD0_skel'].pose.bones['def_c_base'].bone
+                    bpy.context.object.data.bones.active = boneToSelect2
+                    boneToSelect2.select = True  
+                    bpy.ops.object.parent_set(type='BONE')
+                    print("Parenting Flames to Flatline Done")                  
+                    
+                    
+                    '''
                     bpy.ops.object.select_all(action='DESELECT')
                     bpy.context.view_layer.objects.active = None
                     bpy.data.objects['flatline_s4_glow_hex_LOD0_skel'].select_set(True)
@@ -1572,7 +1643,7 @@ class WPN_BUTTON_SPAWN(bpy.types.Operator):
                     bpy.ops.object.mode_set(mode='OBJECT')
                     bpy.ops.object.parent_set(type='BONE')
                     print("Parenting Flames to Flatline Done")
-
+                    '''
             '''    
             if bpy.data.objects.get(self.weapon) == None:
                 bpy.ops.wm.append(directory =my_path + blend_file + ap_object, filename =self.badge)
@@ -1580,9 +1651,55 @@ class WPN_BUTTON_SPAWN(bpy.types.Operator):
             else:
                 print(self.weapon + " already inside")
             '''
+        
+        #Flatline flame button POV    
+        if weapon == "flatline_s4_glow_hex_LOD0_SEModelMesh.001":
+            if bpy.data.objects.get(weapon) == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_object, filename ="flatline_s4_glow_hex_LOD0_SEModelMesh.001")
+                print("POV Flatline Flames Effect Appended")
+            else:
+                print("POV Flatline Flames Effect already exist")
+
+        #Flatline flame parent button POV
+        if weapon == "flatline_pov_parent_flame":
+            if bpy.data.objects.get("flatline_s4_glow_hex_LOD0_SEModelMesh.001") == None:
+                print("POV Flatline Flames Effect not Found. Pls add Effect first")
+            else:
+                if bpy.data.objects.get("flatline_v20_assim_v_LOD0_skel") == None:
+                    print("POV Flatline model <<flatline_v20_assim_v>> not detected. Add the model then click Parent it")
+                else:
+                    bpy.ops.object.select_all(action='DESELECT')
+                    bpy.context.view_layer.objects.active = None 
+                    bpy.data.objects['flatline_s4_glow_hex_LOD0_skel.001'].select_set(True) 
+                    bpy.context.view_layer.objects.active = bpy.data.objects['flatline_s4_glow_hex_LOD0_skel.001']        
+                    boneToSelect = bpy.data.objects['flatline_s4_glow_hex_LOD0_skel.001'].pose.bones['static_prop'].bone
+                    bpy.context.object.data.bones.active = boneToSelect
+                    
+                    bpy.context.view_layer.objects.active = None 
+                    bpy.data.objects['flatline_v20_assim_v_LOD0_skel'].select_set(True) 
+                    bpy.context.view_layer.objects.active = bpy.data.objects['flatline_v20_assim_v_LOD0_skel']        
+                    boneToSelect2 = bpy.data.objects['flatline_v20_assim_v_LOD0_skel'].pose.bones['def_c_base'].bone
+                    bpy.context.object.data.bones.active = boneToSelect2
+                    boneToSelect2.select = True  
+                    bpy.ops.object.parent_set(type='BONE')
+                    print("Parenting Flames to POV Flatline Done") 
+ 
+        #Flatline POV Animation   
+        if weapon == "idle_reactive_layer_3_Fixed":
+            if bpy.data.objects.get(weapon) == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_action, filename ="idle_reactive_layer_3_Fixed")
+                print("POV Reactive Animation Appended")
+            else:
+                print("POV Reactive Animation already exist")  
+            
+            object = bpy.data.objects.get('flatline_v20_assim_v_LOD0_skel')   
+            object.animation_data_create()
+            action = object.animation_data.action
+            object.animation_data.action = bpy.data.actions.get("idle_reactive_layer_3_Fixed")                           
   
         return {'FINISHED'}   
               
+
 
 ######### Loot Items Buttons ###########    
 class LT_BUTTON_SPAWN(bpy.types.Operator):
@@ -1595,7 +1712,10 @@ class LT_BUTTON_SPAWN(bpy.types.Operator):
     def execute(self, context):
         loot = (self.loot)
         
-        blend_file = ("\\Assets.blend") #items shifted to assets
+        if platform.system() == 'Windows':
+            blend_file = ("\\Assets.blend")
+        else:
+            blend_file = ("/Assets.blend")
         
         #### this one for test purposes ####
         if mode == 0:
@@ -1781,9 +1901,9 @@ class AUTOTEX_MENU(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        prefs = scene.my_prefs
-        
-        
+        prefs = scene.my_prefs  
+            
+                   
         ######## Update Notifier ########
         if lts_ver != ver:
             box = layout.box()
@@ -1807,7 +1927,7 @@ class AUTOTEX_MENU(bpy.types.Panel):
         assets_set = 0
 
         if os.path.exists(asset_folder_set) == True:
-            asset_folder_set = asset_folder_set.split("\\")[-2]
+            asset_folder_set = asset_folder_set.split(fbs)[-2]
             if asset_folder_set == "Apex_Toolbox_Assets":
                 assets_set = 1            
         
@@ -1830,12 +1950,13 @@ class AUTOTEX_MENU(bpy.types.Panel):
         # some data on the subpanel
         if context.scene.subpanel_readme:
             box = layout.box()
-            box.label(text = "All Credits, Help and Instructions")
-            box.label(text = "inside this addon .zip file")
+            #box.label(text = "All Credits, Help and Instructions, Credits")
+            #box.label(text = "inside this addon .zip file")
+            box.operator('object.lgndtranslate_url', text = "Read Instructions, Credits", icon='ARMATURE_DATA').link = "instructions"
+            box.operator('object.lgndtranslate_url', text = "Read Version Log", icon='CON_ARMATURE').link = "version" 
             if assets_set != 1:
-                box.label(text = "------")
                 box.label(text = "To install extra assets go to")
-                box.label(text = "github.com/Gl2imm/Apex-Toolbox") 
+                box.operator('object.lgndtranslate_url', text = "Assets File", icon='IMPORT').link = "asset_file"
                 box.label(text = "Download, unzip and specify below")
                 box.label(text = "folder name must be 'Apex_Toolbox_Assets'")
                 box.label(text = "addon recognize only this folder")     
@@ -1947,7 +2068,7 @@ class EFFECTS_PT_panel(bpy.types.Panel):
         assets_set = 0
 
         if os.path.exists(asset_folder_set) == True:
-            asset_folder_set = asset_folder_set.split("\\")[-2]
+            asset_folder_set = asset_folder_set.split(fbs)[-2]
             if asset_folder_set == "Apex_Toolbox_Assets":
                 assets_set = 1
         
@@ -2096,11 +2217,16 @@ class EFFECTS_PT_panel(bpy.types.Panel):
             box.prop(context.scene, 'subpanel_effects_weapons_prop1', icon=icon, icon_only=False, text='Flatline Flames (v20_assim)')
             # some data on the subpanel
             if context.scene.subpanel_effects_weapons_prop1:
-                split = box.split(factor = 0.08)
+                box.operator('object.wpn_button_spawn', text = "Add Normal gun Effect (w)").weapon = "flatline_s4_glow_hex_LOD0_SEModelMesh.125"
+                split = box.split(factor = 0.5)
                 col = split.column(align = True)
                 col.label(text='')
-                split.operator('object.wpn_button_spawn', text = "Add Effect").weapon = "flatline_s4_glow_hex_LOD0_SEModelMesh.125"
-                split.operator('object.wpn_button_spawn', text = "Parent it").weapon = "flatline_parent_flame"
+                split.operator('object.wpn_button_spawn', text = "Parent Flames").weapon = "flatline_parent_flame"
+                box.operator('object.wpn_button_spawn', text = "Add POV gun Effect (v)").weapon = "flatline_s4_glow_hex_LOD0_SEModelMesh.001" 
+                split = box.split(factor = 0.5)
+                col = split.column(align = True)
+                col.operator('object.wpn_button_spawn', text = "Add POV Anim").weapon = "idle_reactive_layer_3_Fixed"
+                split.operator('object.wpn_button_spawn', text = "Parent Flames").weapon = "flatline_pov_parent_flame"                
                             
             
 
@@ -2337,12 +2463,15 @@ class UPDATE_PT_panel(bpy.types.Panel):
             if legion_folder_exist == 0:                   
                 dir = os.listdir(legion_folder)
                 for x in range(len(dir)):
-                    i = dir[x].split("+")[0]
-                    if i == 'Legion':
-                        legion_cur_ver = dir[x].split("+")[1]
-                        print("Apex Toolbox Addon: Installed Legion+ Version: " + legion_cur_ver)
-                        legion_folder_exist = 1
-                        break
+                    if "+" in dir[x]:
+                        i = dir[x].split("+")[0]
+                        if i == 'Legion':
+                            legion_cur_ver = dir[x].split("+")[1]
+                            print("Apex Toolbox Addon: Installed Legion+ Version: " + legion_cur_ver)
+                            legion_folder_exist = 1
+                            break
+                    else:
+                        legion_folder_exist = 2    
                
  
         if legion_folder_exist == 0:
@@ -2370,6 +2499,9 @@ class UPDATE_PT_panel(bpy.types.Panel):
                 if os.path.exists(legion_folder) == True:
                     if legion_folder_exist == 0:
                         box.label(text = "Legion+ Folder Not Found")
+                    if legion_folder_exist == 2:
+                        box.label(text = "Name of Legion folder should look")
+                        box.label(text = "like this: 'Legion+1.4.1' (example)")
             except:
                 pass
             box.label(text = "--------------------------------------------------")

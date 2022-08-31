@@ -66,3 +66,21 @@ v2.3 Changes:
 	   Added button for quick open Biast12 Online Archive
 	   Added Update Tracker Panel
 	   Restart Blender after update.
+v3.0 Changes:
+	   Major changes: 
+	   Now addon supports MacOs
+	   
+	   "Both Versions"
+	   Effects: 
+	   Fixed Flatline parenting errors
+	   Changed effect to V2 (more accurate with UV Distrotion)
+	   Added POV Flatline effect and parenting
+	   Added POV Flatline reactive animation (Fixed, because it exports broken from Legion+). One click add
+	   "Extended"
+	   Effects: 
+	   Added Respawn Beacon Holo Effect (Animated), Deathbox top part, Heirloom Shards, Epic Shards, Rare Shards, Loot Drone, Loot Ball
+	   Fixes:
+	   Added Error handler for Legion folder selection (when legion folder named without "+" and version number)
+	   
+	   Please re-download Apex_Toolbox_Assets folder as i organized the things inside and also added a new items
+	   Restart Blender after update.
