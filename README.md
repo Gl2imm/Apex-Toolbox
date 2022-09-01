@@ -20,7 +20,7 @@ Latest version of addon can be found in Releases page: https://github.com/Gl2imm
 
 It might include some experimental effects:
 
-![Skydive](https://i.ibb.co/0XJ4cjL/mpc-hc64-uyu-Ymp-Lohw.gif) ![respawn_holo](https://i.ibb.co/Hg70mCg/respawn-holo.gif)
+![Skydive](https://i.ibb.co/0XJ4cjL/mpc-hc64-uyu-Ymp-Lohw.gif)    <img src="https://i.ibb.co/Hg70mCg/respawn-holo.gif" width="256" height="288" />
 
 Addon can be found on the right side N-panel (Click "N" for it to appear):
 
