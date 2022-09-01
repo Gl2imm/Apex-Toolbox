@@ -1,6 +1,6 @@
 # Apex-Toolbox
 
-This tool were created to assist and simplify workflow for Apex Legends effects in Blender since they cannot be simply exported from the game. Here i collect and organize useful tools/addons/operations all in one place. 
+This tool was created to assist and simplify workflow for Apex Legends effects in Blender since they cannot be simply exported from the game. Here i collect and organize useful tools/addons/operations all in one place. 
 
 ### This addon have 2 modes "Lite" and "Extended" (both versions support MacOs now, v.3.0 and above). 
 - Lite - small sized addon for those just want simple functions. 
