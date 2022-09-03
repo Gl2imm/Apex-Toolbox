@@ -6,7 +6,7 @@ v.1.0: Initial Release
 v.1.1 Changes: 
 	   Adding effects: Flatline Reactive skin, Mirage Decoy Particle system, 4k Damage Badge, 20 Bomb Badge
 	   Other Items: Auto parenting for Mirage Effect and Flatline reactive skin
-	   Code: Figured out the way to pass custom variables from buttons to Operators. With this significantly reduced the numbers of custom operators as well as less lines of codes. One Operator handling multiple items now. Yay.
+	   Code: Figured out the way to pass custom variables from buttons to Operators. With this significantly reduced the numbers of custom operators as well as less lines of codes. One Operator handling multiple 	   items now. Yay.
 v1.2 Changes:  
 	   Added 
 	   HDRI: Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge
@@ -80,7 +80,22 @@ v3.0 Changes:
 	   Effects: 
 	   Added Respawn Beacon Holo Effect (Animated), Deathbox top part, Heirloom Shards, Epic Shards, Rare Shards, Loot Drone, Loot Ball
 	   Fixes:
-	   Added Error handler for Legion folder selection (when legion folder named without "+" and version number)
+	   Updates Tracker Section - Added Error handler for Legion folder selection (when legion folder named without "+" and version number)
 	   
 	   Please re-download Apex_Toolbox_Assets folder as i organized the things inside and also added a new items
+	   Restart Blender after update.
+	   
+v3.1 Changes:
+	   "Lite":
+	   Appends Shaders: Added Apex Mobile Shader from Biast12
+	   "Extended":  
+	   Added All Heirlooms for quick spawn (already textured), Lifeline, Wattson, Pathfinder comes with animation, this is just to open their heirlooms.
+	   Loot Items: Added Deathbox banner sample, you can change images in shading tab, added text to it with Apex font (just press Tab to edit text)
+	   Badges: Added 20bomb v2 badge with in-game sculls
+	   Append HDRI: Added 4 HDRI from Poly Haven, good quality. Indoor, Outdoor, Outdoor under the shade, Morning Forest. 
+	   Added Sky box sphere (it will spawn when you click button "Set as Sky").
+	   Now you can set Apex sky images as a background for Sky Sphere, it does not block the lights
+	   After you set the Sky image, you can set same image or any other in the list as your HDRI (this will add lights to the scene)
+
+	   Please re-download Apex_Toolbox_Assets folder
 	   Restart Blender after update.

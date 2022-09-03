@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (2, 3),
+    "version": (3, 1),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
@@ -33,7 +33,7 @@ import sys
 import platform
 
 ## Toolbox vars ##
-ver = "v.2.3"
+ver = "v.3.1"
 lts_ver = ver
 loadImages = True
 texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
@@ -71,28 +71,29 @@ if mode == 0:
     #rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
     #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
-    
-    fbs = '\\' #forward/back slashes (Windows)
 else:
-    if platform.system() == 'Windows':
-        my_path = (os.path.dirname(os.path.realpath(__file__)))
-        fbs = '\\'
-        blend_file = ("\\ApexShader.blend")
-        ap_node = ("\\NodeTree")
-        ap_object = ("\\Object")
-        ap_collection = ("\\Collection")
-        ap_material = ("\\Material")
-        ap_world = ("\\World")
-        ap_action = ("\\Action")
-    else:
-        fbs = '/'   #forward/back slashes (MacOs)
-        blend_file = ("/ApexShader.blend")
-        ap_node = ("/NodeTree")
-        ap_object = ("/Object")
-        ap_collection = ("/Collection")
-        ap_material = ("/Material")
-        ap_world = ("/World")
-        ap_action = ("/Action")            
+    my_path = (os.path.dirname(os.path.realpath(__file__)))
+    
+if platform.system() == 'Windows':
+    fbs = '\\'
+    blend_file = ("\\ApexShader.blend")
+    ap_node = ("\\NodeTree")
+    ap_object = ("\\Object")
+    ap_collection = ("\\Collection")
+    ap_material = ("\\Material")
+    ap_image = ("\\Image")
+    ap_world = ("\\World")
+    ap_action = ("\\Action")
+else:
+    fbs = '/'   #forward/back slashes (MacOs)
+    blend_file = ("/ApexShader.blend")
+    ap_node = ("/NodeTree")
+    ap_object = ("/Object")
+    ap_collection = ("/Collection")
+    ap_material = ("/Material")
+    ap_image = ("/Image")
+    ap_world = ("/World")
+    ap_action = ("/Action")            
 
 
 print("**********************************************")
@@ -134,7 +135,6 @@ all_loot_items = {
     '29': 'Heat Shield',
     '30': 'Death Box',
     }
-            
 
 ### add +1 to item end range ###
 armor_range = (0,5)
@@ -145,6 +145,58 @@ bag_range = (20,23)
 ammo_range = (23,27)
 other_range = (27,31)
 
+    
+all_lobby_other_items = {
+    '0': 'Heirloom Shards',
+    '1': 'Epic Shards',
+    '2': 'Rare Shards',
+    '3': 'Loot Drone',
+    '4': 'RESERVED',
+    '5': 'RESERVED',
+    '6': 'RESERVED',
+    '7': 'RESERVED',
+    '8': 'RESERVED',
+    '9': 'RESERVED',
+    '10': 'RESERVED',
+    '11': 'RESERVED',
+    '12': 'RESERVED',
+    '13': 'RESERVED',
+    '14': 'RESERVED',
+    '15': 'RESERVED',
+    '16': 'RESERVED',
+    '17': 'RESERVED',
+    '18': 'RESERVED',
+    '19': 'RESERVED',
+    '20': 'Respawn Beacon Hologram',
+    '21': 'Loot Ball'
+    }    
+            
+### add +1 to item end range ###
+lobby_lobby_range = (0,4)
+lobby_other_range = (20,22)
+
+
+all_heirloom_items = {
+    '0': 'Gibraltar Set',
+    '1': 'Bangalore Set',
+    '2': 'Lifeline Set (Animated)',
+    '3': 'Bloodhound Set',
+    '4': 'Caustic Set',
+    '5': 'Crypto Set',
+    '6': 'Wraith Set',
+    '7': 'Mirage Set',
+    '8': 'Octane Set',
+    '9': 'Pathfinder Set (Animated)',
+    '10': 'Rampart Set',
+    '11': 'Revenant Set',
+    '12': 'Valkyrie Set',
+    '13': 'Wattson Set (Animated)'
+    }  
+
+### add +1 to item end range ###
+heirloom_range = (0,14)
+    
+    
 all_seer_items = {
     '0': 'Seer Ultimate',
     }
@@ -241,13 +293,14 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         default='OP1',
         items = [('OP1', "Apex Shader", ""),
                  ('OP2', "S/G-Blender", ""),
-                 ('OP3', "Apex Cycles (Blue)", "")     
+                 ('OP3', "Apex Cycles (Blue)", ""),
+                 ('OP4', "Apex Mobile (Biast12)", "")     
                 ]
         )
     
     
     cust_enum_hdri : bpy.props.EnumProperty(
-        name = "HDRI",
+        name = "Theme",
         description = "Append HDRI",
         default='OP1',
         items = [('OP1', "Blender Default", ""),
@@ -262,7 +315,12 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
                  ('OP10', "Phase Runner", ""),
                  ('OP11', "Storm Point", ""),
                  ('OP12', "Worlds Edge", ""),
-                 ('OP13', "Sky", ""),     
+                 ('OP13', "Sky", ""),
+                 ('OP14', "-- HDRI from Poly Haven --", ""),
+                 ('OP15', "Indoor", ""),
+                 ('OP16', "Outdoor", ""),
+                 ('OP17', "Outdoor under shade", ""),
+                 ('OP18', "Morning Forest", ""),     
                 ]
         )
 
@@ -997,6 +1055,12 @@ class BUTTON_SHADERS(bpy.types.Operator):
                 print("Apex Cycles (Blue) Appended")
             else:
                 print("Apex Cycles (Blue) Already exist")
+        if prefs.cust_enum_shader == 'OP4':
+            if bpy.data.node_groups.get('Apex Mobile Shader (Biast12)') == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Mobile Shader (Biast12)')
+                print("Apex Mobile Shader (Biast12) Appended")
+            else:
+                print("Apex Mobile Shader (Biast12) Already exist")                
         return {'FINISHED'}  
     
     
@@ -1005,11 +1069,12 @@ class BUTTON_HDRIFULL(bpy.types.Operator):
     bl_label = "BUTTON_HDRIFULL"
     bl_idname = "object.button_hdrifull"
     bl_options = {'REGISTER', 'UNDO'}
-    
+    hdri : bpy.props.StringProperty(name= "Added")
 
     def execute(self, context):
         scene = context.scene
         prefs = scene.my_prefs
+        hdri = (self.hdri)
         
         if platform.system() == 'Windows':
             blend_file = ("\\Assets.blend")
@@ -1021,59 +1086,151 @@ class BUTTON_HDRIFULL(bpy.types.Operator):
         else:
             asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
  
- 
-        if prefs.cust_enum_hdri == 'OP1':
-            hdri_name = "World"                    
+        if hdri == 'hdri': 
+            if prefs.cust_enum_hdri == 'OP1':
+                hdri_name = "World"                    
 
-        if prefs.cust_enum_hdri == 'OP2':
-            hdri_name = "Apex Lobby HDRI" 
-                    
-        if prefs.cust_enum_hdri == 'OP3':
-            hdri_name = "Party crasher HDRI"
-            
-        if prefs.cust_enum_hdri == 'OP4':
-            hdri_name = "Encore HDRI"
-            
-        if prefs.cust_enum_hdri == 'OP5':
-            hdri_name = "Habitat HDRI"
-            
-        if prefs.cust_enum_hdri == 'OP6':
-            hdri_name = "Kings Canyon HDRI"
-            
-        if prefs.cust_enum_hdri == 'OP7':
-            hdri_name = "Kings Canyon New HDRI"
-            
-        if prefs.cust_enum_hdri == 'OP8':
-            hdri_name = "Kings Canyon Night HDRI"                        
-            
-        if prefs.cust_enum_hdri == 'OP9':
-            hdri_name = "Olympus HDRI"
-            
-        if prefs.cust_enum_hdri == 'OP10':
-            hdri_name = "Phase Runner HDRI"
-            
-        if prefs.cust_enum_hdri == 'OP11':
-            hdri_name = "Storm Point HDRI"
-            
-        if prefs.cust_enum_hdri == 'OP12':
-            hdri_name = "Worlds Edge HDRI" 
-            
-        if prefs.cust_enum_hdri == 'OP13':
-            hdri_name = "Sky HDRI"                  
-            
+            if prefs.cust_enum_hdri == 'OP2':
+                hdri_name = "Apex Lobby HDRI" 
+                        
+            if prefs.cust_enum_hdri == 'OP3':
+                hdri_name = "Party crasher HDRI"
+                
+            if prefs.cust_enum_hdri == 'OP4':
+                hdri_name = "Encore HDRI"
+                
+            if prefs.cust_enum_hdri == 'OP5':
+                hdri_name = "Habitat HDRI"
+                
+            if prefs.cust_enum_hdri == 'OP6':
+                hdri_name = "Kings Canyon HDRI"
+                
+            if prefs.cust_enum_hdri == 'OP7':
+                hdri_name = "Kings Canyon New HDRI"
+                
+            if prefs.cust_enum_hdri == 'OP8':
+                hdri_name = "Kings Canyon Night HDRI"                        
+                
+            if prefs.cust_enum_hdri == 'OP9':
+                hdri_name = "Olympus HDRI"
+                
+            if prefs.cust_enum_hdri == 'OP10':
+                hdri_name = "Phase Runner HDRI"
+                
+            if prefs.cust_enum_hdri == 'OP11':
+                hdri_name = "Storm Point HDRI"
+                
+            if prefs.cust_enum_hdri == 'OP12':
+                hdri_name = "Worlds Edge HDRI" 
+                
+            if prefs.cust_enum_hdri == 'OP13':
+                hdri_name = "Sky HDRI"
 
-        if hdri_name not in bpy.data.worlds:
-            bpy.ops.wm.append(directory =asset_folder + blend_file + ap_world, filename =hdri_name)
-            hdri = bpy.data.worlds[hdri_name]
-            scene.world = hdri
-            print(hdri_name + " has been Appended and applied to the World")            
-        else:
-            if bpy.context.scene.world != hdri_name:
-                hdri = bpy.data.worlds[hdri_name]
-                scene.world = hdri
-                print(hdri_name + " is already inside and it's been applied to the World") 
-        
-        
+            if prefs.cust_enum_hdri == 'OP14':
+                hdri_name = "blank"
+                
+            if prefs.cust_enum_hdri == 'OP15':
+                hdri_name = "Indoor"
+                
+            if prefs.cust_enum_hdri == 'OP16':
+                hdri_name = "Outdoor"
+                
+            if prefs.cust_enum_hdri == 'OP17':
+                hdri_name = "Outdoor under shade"
+                
+            if prefs.cust_enum_hdri == 'OP18':
+                hdri_name = "Morning Forest"                                                                                                  
+                
+
+            if hdri_name not in bpy.data.worlds:
+                if hdri_name == 'blank':
+                    pass
+                else:
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_world, filename =hdri_name)
+                    hdri = bpy.data.worlds[hdri_name]
+                    scene.world = hdri
+                    print(hdri_name + " has been Appended and applied to the World")            
+            else:
+                if bpy.context.scene.world != hdri_name:
+                    hdri = bpy.data.worlds[hdri_name]
+                    scene.world = hdri
+                    print(hdri_name + " is already inside and it's been applied to the World") 
+
+
+        if hdri == 'background': 
+            if prefs.cust_enum_hdri == 'OP1':
+                hdri_name = "blank"                    
+
+            if prefs.cust_enum_hdri == 'OP2':
+                hdri_name = "blank" 
+                        
+            if prefs.cust_enum_hdri == 'OP3':
+                hdri_name = "party crasher.png"
+                
+            if prefs.cust_enum_hdri == 'OP4':
+                hdri_name = "encore.png"
+                
+            if prefs.cust_enum_hdri == 'OP5':
+                hdri_name = "habit.png"
+                
+            if prefs.cust_enum_hdri == 'OP6':
+                hdri_name = "Kings Canyon.png"
+                
+            if prefs.cust_enum_hdri == 'OP7':
+                hdri_name = "Kings Canyon_new.png"
+                
+            if prefs.cust_enum_hdri == 'OP8':
+                hdri_name = "Kings Canyon_night.png"                        
+                
+            if prefs.cust_enum_hdri == 'OP9':
+                hdri_name = "olympus.png"
+                
+            if prefs.cust_enum_hdri == 'OP10':
+                hdri_name = "phase runner.png"
+                
+            if prefs.cust_enum_hdri == 'OP11':
+                hdri_name = "storm point.png"
+                
+            if prefs.cust_enum_hdri == 'OP12':
+                hdri_name = "worlds edge.png" 
+                
+            if prefs.cust_enum_hdri == 'OP13':
+                hdri_name = "Sky-1.png" 
+                
+            if prefs.cust_enum_hdri == 'OP14':
+                hdri_name = "blank"
+                
+            if prefs.cust_enum_hdri == 'OP15':
+                hdri_name = "blank"
+                
+            if prefs.cust_enum_hdri == 'OP16':
+                hdri_name = "blank"
+                
+            if prefs.cust_enum_hdri == 'OP17':
+                hdri_name = "blank"
+                
+            if prefs.cust_enum_hdri == 'OP18':
+                hdri_name = "blank"                                   
+
+
+            if hdri_name == 'blank':
+                pass
+            else:                
+                if bpy.data.objects.get('Sky_background') == None:
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, filename='Sky_background')
+                    print("Sky Sphere Appended")
+
+                for obj in bpy.context.selected_objects:
+                    obj.select_set(False)             
+                bpy.data.objects['Sky_background'].select_set(True)
+                mat = bpy.data.objects['Sky_background'].active_material
+                nodes = mat.node_tree.nodes['Image Texture.001']
+                if bpy.data.images.get(hdri_name) == None:
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_image, filename=hdri_name)
+                img = bpy.data.images[hdri_name]
+                nodes.image = img  
+                print(hdri_name + " image has been set as Sky Texture")
+
         return {'FINISHED'}  
 
 
@@ -1421,9 +1578,18 @@ class BDG_BUTTON_SPAWN(bpy.types.Operator):
         else:
             asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
 
+        badge_items = {
+            'Badge - 20 Bombs (v2)': [
+                {'name': 'Badge - 20 Bombs (v2)'}, 
+                {'name': 'skull_gladcard_LOD0_SEModelMesh'}    
+            ]
+            } 
                 
         if bpy.data.objects.get(self.badge) == None:
-            bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, filename =self.badge)
+            if self.badge == 'Badge - 20 Bombs (v2)':
+                bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=badge_items.get('Badge - 20 Bombs (v2)'))
+            else:
+                bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, filename =self.badge)
             print(self.badge + " Appended")
         else:
             print(self.badge + " already inside")
@@ -1452,7 +1618,6 @@ class SEER_BUTTON_SPAWN(bpy.types.Operator):
         for i in range(len(all_seer_items)):
             item = all_seer_items.get(str(i))
             split_item = item.split()
-
             if lgnd_effect == all_seer_items.get(str(i)):
                 
                 ### Ultimate ###
@@ -1816,7 +1981,11 @@ class LT_BUTTON_SPAWN(bpy.types.Operator):
             ],  
             'Death Box': [
                 {'name': 'death_box_01_gladcard_LOD0_skel.001'}, 
-                {'name': 'death_box_01_gladcard_LOD0_SEModelMesh.145'}
+                {'name': 'death_box_01_gladcard_LOD0_SEModelMesh.145'},
+                {'name': 'death_box_02_LOD0_skel'},
+                {'name': 'death_box_02_LOD0_SEModelMesh.007'},
+                {'name': 'deathbox_banner_line'},
+                {'name': 'deathbox_banner_text'}
             ],                                                                                                                                                                       
             }  
 
@@ -1886,6 +2055,199 @@ class LT_BUTTON_SPAWN(bpy.types.Operator):
 
         return {'FINISHED'} 
 
+
+
+######### Lobby and Other Items Buttons ###########    
+class LB_BUTTON_SPAWN(bpy.types.Operator):
+    bl_label = "LB_BUTTON_SPAWN"
+    bl_idname = "object.lb_button_spawn"
+    bl_options = {'REGISTER', 'UNDO'}
+    lobby_other : bpy.props.StringProperty(name= "Added")
+ 
+
+    def execute(self, context):
+        lobby_other = (self.lobby_other)
+        
+        if platform.system() == 'Windows':
+            blend_file = ("\\Assets.blend")
+        else:
+            blend_file = ("/Assets.blend")
+        
+        #### this one for test purposes ####
+        if mode == 0:
+            asset_folder = ast_fldr
+        else:    
+            asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
+
+
+        lobby_other_items = {
+            'Heirloom Shards': [
+                {'name': 'heirloom_LOD0_skel'},            
+                {'name': 'heirloom_LOD0_SEModelMesh'}
+            ],
+            'Epic Shards': [
+                {'name': 'currency_crafting_epic_LOD0_skel'}, 
+                {'name': 'currency_crafting_epic_LOD0_SEModelMesh.003'}
+            ], 
+            'Rare Shards': [
+                {'name': 'currency_crafting_rare_LOD0_skel'}, 
+                {'name': 'currency_crafting_rare_LOD0_SEModelMesh.004'}
+            ],   
+            'Loot Drone': [
+                {'name': 'drone_frag_loot_LOD0_skel'}, 
+                {'name': 'drone_frag_loot_LOD0_SEModelMesh.005'}
+            ],   
+            'Respawn Beacon Hologram': [
+                {'name': 'goblin_dropship_holo_LOD0_skel'}, 
+                {'name': 'goblin_dropship_holo_LOD0_SEModelMesh.001'}, 
+                {'name': 'goblin_dropship_holo_LOD0_SEModelMesh.002'}, 
+                {'name': 'Respawn Hologram'}, 
+                {'name': 'Respawn Spot Light'}
+            ],   
+            'Loot Ball': [
+                {'name': 'loot_sphere_LOD0_skel'}, 
+                {'name': 'loot_sphere_LOD0_SEModelMesh.006'}
+            ]                                                                                                                                                                                                                     
+            }   
+        
+        #### Main loop for Lobby and Other items ####    
+        for i in range(len(all_lobby_other_items)):
+            item = all_lobby_other_items.get(str(i))
+            split_item = item.split()
+
+            if lobby_other == all_lobby_other_items.get(str(i)):
+                
+                ### Lobby Items ###
+                if i in range(*lobby_lobby_range):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=lobby_other_items.get(item))
+                    
+                ### Other Items ###                    
+                if i in range(*lobby_other_range):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=lobby_other_items.get(item))
+                                                  
+                print(item + " Appended") 
+                break
+            
+
+        return {'FINISHED'} 
+    
+    
+
+######### Heirloom Buttons ###########    
+class HL_BUTTON_SPAWN(bpy.types.Operator):
+    bl_label = "HL_BUTTON_SPAWN"
+    bl_idname = "object.hl_button_spawn"
+    bl_options = {'REGISTER', 'UNDO'}
+    heirloom : bpy.props.StringProperty(name= "Added")
+ 
+
+    def execute(self, context):
+        heirloom = (self.heirloom)
+        
+        if platform.system() == 'Windows':
+            blend_file = ("\\Assets.blend")
+        else:
+            blend_file = ("/Assets.blend")
+        
+        #### this one for test purposes ####
+        if mode == 0:
+            asset_folder = ast_fldr
+        else:    
+            asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
+
+
+        heirloom_items = {
+            'Gibraltar Set': [
+                {'name': 'gibraltar_heirloom_v_LOD0_skel'},            
+                {'name': 'gibraltar_heirloom_v_LOD0_SEModelMesh.008'}
+            ],
+            'Bangalore Set': [
+                {'name': 'ptpov_bangalore_heirloom_LOD0_skel'}, 
+                {'name': 'ptpov_bangalore_heirloom_LOD0_SEModelMesh.009'},
+                {'name': 'ptpov_bangalore_heirloom_LOD0_SEModelMesh.010'}
+            ], 
+            'Lifeline Set (Animated)': [
+                {'name': 'ptpov_baton_lifeline_LOD0_skel'}, 
+                {'name': 'ptpov_baton_lifeline_LOD0_SEModelMesh.011'}
+            ],   
+            'Bloodhound Set': [
+                {'name': 'ptpov_bloodhound_axe_LOD0_skel'}, 
+                {'name': 'ptpov_bloodhound_axe_LOD0_SEModelMesh.013'}
+            ],   
+            'Caustic Set': [
+                {'name': 'ptpov_caustic_heirloom_LOD0_skel'}, 
+                {'name': 'ptpov_caustic_heirloom_LOD0_SEModelMesh.014'}
+            ],   
+            'Crypto Set': [
+                {'name': 'ptpov_crypto_heirloom_LOD0_skel'}, 
+                {'name': 'ptpov_crypto_heirloom_LOD0_SEModelMesh.015'},
+                {'name': 'ptpov_crypto_heirloom_LOD0_SEModelMesh.016'},
+                {'name': 'ptpov_crypto_heirloom_LOD0_SEModelMesh.017'}
+            ],
+            'Wraith Set': [
+                {'name': 'ptpov_kunai_wraith_LOD0_skel'}, 
+                {'name': 'ptpov_kunai_wraith_LOD0_SEModelMesh.018'}
+            ],  
+            'Mirage Set': [
+                {'name': 'ptpov_mirage_heirloom_LOD0_skel'}, 
+                {'name': 'ptpov_mirage_heirloom_LOD0_SEModelMesh.019'}, 
+                {'name': 'ptpov_mirage_heirloom_LOD0_SEModelMesh.020'}, 
+                {'name': 'ptpov_mirage_heirloom_LOD0_SEModelMesh.021'}
+            ],  
+            'Octane Set': [
+                {'name': 'ptpov_octane_knife_LOD0_skel'}, 
+                {'name': 'ptpov_octane_knife_LOD0_SEModelMesh.022'}, 
+                {'name': 'ptpov_octane_knife_LOD0_SEModelMesh.023'}
+            ],  
+            'Pathfinder Set (Animated)': [
+                {'name': 'ptpov_pathfinder_gloves_LOD0_skel'}, 
+                {'name': 'ptpov_pathfinder_gloves_LOD0_SEModelMesh.024'},
+                {'name': 'ptpov_pathfinder_gloves_LOD0_SEModelMesh.025'},
+                {'name': 'ptpov_pathfinder_gloves_LOD0_SEModelMesh.026'},
+                {'name': 'ptpov_pathfinder_gloves_LOD0_SEModelMesh.027'},
+                {'name': 'ptpov_pathfinder_gloves_LOD0_SEModelMesh.028'},
+                {'name': 'ptpov_pathfinder_gloves_LOD0_SEModelMesh.029'},
+                {'name': 'ptpov_pathfinder_gloves_LOD0_SEModelMesh.030'},
+                {'name': 'ptpov_pathfinder_gloves_LOD0_SEModelMesh.031'} 
+            ],  
+            'Rampart Set': [
+                {'name': 'ptpov_rampart_heirloom_LOD0_skel'}, 
+                {'name': 'ptpov_rampart_heirloom_LOD0_SEModelMesh.032'}, 
+                {'name': 'ptpov_rampart_heirloom_LOD0_SEModelMesh.033'},
+                {'name': 'ptpov_rampart_heirloom_LOD0_SEModelMesh.034'}
+            ],  
+            'Revenant Set': [
+                {'name': 'revenant_heirloom_v21_base_v_LOD0_skel'}, 
+                {'name': 'revenant_heirloom_v21_base_v_LOD0_SEModelMesh.035'}
+            ],  
+            'Valkyrie Set': [
+                {'name': 'valkyrie_heirloom_v22_base_v_LOD0_skel'}, 
+                {'name': 'valkyrie_heirloom_v22_base_v_LOD0_SEModelMesh.036'}
+            ],  
+            'Wattson Set (Animated)': [
+                {'name': 'wattson_heirloom_v21_base_v_LOD0_skel'}, 
+                {'name': 'wattson_heirloom_v21_base_v_LOD0_SEModelMesh.037'}
+            ]                                                                                                                                                                                                                                                                                                                    
+            }   
+        
+        #### Main loop for Heirloom items ####    
+        for i in range(len(all_heirloom_items)):
+            item = all_heirloom_items.get(str(i))
+            split_item = item.split()
+
+            if heirloom == all_heirloom_items.get(str(i)):
+                
+                ### Heirloom Items ###
+                if i in range(len(all_heirloom_items)):
+                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=heirloom_items.get(item))
+                                                  
+                print(item + " Appended") 
+                break
+            
+
+        return {'FINISHED'} 
+    
+        
     
     #PANEL UI
 ####################################
@@ -2030,9 +2392,13 @@ class AUTOTEX_MENU(bpy.types.Panel):
                 pass
             else:
                 box.prop(prefs, 'cust_enum_hdri')
-                split = box.split(factor = 0.6)
+                split = box.split(factor = 0.5)
                 col = split.column(align = True)
-                split.operator("object.button_hdrifull", text = "Set HDRI") 
+                col.operator("object.button_hdrifull", text = "Set as Sky").hdri = "background"
+                split.operator("object.button_hdrifull", text = "Set as HDRI").hdri = "hdri" 
+                box.label(text = "*Set as Sky - just a background")
+                box.label(text = "*Set as HDRI - apply lights")
+                box.label(text = "*Not all images can set as Sky")
             
             row = layout.row()
             row.label(text = "------------------------------------------------------")
@@ -2231,6 +2597,24 @@ class EFFECTS_PT_panel(bpy.types.Panel):
             
 
         if assets_set == 1:
+            row = layout.row()
+            row.label(text='*** Spawn Items ***')
+
+
+            ######### Heirloom Items #########         
+            row = layout.row()
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_heirloom else 'RIGHTARROW'
+            row.prop(context.scene, 'subpanel_effects_heirloom', icon=icon, icon_only=True)
+            row.label(text='Heirloom Items')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_heirloom:
+                row = layout.row()
+                row.label(text='Animation is just to open heirloom')
+                box = layout.box()
+                for n in range(len(all_heirloom_items)):
+                    box.operator('object.hl_button_spawn', text = all_heirloom_items.get(str(n))).heirloom = all_heirloom_items.get(str(n))
+                            
+                                        
             ######### Badges #########
             row = layout.row()
             icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_badges else 'RIGHTARROW'
@@ -2242,8 +2626,8 @@ class EFFECTS_PT_panel(bpy.types.Panel):
                 # Badges
                 box.operator('object.bdg_button_spawn', text = "4K Badge").badge = "Badge - 4k Damage"
                 box.operator('object.bdg_button_spawn', text = "20 Bomb Badge").badge = "Badge - 20 Bombs"
+                box.operator('object.bdg_button_spawn', text = "20 Bomb Badge (v2)").badge = "Badge - 20 Bombs (v2)"
                 box.operator('object.bdg_button_spawn', text = "Predator S3 Badge").badge = "Badge - Predator S3"
-                
                 
                 
             ######### Loot Items #########
@@ -2316,7 +2700,35 @@ class EFFECTS_PT_panel(bpy.types.Panel):
                 if context.scene.subpanel_effects_loot_prop7:
                     for n in range(len(all_loot_items)):
                         if n in range(*other_range):
-                            box.operator('object.lt_button_spawn', text = all_loot_items.get(str(n))).loot = all_loot_items.get(str(n))                                                                                  
+                            box.operator('object.lt_button_spawn', text = all_loot_items.get(str(n))).loot = all_loot_items.get(str(n))    
+              
+                            
+                            
+            ######### Lobby Items #########
+            row = layout.row()
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_lobby else 'RIGHTARROW'
+            row.prop(context.scene, 'subpanel_effects_lobby', icon=icon, icon_only=True)
+            row.label(text='Lobby Items')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_lobby:
+                box = layout.box()
+                for n in range(len(all_lobby_other_items)):
+                    if n in range(*lobby_lobby_range):
+                        box.operator('object.lb_button_spawn', text = all_lobby_other_items.get(str(n))).lobby_other = all_lobby_other_items.get(str(n))
+
+
+
+            ######### Other Items #########
+            row = layout.row()
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_other else 'RIGHTARROW'
+            row.prop(context.scene, 'subpanel_effects_other', icon=icon, icon_only=True)
+            row.label(text='Other Items')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_other:
+                box = layout.box()
+                for n in range(len(all_lobby_other_items)):
+                    if n in range(*lobby_other_range):
+                        box.operator('object.lb_button_spawn', text = all_lobby_other_items.get(str(n))).lobby_other = all_lobby_other_items.get(str(n))                                                                                                                                      
                         
 
 
@@ -2563,6 +2975,8 @@ classes = (
         BDG_BUTTON_SPAWN, 
         WPN_BUTTON_SPAWN,
         LT_BUTTON_SPAWN,
+        LB_BUTTON_SPAWN,
+        HL_BUTTON_SPAWN,
         TRANSLATE_PT_panel,
         UPDATE_PT_panel
         )
@@ -2587,6 +3001,7 @@ def register():
     Scene.subpanel_effects_seer = BoolProperty(default=False)    
     Scene.subpanel_effects_weapons = BoolProperty(default=False)
     Scene.subpanel_effects_weapons_prop1 = BoolProperty(default=False)
+    Scene.subpanel_effects_heirloom = BoolProperty(default=False)
     Scene.subpanel_effects_badges = BoolProperty(default=False)
     Scene.subpanel_effects_loot = BoolProperty(default=False)
     Scene.subpanel_effects_loot_prop1 = BoolProperty(default=False)
@@ -2596,6 +3011,8 @@ def register():
     Scene.subpanel_effects_loot_prop5 = BoolProperty(default=False) 
     Scene.subpanel_effects_loot_prop6 = BoolProperty(default=False)
     Scene.subpanel_effects_loot_prop7 = BoolProperty(default=False)
+    Scene.subpanel_effects_lobby = BoolProperty(default=False) 
+    Scene.subpanel_effects_other = BoolProperty(default=False)   
     Scene.subpanel_effects_sky = BoolProperty(default=False)
 
 
@@ -2618,6 +3035,7 @@ def unregister():
     del Scene.subpanel_effects_seer    
     del Scene.subpanel_effects_weapons
     del Scene.subpanel_effects_weapons_prop1
+    del Scene.subpanel_effects_heirloom
     del Scene.subpanel_effects_badges
     del Scene.subpanel_effects_loot
     del Scene.subpanel_effects_loot_prop1
@@ -2626,7 +3044,9 @@ def unregister():
     del Scene.subpanel_effects_loot_prop4 
     del Scene.subpanel_effects_loot_prop5
     del Scene.subpanel_effects_loot_prop6
-    del Scene.subpanel_effects_loot_prop7 
+    del Scene.subpanel_effects_loot_prop7
+    del Scene.subpanel_effects_lobby 
+    del Scene.subpanel_effects_other
     del Scene.subpanel_effects_sky 
         
 

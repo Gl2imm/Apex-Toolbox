@@ -67,14 +67,18 @@ Howto:
      Append Shaders and HDRI:
 ####################################
 
-Shaders: A tool to Append shaders to your scene or set HDRI for renders.
-Credits: Apex Shader - taken from Apex Auto_tex. S/G Blender, 
-		 Apex Cycles (Blue) - taken from the open sources.
+Shaders: A tool to Append shaders to your scene. Comes with: Apex Shader, S/G-Blender, Apex Cycles (Blue), Apex Mobile Shader (Biast12)
+Credits: Apex Shader - taken from Apex Auto_tex. S/G Blender, Apex Cycles (Blue) - taken from the open sources. Apex Mobile Shader - by Biast12 and Floxay from Legion+ Discord (Discord https://discord.gg/ADek6fxVGe)
 
 (Extended version)
-HDRI: A tool to Append and set HDRI for renders.
-Apex Lobby, Party crasher, Encore, Habitat, Kings Canyon (Old), Kings Canyon (New), Kings Canyon (Night), Olympus, Phase Runner, Storm Point, Worlds Edge, Sky (Not sure its from which map)
-Credits: Thx to @Space for sharing this HDRI on "3D Art Discord" https://discord.gg/VcZh5rC
+HDRI: A tool to Append and set HDRI for renders, as well as Sky Boxes.
+Apex Lobby, Party crasher, Encore, Habitat, Kings Canyon (Old), Kings Canyon (New), Kings Canyon (Night), Olympus, Phase Runner, Storm Point, Worlds Edge, Sky (Not sure its from which map), Indoor, Outdoor, Outdoor under the shade, Morning Forest
+Sky box sphere (it will spawn when you click button "Set as Sky")
+You can set Apex sky images as a background for Sky Sphere, it does not block the lights
+After you set the Sky image, you can set same image or any other in the list as your HDRI (this will add lights to the scene) - just click "Set as HDRI"
+You may set either Sky box or HDRI, up to your taste, they work independently.
+Credits: Thx to @Space for sharing Apex HDRIs on "3D Art Discord" https://discord.gg/VcZh5rC
+	   Indoor, Outdoor, Outdoor under the shade, Morning Forest - Downloaded from "Poly Haven" https://polyhaven.com/
 
 
 
@@ -102,7 +106,6 @@ Credits: Thx to @UIIAoodle my beloved for this Great Archive and also for permis
 Portal - spawns the portal made procedurally with nodes. Currently it is animated within 60 frames.
 To be done: If someone can modify it to endless cycle - pls share it in Legion Discord in #3D-shenanigans. I will be glad to update the shader and keep your credits.
 Credits: Inspired from this video https://www.youtube.com/watch?v=sMFYCJUix-Y, some nodes were taken from there and modified.
-![Wraith Portal](https://i.ibb.co/SmKQT59/Apex-toolbox-2.png)
 
 
 
@@ -124,11 +127,8 @@ Credits: Me - seems like the most talented Apex effect creator i ever met.
 Decoy - applying outline to the model. Adding endless animated particle system, Decoy text, Floor with bloom and Icon that pop up when enemy shoot Decoy.
 		Can be parented to Legend.
 Howto: Do not select eyes or other internal meshes, as it will add outline to it too. Adding floor bloom (currently works on flat surfaces). Select Bone object to parent effect to it. Best to parent before adding animation to the model.
-
 Credits: This mod was inspired by Outline Helper - https://felineentity.gumroad.com/l/ZmTIT. Partial pieces of code were taken from there and modified according to the needs.
 
-
-![Mirage Decoy](https://i.ibb.co/K6vLcgV/Apex-toolbox-3.png)
 
 
 ####################################			
@@ -158,7 +158,14 @@ Ultimate - spawns animated Seer ultimate cage
 Flatline normal - Reactive skin flames and bloom from Assimilation skin model. Can parent to model.
 Flatline POV - Reactive skin flames and bloom from Assimilation skin model. Reactive animation (Fixed, because it exports broken from Legion+). Can parent to model.
 Howto: Auto Parenting works only for the correct flatline model "flatline_v20_assim_w" for normal model and "flatline_v20_assim_v" for POV model. Best to parent before adding animation to the model.
-![Flatline - Reactive skin](https://i.ibb.co/sqV3fTh/Apex-toolbox-4.png)
+
+
+
+####################################			
+ Heirloom Items: (Extended version)
+####################################
+
+All Heirlooms for quick spawn (already textured). Lifeline, Wattson, Pathfinder comes with animation, this is just to open their heirlooms.
 
 
 
@@ -166,23 +173,19 @@ Howto: Auto Parenting works only for the correct flatline model "flatline_v20_as
      Badges: (Extended version)
 ####################################
 
-(Extended version)
 4k Badge - adding in-game 4000 Damage badge made in 3D
 20 Bomb Badge - adding in-game 20 Kills badge made in 3D
-Credits: Thx to PeeT for sharing this cool model in Legion Discord.
-
+20 Bomb Badge (v2) - adding in-game 20 Kills badge made in 3D with in-game skull models
 Predator S3 - adding Predator Season-3 badge made in 3D
-Credits: Thx to り- for sharing this cool model in 3D Art Discord. Twitter: @ZeroAx_
-
-![Badges](https://i.ibb.co/5BFqvdR/aa.png)
+Credits: 4k and 20 bombs badges - Thx to PeeT for sharing this cool model in Legion+ Discord.
+	   Predator S3 - Thx to り- for sharing this cool model in 3D Art Discord. Twitter: @ZeroAx_
 
 
 
 ####################################			
-             Loot Items:
+   Loot Items: (Extended version)
 ####################################
 
-(Extended version)
 Spawns Ground Loot (Animated)
 Body Armor, Helmet, Shield Cell, Shield Battery
 
@@ -190,21 +193,22 @@ Spawns Ground Loot (Normal)
 Phoenix Kit, Med Kit, Syringe, Health Injector, Grenade, Arc Star, Thermite, 
 Backpacks, Light Ammo, Heavy Ammo, Energy Ammo, Shotgun Ammo, Respawn, Beacon, 
 Knockdown Shield, Heat Shield, Death Box
+
+Death Box comes with banner sample, you can change images in shading tab. To change text - just select it and press Tab to enter "Edit Mode", edit it as normal text like in notepad. Press "Tab" again to exit "Edit Mode".
 PS: Sniper ammo textures are broken, so no adding them.
 
 
 
 ####################################			
-             Lobby Items:
+  Lobby Items: (Extended version)
 ####################################
 
-(Extended version)
 Spawns Lobby items: Heirloom Shards, Epic Shards, Rare Shards, Loot Drone
 
 
 
 ####################################			
-             Other Items:
+  Other Items: (Extended version)
 ####################################
 
 (Extended version)
@@ -213,7 +217,7 @@ Spawns Other items: Respawn Beacon Holo Effect (Animated), Loot Ball
 
 
 ####################################			
-             Skydive (Experimental):
+      Skydive (Experimental):
 ####################################
 
 (Both versions included)
