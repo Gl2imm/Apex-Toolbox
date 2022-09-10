@@ -99,3 +99,13 @@ v3.1 Changes:
 
 	   Please re-download Apex_Toolbox_Assets folder
 	   Restart Blender after update.
+	   
+v3.2 Changes:
+	   "Both versions":
+	   Fixed: Legends naming translate for Legion+ Fetch data button (it were calling wrong item). Added button to open Online Google Sheet table.
+	   Quality of life changes: Added convenient sliders and color buttons where possible, so do not have to switch to the Shading tab, can control directly from toolbox. Properties will appear after the item been spawned.
+	   Effects:
+	   Wraith portal - compiled all nodes into one shader group with adjustable settings (transparency, colour, brightness), added drivers for inner circles, so the animation now become cyclic.
+	   Added: Weapon Laser sight. Can parent to weapon and adjust to the laser sight location.
+
+	   Restart Blender after update.	   

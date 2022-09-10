@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (3, 1),
+    "version": (3, 2),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
@@ -33,7 +33,7 @@ import sys
 import platform
 
 ## Toolbox vars ##
-ver = "v.3.1"
+ver = "v.3.2"
 lts_ver = ver
 loadImages = True
 texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
@@ -54,23 +54,24 @@ mprt_lts_ver = '0'
 
 
 mode = 1 #0 - Test Mode; 1 - Live mode
+wh = 1   #0 - W; 1 - H
 
 
 if mode == 0:
-    my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
-    ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
-    lgn_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\")
-    #lgn_fldr = ''
-    rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
-    #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
-    
-    
-    #my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
-    #ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
-    #lgn_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\")
-    #rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
-    #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
-    #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
+    if wh == 1:
+        my_path = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")
+        ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+        lgn_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\")
+        #lgn_fldr = ''
+        rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
+        #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
+    if wh == 0:
+        my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
+        ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+        lgn_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\")
+        rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
+        #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
+        #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
 else:
     my_path = (os.path.dirname(os.path.realpath(__file__)))
     
@@ -331,6 +332,23 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
     default = False
     )
     
+    '''
+    mytool_color : bpy.props.FloatVectorProperty(
+                     name = "Color",
+                     subtype = "COLOR",
+                     size = 4,
+                     min = 0.0,
+                     max = 1.0,
+                     default = (1.0,1.0,1.0,1.0))
+    OPERATOR: 
+    clr = scene.my_prefs.mytool_color
+                    
+    mat = bpy.data.objects['Laser_pt1'].active_material
+    nodes = mat.node_tree.nodes['Mix']
+    node_color = nodes.inputs['Color1'].default_value
+    nodes.inputs['Color1'].default_value = (clr[0], clr[1], clr[2], clr[3]) 
+    '''                    
+    
     
     Horizon : BoolProperty(name="", description="Horizon Skins", default = False)
     Ash : BoolProperty(name="", description="Ash Skins", default = False)
@@ -448,7 +466,9 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
                                     split_1 = full_text.split('433190309/')[1]
                                     mprt_lts_ver = split_1.split('</id>')[0]         
         
-        
+
+        if link == "garlicus_table":
+            webbrowser.open_new("https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/edit#gid=0")        
 
         if link == "biast_archive":
             webbrowser.open_new("https://bit.ly/337Cfw2")
@@ -504,7 +524,7 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
             bpy.context.area.ui_type = 'TEXT_EDITOR'
             bpy.context.space_data.text = bpy.data.texts['Your Favourite Addon Link']
             '''
-        else:    
+        if link == "garlicus":   
             url = 'https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/gviz/tq?tqx=out:json&tq&gid=0'
             full_text = requests.get(url, allow_redirects=True).text
             split_1 = full_text.split('"rows":[')[1]
@@ -1243,11 +1263,18 @@ class WR_BUTTON_PORTAL(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
+        portal_items = [
+                {'name': 'wraith_portal'}, 
+                {'name': 'Inner_Ring_1'}, 
+                {'name': 'Inner_Ring_1_br'},
+                {'name': 'Inner_Ring_2'},
+                {'name': 'Inner_Ring_2_br'}
+                ]    
         if bpy.data.objects.get('wraith_portal') == None:
-            bpy.ops.wm.append(directory =my_path + blend_file + ap_object, filename ='wraith_portal')
+            bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files =portal_items)
             print("Wraith Portal Appended")
         else:
-            print("Wraith Portal already inside")
+            print("Wraith Portal already exist")
         return {'FINISHED'}      
    
 
@@ -1746,6 +1773,15 @@ class WPN_BUTTON_SPAWN(bpy.types.Operator):
         scene = context.scene
         prefs = scene.my_prefs
         weapon = (self.weapon)
+
+        
+        weapon_items = {
+            'Laser': [
+                {'name': 'Laser'},            
+                {'name': 'Laser_pt1'}, 
+                {'name': 'Laser_pt2'}
+            ]
+            }        
            
         #Flatline flame button normal
         if weapon == "flatline_s4_glow_hex_LOD0_SEModelMesh.125":
@@ -1851,17 +1887,97 @@ class WPN_BUTTON_SPAWN(bpy.types.Operator):
  
         #Flatline POV Animation   
         if weapon == "idle_reactive_layer_3_Fixed":
-            if bpy.data.objects.get(weapon) == None:
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_action, filename ="idle_reactive_layer_3_Fixed")
-                print("POV Reactive Animation Appended")
+            if bpy.data.objects.get("flatline_v20_assim_v_LOD0_skel") == None:
+                print("POV Flatline model 'flatline_v20_assim_v_LOD0_skel' not Found. Pls add model first")
             else:
-                print("POV Reactive Animation already exist")  
-            
-            object = bpy.data.objects.get('flatline_v20_assim_v_LOD0_skel')   
-            object.animation_data_create()
-            action = object.animation_data.action
-            object.animation_data.action = bpy.data.actions.get("idle_reactive_layer_3_Fixed")                           
-  
+                if bpy.data.objects.get(weapon) == None:
+                    bpy.ops.wm.append(directory =my_path + blend_file + ap_action, filename ="idle_reactive_layer_3_Fixed")
+                    print("POV Reactive Animation Appended")
+                else:
+                    print("POV Reactive Animation already exist")  
+                
+                object = bpy.data.objects.get('flatline_v20_assim_v_LOD0_skel')   
+                object.animation_data_create()
+                action = object.animation_data.action
+                object.animation_data.action = bpy.data.actions.get("idle_reactive_layer_3_Fixed")   
+
+               
+        #######  LASER EFFECT  #######
+        if weapon == "Laser":
+            if bpy.data.objects.get(weapon) == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files =weapon_items.get("Laser"))
+                print("Laser Effect Appended")
+            else:
+                print("Laser Effect already exist")
+
+
+        if weapon == "Laser_parent":
+            if bpy.data.objects.get("Laser") == None:
+                print("Laser Effect not Found. Pls add effect first")
+            else:
+                sel_objects = bpy.context.selected_objects
+                sel_names = [obj.name for obj in bpy.context.selected_objects]
+                if not bpy.context.selected_objects:
+                    print("Nothing selected. Please select Model Bones in Object Mode")
+                else:
+                    if len(sel_objects) > 1:
+                        print("More than 1 Object slected. Please select only 1 Bone Object")
+                    else: 
+                        try:
+                            bpy.data.objects['Laser'].location = bpy.data.objects[sel_names[0]].pose.bones['ja_c_propGun'].location
+                        except:
+                            print("Bone 'ja_c_propGun' not found")
+                        else:                                            
+                            bpy.ops.object.select_all(action='DESELECT')
+                            bpy.context.view_layer.objects.active = None 
+                            bpy.data.objects['Laser'].select_set(True) 
+                            bpy.context.view_layer.objects.active = bpy.data.objects['Laser']        
+                            boneToSelect = bpy.data.objects['Laser'].pose.bones['Bone'].bone
+                            bpy.context.object.data.bones.active = boneToSelect
+                            
+                            bpy.context.view_layer.objects.active = None 
+                            bpy.data.objects[sel_names[0]].select_set(True) 
+                            bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]  
+                            bpy.data.objects[sel_names[0]].rotation_euler.x = 1.5707963705062866
+                            bpy.data.objects[sel_names[0]].rotation_euler.y = 0
+                            bpy.data.objects[sel_names[0]].rotation_euler.z = 0                                  
+                            boneToSelect2 = bpy.data.objects[sel_names[0]].pose.bones['ja_c_propGun'].bone
+                            bpy.context.object.data.bones.active = boneToSelect2
+                            boneToSelect2.select = True  
+                            bpy.ops.object.parent_set(type='BONE')
+                            
+                            bpy.ops.object.select_all(action='DESELECT')
+                            bpy.context.view_layer.objects.active = None
+                            bpy.data.objects[sel_names[0]].select_set(True)
+                            bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]] 
+                            print("Parenting laser to " + sel_names[0] + " Done")
+                            
+                                            
+        if weapon == "Laser_move":
+            if bpy.data.objects.get("Laser") == None:
+                print("Laser Effect not Found. Pls add effect first")
+            else:
+                sel_objects = bpy.context.selected_objects
+                sel_names = [obj.name for obj in bpy.context.selected_objects]
+                if not bpy.context.selected_objects:
+                    print("Nothing selected. Please select Model Bones in Object Mode")
+                else:
+                    if len(sel_objects) > 1:
+                        print("More than 1 Object slected. Please select only 1 Bone Object")
+                    else:
+                        try:
+                            bpy.data.objects['Laser'].location = bpy.data.objects[sel_names[0]].pose.bones['ja_c_propGun'].location
+                        except:
+                            print("Bone 'ja_c_propGun' not found")
+                        else:
+                            bpy.data.objects[sel_names[0]].rotation_euler.x = 1.5707963705062866
+                            bpy.data.objects[sel_names[0]].rotation_euler.y = 0
+                            bpy.data.objects[sel_names[0]].rotation_euler.z = 0
+                            bpy.data.objects['Laser'].location.z = bpy.data.objects[sel_names[0]].pose.bones['ja_c_propGun'].bone.matrix_local[1][3] * 0.0254 - 0.018
+                            bpy.data.objects['Laser'].location.y -= bpy.data.objects[sel_names[0]].pose.bones['ja_c_propGun'].bone.matrix_local[2][3] * 0.0254 + 0.04
+                            print("Laser Effect moved") 
+
+                                                                                               
         return {'FINISHED'}   
               
 
@@ -2395,14 +2511,31 @@ class AUTOTEX_MENU(bpy.types.Panel):
                 split = box.split(factor = 0.5)
                 col = split.column(align = True)
                 col.operator("object.button_hdrifull", text = "Set as Sky").hdri = "background"
-                split.operator("object.button_hdrifull", text = "Set as HDRI").hdri = "hdri" 
+                split.operator("object.button_hdrifull", text = "Set as HDRI").hdri = "hdri"
+                
+                try:
+                    wrld = bpy.context.scene.world.name
+                except:
+                    pass
+                else:
+                    box.label(text='** Current World/HDRI Controls: **')
+                    wrld_0 = bpy.data.worlds[wrld].node_tree.nodes['Background'].inputs['Strength']
+                    wrld_1 = bpy.data.worlds[wrld].node_tree.nodes['Mapping'].inputs['Rotation']
+                    split = box.split(factor = 0.5)
+                    col = split.column(align = True)
+                    col.label(text='Brightness:')
+                    split.prop(wrld_0, "default_value", text = "")
+                    split = box.split(factor = 0.5)
+                    col = split.column(align = True)
+                    col.label(text='Rotation:')
+                    split.prop(wrld_1, "default_value", text = "")                    
+                                     
                 box.label(text = "*Set as Sky - just a background")
                 box.label(text = "*Set as HDRI - apply lights")
                 box.label(text = "*Not all images can set as Sky")
-            
+                
             row = layout.row()
             row.label(text = "------------------------------------------------------")
- 
 
         row = layout.row()  
         row = layout.row()   
@@ -2450,6 +2583,68 @@ class EFFECTS_PT_panel(bpy.types.Panel):
             
             # Wraith subpanel 1
             box.operator("object.wr_button_portal", text = "Spawn Portal")
+            
+            try:
+                obj = bpy.data.objects['wraith_portal']
+            except:
+                pass
+            else:
+                obj = 'wraith_portal'
+                portal_0 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[0]
+                portal_1 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[1]
+                portal_2 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[2]
+                portal_3 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[3]
+                portal_4 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[4]
+                portal_5 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[5]
+                portal_6 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[6]
+                portal_7 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[7]
+                portal_8 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[8]
+                portal_9 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[9]
+                portal_10 = bpy.data.objects[obj].active_material.node_tree.nodes['Wraith Portal'].inputs[10]
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Center Transparency:')
+                split.prop(portal_0, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Outer Ring-1:')
+                split.prop(portal_1, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Brightness:')
+                split.prop(portal_2, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Outer Ring-2:')
+                split.prop(portal_3, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Brightness:')
+                split.prop(portal_4, "default_value", text = "")  
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Outer Ring-3:')
+                split.prop(portal_5, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Brightness:')
+                split.prop(portal_6, "default_value", text = "")  
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Inner Ring-1:')
+                split.prop(portal_7, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Brightness:')
+                split.prop(portal_8, "default_value", text = "")  
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Inner Ring-2:')
+                split.prop(portal_9, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Brightness:')
+                split.prop(portal_10, "default_value", text = "")                                                                                
 
             """
             # Wraith subpanel 2
@@ -2504,6 +2699,7 @@ class EFFECTS_PT_panel(bpy.types.Panel):
                 col.label(text='')
                 split.operator('object.mr_button_decoy', text = "Add Effect").mr_decoy = "Decoy"
                 split.operator('object.mr_button_decoy', text = "Parent it").mr_decoy = "Decoy_parent" 
+                box.label(text='*Sel Legend before add Effect')
                 box.label(text='*Sel Model Bones before Parenting')
                 
             
@@ -2550,11 +2746,51 @@ class EFFECTS_PT_panel(bpy.types.Panel):
         if context.scene.subpanel_effects_seer:
             box = layout.box()
             
-            # Wraith subpanel 1
+            # Seer subpanel 1
             for n in range(len(all_seer_items)):
                 if n == 0:
-                    box.operator('object.seer_button_spawn', text = all_seer_items.get(str(n))).lgnd_effect = all_seer_items.get(str(n))            
-            #box.operator("object.seer_button_spawn", text = "Seer Ultimate").lgnd_effect = "Seer Ultimate"
+                    box.operator('object.seer_button_spawn', text = all_seer_items.get(str(n))).lgnd_effect = all_seer_items.get(str(n)) 
+            
+            try:
+                obj = bpy.data.objects['Seer Ultimate']
+                obj2 = bpy.data.objects['Seer ult circle']
+            except:
+                pass
+            else:
+                obj = 'Seer Ultimate'
+                obj2 = 'Seer ult circle'
+                seer_ult_0 = bpy.data.objects[obj].material_slots[0].material.node_tree.nodes['Mix.001'].inputs['Color1'] 
+                seer_ult_1 = bpy.data.objects[obj].material_slots[0].material.node_tree.nodes['Emission'].inputs['Strength'] 
+                seer_ult_2 = bpy.data.objects[obj2].active_material.node_tree.nodes['Mix.001'].inputs['Color1'] 
+                seer_ult_3 = bpy.data.objects[obj2].active_material.node_tree.nodes['Emission'].inputs['Strength']
+                seer_ult_4 = bpy.data.objects[obj].material_slots[1].material.node_tree.nodes['Mix.001'].inputs['Color1']
+                seer_ult_5 = bpy.data.objects[obj].material_slots[1].material.node_tree.nodes['Emission'].inputs['Strength']
+
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Cage Color:')
+                split.prop(seer_ult_0, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Brightness:')
+                split.prop(seer_ult_1, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Cage Bottom Color:')
+                split.prop(seer_ult_4, "default_value", text = "")
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Brightness:')
+                split.prop(seer_ult_5, "default_value", text = "")                  
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Node Color:')
+                split.prop(seer_ult_2, "default_value", text = "") 
+                split = box.split(factor = 0.6)
+                col = split.column(align = True)
+                col.label(text='Brightness:')
+                split.prop(seer_ult_3, "default_value", text = "")                                                                                         
+
 
             """
             # Wraith subpanel 2
@@ -2578,24 +2814,104 @@ class EFFECTS_PT_panel(bpy.types.Panel):
         if context.scene.subpanel_effects_weapons:
             box = layout.box()
             
+            
+            # Laser subpanel
+            icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_weapons_laser else 'RIGHTARROW'
+            box.prop(context.scene, 'subpanel_effects_weapons_laser', icon=icon, icon_only=False, text='Weapon Laser                        ')
+            # some data on the subpanel
+            if context.scene.subpanel_effects_weapons_laser:
+                box.operator('object.wpn_button_spawn', text = "Add Laser").weapon = "Laser"
+                try:
+                    obj = bpy.data.objects['Laser_pt1']
+                except:
+                    pass
+                else:
+                    laser_color = bpy.data.objects['Laser_pt1'].active_material.node_tree.nodes['Mix'].inputs['Color1']
+                    laser_emis = bpy.data.objects['Laser_pt1'].active_material.node_tree.nodes['Principled BSDF'].inputs['Emission Strength']
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Set Color:')
+                    split.prop(laser_color, "default_value", text = "")
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Emissive:')
+                    split.prop(laser_emis, "default_value", text = "")                                     
+                split = box.split(factor = 0.3)
+                col = split.column(align = True)
+                col.label(text='')
+                split.operator('object.wpn_button_spawn', text = "1. Parent Laser").weapon = "Laser_parent"
+                split = box.split(factor = 0.3)
+                col = split.column(align = True)
+                col.label(text='')
+                split.operator('object.wpn_button_spawn', text = "2. Adjust Laser").weapon = "Laser_move" 
+                box.label(text='*Select weapon bones for 1 & 2') 
+                
+          
+    
+               
+
             # Flatline subpanel 1
             icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_weapons_prop1 else 'RIGHTARROW'
             box.prop(context.scene, 'subpanel_effects_weapons_prop1', icon=icon, icon_only=False, text='Flatline Flames (v20_assim)')
             # some data on the subpanel
             if context.scene.subpanel_effects_weapons_prop1:
                 box.operator('object.wpn_button_spawn', text = "Add Normal gun Effect (w)").weapon = "flatline_s4_glow_hex_LOD0_SEModelMesh.125"
+                try:
+                    obj = bpy.data.objects['flatline_s4_glow_hex_LOD0_SEModelMesh.125']
+                except:
+                    pass
+                else:
+                    obj = 'flatline_s4_glow_hex_LOD0_SEModelMesh.125'
+                    w_flames_color = bpy.data.objects[obj].active_material.node_tree.nodes['Group'].inputs['Color']
+                    w_flames_emis = bpy.data.objects[obj].active_material.node_tree.nodes['Group'].inputs['Flames Emission']
+                    w_bloom_emis = bpy.data.objects[obj].active_material.node_tree.nodes['Group'].inputs['Bloom Emission']
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Color:')
+                    split.prop(w_flames_color, "default_value", text = "")
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Flames Emission:')
+                    split.prop(w_flames_emis, "default_value", text = "")
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Bloom Emission:')
+                    split.prop(w_bloom_emis, "default_value", text = "")                 
                 split = box.split(factor = 0.5)
                 col = split.column(align = True)
                 col.label(text='')
                 split.operator('object.wpn_button_spawn', text = "Parent Flames").weapon = "flatline_parent_flame"
+                
+                #box.label(text='    ')
                 box.operator('object.wpn_button_spawn', text = "Add POV gun Effect (v)").weapon = "flatline_s4_glow_hex_LOD0_SEModelMesh.001" 
+                try:
+                    obj = bpy.data.objects['flatline_s4_glow_hex_LOD0_SEModelMesh.001']
+                except:
+                    pass
+                else:
+                    obj = 'flatline_s4_glow_hex_LOD0_SEModelMesh.001'
+                    v_flames_color = bpy.data.objects[obj].active_material.node_tree.nodes['Group'].inputs['Color']
+                    v_flames_emis = bpy.data.objects[obj].active_material.node_tree.nodes['Group'].inputs['Flames Emission']
+                    v_bloom_emis = bpy.data.objects[obj].active_material.node_tree.nodes['Group'].inputs['Bloom Emission']
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Color:')
+                    split.prop(v_flames_color, "default_value", text = "")
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Flames Emission:')
+                    split.prop(v_flames_emis, "default_value", text = "")
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Bloom Emission:')
+                    split.prop(v_bloom_emis, "default_value", text = "")  
+                                    
                 split = box.split(factor = 0.5)
                 col = split.column(align = True)
                 col.operator('object.wpn_button_spawn', text = "Add POV Anim").weapon = "idle_reactive_layer_3_Fixed"
-                split.operator('object.wpn_button_spawn', text = "Parent Flames").weapon = "flatline_pov_parent_flame"                
+                split.operator('object.wpn_button_spawn', text = "Parent Flames").weapon = "flatline_pov_parent_flame"                                                                 
                             
             
-
         if assets_set == 1:
             row = layout.row()
             row.label(text='*** Spawn Items ***')
@@ -2716,9 +3032,64 @@ class EFFECTS_PT_panel(bpy.types.Panel):
                     if n in range(*lobby_lobby_range):
                         box.operator('object.lb_button_spawn', text = all_lobby_other_items.get(str(n))).lobby_other = all_lobby_other_items.get(str(n))
 
-
-
+            
             ######### Other Items #########
+            def holo():
+                try:
+                    obj = bpy.data.objects['goblin_dropship_holo_LOD0_skel']
+                except:
+                    pass
+                else:
+                    obj = 'goblin_dropship_holo_LOD0_SEModelMesh.002'
+                    obj1 = 'goblin_dropship_holo_LOD0_SEModelMesh.001'
+                    obj2 = 'Respawn Hologram'
+                    holo_0 = bpy.data.objects[obj].active_material.node_tree.nodes['Mix.001'].inputs['Color2'] 
+                    holo_1 = bpy.data.objects[obj].active_material.node_tree.nodes['Emission'].inputs['Strength']                     
+                    holo_2 = bpy.data.objects[obj1].active_material.node_tree.nodes['Mix'].inputs['Color2'] 
+                    holo_3 = bpy.data.objects[obj1].active_material.node_tree.nodes['Emission'].inputs['Strength']               
+                    holo_4 = bpy.data.objects[obj2].active_material.node_tree.nodes['Respawn Hologram'].inputs[0]
+                    holo_5 = bpy.data.objects[obj2].active_material.node_tree.nodes['Respawn Hologram'].inputs[1] 
+                    holo_6 = bpy.data.objects[obj2].active_material.node_tree.nodes['Respawn Hologram'].inputs[2] 
+                    holo_7 = bpy.data.objects[obj2].active_material.node_tree.nodes['Respawn Hologram'].inputs[3] 
+                    holo_8 = bpy.data.objects[obj2].active_material.node_tree.nodes['Respawn Hologram'].inputs[4]  
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Ship Top Color:')
+                    split.prop(holo_0, "default_value", text = "")
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Emissive:')
+                    split.prop(holo_1, "default_value", text = "") 
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Ship Bottom Color:')
+                    split.prop(holo_2, "default_value", text = "") 
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Emissive:')
+                    split.prop(holo_3, "default_value", text = "") 
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Strips Color:')
+                    split.prop(holo_4, "default_value", text = "") 
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Strips Height:')
+                    split.prop(holo_5, "default_value", text = "") 
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Strips Brightness:')
+                    split.prop(holo_6, "default_value", text = "") 
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Cone Color:')
+                    split.prop(holo_7, "default_value", text = "") 
+                    split = box.split(factor = 0.6)
+                    col = split.column(align = True)
+                    col.label(text='Cone Brightness:')
+                    split.prop(holo_8, "default_value", text = "")  
+                                   
+            
             row = layout.row()
             icon = 'DOWNARROW_HLT' if context.scene.subpanel_effects_other else 'RIGHTARROW'
             row.prop(context.scene, 'subpanel_effects_other', icon=icon, icon_only=True)
@@ -2728,7 +3099,10 @@ class EFFECTS_PT_panel(bpy.types.Panel):
                 box = layout.box()
                 for n in range(len(all_lobby_other_items)):
                     if n in range(*lobby_other_range):
-                        box.operator('object.lb_button_spawn', text = all_lobby_other_items.get(str(n))).lobby_other = all_lobby_other_items.get(str(n))                                                                                                                                      
+                        box.operator('object.lb_button_spawn', text = all_lobby_other_items.get(str(n))).lobby_other = all_lobby_other_items.get(str(n))                
+                        if all_lobby_other_items.get(str(n)) == 'Respawn Beacon Hologram': 
+                            holo()
+                                                                                                                                  
                         
 
 
@@ -2786,8 +3160,10 @@ class TRANSLATE_PT_panel(bpy.types.Panel):
 
         
         row = layout.row()
-        row.operator('object.lgndtranslate_url', text = "Fetch Data", icon='FILE_REFRESH')  
+        row.operator('object.lgndtranslate_url', text = "Visit Online Table", icon='URL').link = "garlicus_table" 
         row = layout.row()
+        row.operator('object.lgndtranslate_url', text = "Fetch Data", icon='FILE_REFRESH').link = "garlicus" 
+        row = layout.row()  
 
         try: 
             row = layout.row()
@@ -3000,6 +3376,7 @@ def register():
     Scene.subpanel_effects_valkyrie_prop1 = BoolProperty(default=False)
     Scene.subpanel_effects_seer = BoolProperty(default=False)    
     Scene.subpanel_effects_weapons = BoolProperty(default=False)
+    Scene.subpanel_effects_weapons_laser = BoolProperty(default=False)
     Scene.subpanel_effects_weapons_prop1 = BoolProperty(default=False)
     Scene.subpanel_effects_heirloom = BoolProperty(default=False)
     Scene.subpanel_effects_badges = BoolProperty(default=False)
@@ -3034,6 +3411,7 @@ def unregister():
     del Scene.subpanel_effects_valkyrie_prop1
     del Scene.subpanel_effects_seer    
     del Scene.subpanel_effects_weapons
+    del Scene.subpanel_effects_weapons_laser
     del Scene.subpanel_effects_weapons_prop1
     del Scene.subpanel_effects_heirloom
     del Scene.subpanel_effects_badges

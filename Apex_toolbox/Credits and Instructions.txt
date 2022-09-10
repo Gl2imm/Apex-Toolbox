@@ -103,8 +103,7 @@ Credits: Thx to @UIIAoodle my beloved for this Great Archive and also for permis
 ####################################
 
 (Both versions included)
-Portal - spawns the portal made procedurally with nodes. Currently it is animated within 60 frames.
-To be done: If someone can modify it to endless cycle - pls share it in Legion Discord in #3D-shenanigans. I will be glad to update the shader and keep your credits.
+Portal - spawns the portal made procedurally with nodes. Animated
 Credits: Inspired from this video https://www.youtube.com/watch?v=sMFYCJUix-Y, some nodes were taken from there and modified.
 
 
@@ -155,6 +154,7 @@ Ultimate - spawns animated Seer ultimate cage
 ####################################
 
 (Both versions included)
+Weapon Laser - Adds laser. Can parent to weapon and auto adjust to the laser sight attachment location.
 Flatline normal - Reactive skin flames and bloom from Assimilation skin model. Can parent to model.
 Flatline POV - Reactive skin flames and bloom from Assimilation skin model. Reactive animation (Fixed, because it exports broken from Legion+). Can parent to model.
 Howto: Auto Parenting works only for the correct flatline model "flatline_v20_assim_w" for normal model and "flatline_v20_assim_v" for POV model. Best to parent before adding animation to the model.
