@@ -73,12 +73,14 @@ Credits: Apex Shader - taken from Apex Auto_tex. S/G Blender, Apex Cycles (Blue)
 (Extended version)
 HDRI: A tool to Append and set HDRI for renders, as well as Sky Boxes.
 Apex Lobby, Party crasher, Encore, Habitat, Kings Canyon (Old), Kings Canyon (New), Kings Canyon (Night), Olympus, Phase Runner, Storm Point, Worlds Edge, Sky (Not sure its from which map), Indoor, Outdoor, Outdoor under the shade, Morning Forest
+Blender Built-in HDRIs: city, courtyard, forest, interior, night, studio, sunrise, sunset
 Sky box sphere (it will spawn when you click button "Set as Sky")
 You can set Apex sky images as a background for Sky Sphere, it does not block the lights
 After you set the Sky image, you can set same image or any other in the list as your HDRI (this will add lights to the scene) - just click "Set as HDRI"
 You may set either Sky box or HDRI, up to your taste, they work independently.
 Credits: Thx to @Space for sharing Apex HDRIs on "3D Art Discord" https://discord.gg/VcZh5rC
 	   Indoor, Outdoor, Outdoor under the shade, Morning Forest - Downloaded from "Poly Haven" https://polyhaven.com/
+	   Blender Built-in HDRIs: All HDRIs are licenses as CC0 (Creative common). These were created by Greg Zaal (HDRI Haven https://hdrihaven.com).
 
 
 
@@ -223,6 +225,20 @@ Spawns Other items: Respawn Beacon Holo Effect (Animated), Loot Ball
 (Both versions included)
 Spawns Skydive from S9 (Sparks), animated. Can parent to Legend
 
+
+
+                                            ####################################			
+                                                        Other Effects:
+                                            ####################################
+
+####################################			
+      Skydive (Experimental):
+####################################
+
+Rotational Staging - Adding complete set with Camera, Lights and Backdrop. Animation is cycled.
+Basic Lights Setup - Preset lights for render models in dark environment (Yes, alot of people dont know how to set this up)
+Wireframe Effect - Basic wireframe effect. It applying "Wireframe" modificator to the mesh
+Credits: Thx to @Deepak_Kaku from Legion+ discord for providing Animated Staging mock up
 
 
 

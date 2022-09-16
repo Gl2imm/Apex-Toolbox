@@ -2,110 +2,127 @@
                                                       Version History:
                                             ####################################
 
-v.1.0: Initial Release
+v.1.0: 
+	Initial Release
 v.1.1 Changes: 
-	   Adding effects: Flatline Reactive skin, Mirage Decoy Particle system, 4k Damage Badge, 20 Bomb Badge
-	   Other Items: Auto parenting for Mirage Effect and Flatline reactive skin
-	   Code: Figured out the way to pass custom variables from buttons to Operators. With this significantly reduced the numbers of custom operators as well as less lines of codes. One Operator handling multiple 	   items now. Yay.
+	dding effects: Flatline Reactive skin, Mirage Decoy Particle system, 4k Damage Badge, 20 Bomb Badge
+	Other Items: Auto parenting for Mirage Effect and Flatline reactive skin
+	Code: Figured out the way to pass custom variables from buttons to Operators. With this significantly reduced the numbers of custom operators as well as less lines of codes. One Operator handling multiple 	   items now. Yay.
 v1.2 Changes:  
-	   Added 
-	   HDRI: Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge
-	   Effects: Gibraltar Bubble (Friendly and Enemy), Valkyrie Flames
-	   Loot Items: Armor and Helmet (White, Blue, Purple, Gold, Red)
-	   Code: Redone some parts to further reduce lines of code 
-	   Bug Fixes: After applying new HDRI and saving blend file default world will be deleted (no user set). Set Fake user for all HDRI and default World now.
+	Added 
+	HDRI: Encore, Habitat, Kings Canyon, Olympus, Phase Runner, Storm Point, Worlds Edge
+	Effects: Gibraltar Bubble (Friendly and Enemy), Valkyrie Flames
+	Loot Items: Armor and Helmet (White, Blue, Purple, Gold, Red)
+	Code: Redone some parts to further reduce lines of code 
+	Bug Fixes: After applying new HDRI and saving blend file default world will be deleted (no user set). Set Fake user for all HDRI and default World now.
 v1.3 Changes:  
-	   Added 
-	   S/G Blender option for Autotex
-	   Bug Fixes: Recolor option were not appending S/G Blender Shader. Fixed now
-	   Warning: You need to install v.1.2 before this fix. This is to reduce filesize. If you already using v1.2 - can just install v1.3 and restart Blender. 
+	Added 
+	S/G Blender option for Autotex
+	Bug Fixes: Recolor option were not appending S/G Blender Shader. Fixed now
+	Warning: You need to install v.1.2 before this fix. This is to reduce filesize. If you already using v1.2 - can just install v1.3 and restart Blender. 
 v2.0 Changes:
-	   Major changes:
-	   Rewrite almost entire code to implement these changes:
-	   1. Now this addon is very light for those just want simple light functions. Swithed off those effects with big size (HDRI, Badges, Loot items)
-	      If you want to have additional effects - download Assets ZIP file from here: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
-		  extract the files in your desired location
-		  Inside addon in the "Readme First" Tab specify Assets folder location.
-		  Thats it. Once you specify location of the Assets - all additional options will appear
-	   2. Recolor now work with custom folders materials, can be with sub-folders or without it. Also added the option for Alpha channel
-	   To differentiate which update affecting your current addon - it will be called now "Lite" and "Extended"
-	   Extended Added:
-	   Badge - Predator S3
+	Major changes:
+	Rewrite almost entire code to implement these changes:
+	1. Now this addon is very light for those just want simple light functions. Swithed off those effects with big size (HDRI, Badges, Loot items)
+		If you want to have additional effects - download Assets ZIP file from here: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
+		extract the files in your desired location
+		Inside addon in the "Readme First" Tab specify Assets folder location.
+		Thats it. Once you specify location of the Assets - all additional options will appear
+	2. Recolor now work with custom folders materials, can be with sub-folders or without it. Also added the option for Alpha channel
+	To differentiate which update affecting your current addon - it will be called now "Lite" and "Extended"
+	Extended Added:
+	Badge - Predator S3
 
 v2.1 Changes:
-	   Note: if you updating from v2.0 - pls re-download updated assets: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
-	   Or if you have limited data - download only updated files and manually replace in your asset folder: https://drive.google.com/file/d/17r_R_vVTcQ__XxR9TV9joz1GZW_ca3jU/view?usp=sharing
+	Note: if you updating from v2.0 - pls re-download updated assets: https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing
+	Or if you have limited data - download only updated files and manually replace in your asset folder: https://drive.google.com/file/d/17r_R_vVTcQ__XxR9TV9joz1GZW_ca3jU/view?usp=sharing
 	   
-	   Added to "Lite":
-	   Effects: Seer Ultimate (animated)
-	   Experimental: Skydive S9 (animated). 
+	Added to "Lite":
+	Effects: Seer Ultimate (animated)
+	Experimental: Skydive S9 (animated). 
 
-	   Added to "Extended":
-	   HDRI: Kings Canyon (New), Kings Canyon (Night), Apex Lobby, Sky (Not sure its from which map)
-	   Loot items: Basically all of them, heals, nades, backpacks, etc.
-	   Effects: Added animated energy to the Shield batteries and cells.
-	   Badges: S3 Predator
-	   Base files: Added Legends base material files (eye, teeth, hair, etc) so it will auto link when you recolor the models. (Recolor materials not included base files)
+	Added to "Extended":
+	HDRI: Kings Canyon (New), Kings Canyon (Night), Apex Lobby, Sky (Not sure its from which map)
+	Loot items: Basically all of them, heals, nades, backpacks, etc.
+	Effects: Added animated energy to the Shield batteries and cells.
+	Badges: S3 Predator
+	Base files: Added Legends base material files (eye, teeth, hair, etc) so it will auto link when you recolor the models. (Recolor materials not included base files)
 	   
-	   fixes:
-	   Fixed Gibby bubble center icon not displayed.
-	   Fixed mSlot reference before assigning error in Re-color and Autotex.
-	   Changes:
-	   Rewrite the code for recolor - now it supposed to work completely in autopilot mode, recoloring Legends and also weapons. Just select the folder with images or material folder and it will do the job. The code is straight from the oven, so slight chance errors might pop up. Pls feedback if there are any.. For our Titanfall fans - this will also recolor TTF Legends. 
+	fixes:
+	Fixed Gibby bubble center icon not displayed.
+	Fixed mSlot reference before assigning error in Re-color and Autotex.
+	Changes:
+	Rewrite the code for recolor - now it supposed to work completely in autopilot mode, recoloring Legends and also weapons. Just select the folder with images or material folder and it will do the job. The code is straight from the oven, so slight chance errors might pop up. Pls feedback if there are any.. For our Titanfall fans - this will also recolor TTF Legends. 
 	   
-	   Restart Blender after update.
+	Restart Blender after update.
 	   
 v2.2 Changes:
-	   Added to Both Versions:
-	   Addon new updates notification panel, so you wont miss new update
-	   Linked addon to Garlicus Legion Models/Skins Translate list (https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/edit#gid=0)
-	   Restart Blender after update.
+	Added to Both Versions:
+	Addon new updates notification panel, so you wont miss new update
+	Linked addon to Garlicus Legion Models/Skins Translate list (https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/edit#gid=0)
+	Restart Blender after update.
 
 v2.3 Changes:
-	   Quality of Life Update for Both Versions:
-	   Added button for quick open Biast12 Online Archive
-	   Added Update Tracker Panel
-	   Restart Blender after update.
+	Quality of Life Update for Both Versions:
+	Added button for quick open Biast12 Online Archive
+	Added Update Tracker Panel
+	Restart Blender after update.
 v3.0 Changes:
-	   Major changes: 
-	   Now addon supports MacOs
+	Major changes: 
+	Now addon supports MacOs
 	   
-	   "Both Versions"
-	   Effects: 
-	   Fixed Flatline parenting errors
-	   Changed effect to V2 (more accurate with UV Distrotion)
-	   Added POV Flatline effect and parenting
-	   Added POV Flatline reactive animation (Fixed, because it exports broken from Legion+). One click add
-	   "Extended"
-	   Effects: 
-	   Added Respawn Beacon Holo Effect (Animated), Deathbox top part, Heirloom Shards, Epic Shards, Rare Shards, Loot Drone, Loot Ball
-	   Fixes:
-	   Updates Tracker Section - Added Error handler for Legion folder selection (when legion folder named without "+" and version number)
+	"Both Versions"
+	Effects: 
+	Fixed Flatline parenting errors
+	Changed effect to V2 (more accurate with UV Distrotion)
+	Added POV Flatline effect and parenting
+	Added POV Flatline reactive animation (Fixed, because it exports broken from Legion+). One click add
+	"Extended"
+	Effects: 
+	Added Respawn Beacon Holo Effect (Animated), Deathbox top part, Heirloom Shards, Epic Shards, Rare Shards, Loot Drone, Loot Ball
+	Fixes:
+	Updates Tracker Section - Added Error handler for Legion folder selection (when legion folder named without "+" and version number)
 	   
-	   Please re-download Apex_Toolbox_Assets folder as i organized the things inside and also added a new items
-	   Restart Blender after update.
+	Please re-download Apex_Toolbox_Assets folder as i organized the things inside and also added a new items
+	Restart Blender after update.
 	   
 v3.1 Changes:
-	   "Lite":
-	   Appends Shaders: Added Apex Mobile Shader from Biast12
-	   "Extended":  
-	   Added All Heirlooms for quick spawn (already textured), Lifeline, Wattson, Pathfinder comes with animation, this is just to open their heirlooms.
-	   Loot Items: Added Deathbox banner sample, you can change images in shading tab, added text to it with Apex font (just press Tab to edit text)
-	   Badges: Added 20bomb v2 badge with in-game sculls
-	   Append HDRI: Added 4 HDRI from Poly Haven, good quality. Indoor, Outdoor, Outdoor under the shade, Morning Forest. 
-	   Added Sky box sphere (it will spawn when you click button "Set as Sky").
-	   Now you can set Apex sky images as a background for Sky Sphere, it does not block the lights
-	   After you set the Sky image, you can set same image or any other in the list as your HDRI (this will add lights to the scene)
+	"Lite":
+	Appends Shaders: Added Apex Mobile Shader from Biast12
+	"Extended":  
+	Added All Heirlooms for quick spawn (already textured), Lifeline, Wattson, Pathfinder comes with animation, this is just to open their heirlooms.
+	Loot Items: Added Deathbox banner sample, you can change images in shading tab, added text to it with Apex font (just press Tab to edit text)
+	Badges: Added 20bomb v2 badge with in-game sculls
+	Append HDRI: Added 4 HDRI from Poly Haven, good quality. Indoor, Outdoor, Outdoor under the shade, Morning Forest. 
+	Added Sky box sphere (it will spawn when you click button "Set as Sky").
+	Now you can set Apex sky images as a background for Sky Sphere, it does not block the lights
+	After you set the Sky image, you can set same image or any other in the list as your HDRI (this will add lights to the scene)
 
-	   Please re-download Apex_Toolbox_Assets folder
-	   Restart Blender after update.
+	Please re-download Apex_Toolbox_Assets folder
+	Restart Blender after update.
 	   
 v3.2 Changes:
-	   "Both versions":
-	   Fixed: Legends naming translate for Legion+ Fetch data button (it were calling wrong item). Added button to open Online Google Sheet table.
-	   Quality of life changes: Added convenient sliders and color buttons where possible, so do not have to switch to the Shading tab, can control directly from toolbox. Properties will appear after the item been spawned.
-	   Effects:
-	   Wraith portal - compiled all nodes into one shader group with adjustable settings (transparency, colour, brightness), added drivers for inner circles, so the animation now become cyclic.
-	   Added: Weapon Laser sight. Can parent to weapon and adjust to the laser sight location.
+	"Both versions":
+	Fixed: Legends naming translate for Legion+ Fetch data button (it were calling wrong item). Added button to open Online Google Sheet table.
+	Quality of life changes: Added convenient sliders and color buttons where possible, so do not have to switch to the Shading tab, can control directly from toolbox. Properties will appear after the item been spawned.
+	Effects:
+	Wraith portal - compiled all nodes into one shader group with adjustable settings (transparency, colour, brightness), added drivers for inner circles, so the animation now become cyclic.
+	Added: Weapon Laser sight. Can parent to weapon and adjust to the laser sight location.
 
-	   Restart Blender after update.	   
+	Restart Blender after update.	   
+
+v3.3 Changes:
+	"Both versions":
+	Fixed: Error while setting Blender default HDRI
+	Added: 
+		Blender Built-in HDRIs - city, courtyard, forest, interior, night, studio, sunrise, sunset. Since i use those already in the Blender, this does not take space at all.
+		All Blender HDRI's are licenses as CC0 (Creative common). These were created by Greg Zaal (HDRI Haven https://hdrihaven.com)
+		Link to Biast12 Apex Mobile assets
+		Link to Toolbox discussion discord (if you have any suggestions, want to share anything, or something doesnt work - you can do it there)
+	New "Other Effects Tab"
+		Animated Rotational Staging with Camera Setup. Thx to @Deepak_Kaku from Legion+ discord for providing mock up
+		Basic Lights Setup for render models in dark environment. Saw alot of people have no idea how to do it.
+		Basic wireframe modificator effect
+	Assets file NO need to re-download.
+
+	Restart Blender after update.

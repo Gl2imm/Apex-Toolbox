@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (3, 2),
+    "version": (3, 3),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
@@ -33,7 +33,7 @@ import sys
 import platform
 
 ## Toolbox vars ##
-ver = "v.3.2"
+ver = "v.3.3"
 lts_ver = ver
 loadImages = True
 texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
@@ -54,7 +54,7 @@ mprt_lts_ver = '0'
 
 
 mode = 1 #0 - Test Mode; 1 - Live mode
-wh = 1   #0 - W; 1 - H
+wh = 0   #0 - W; 1 - H
 
 
 if mode == 0:
@@ -67,13 +67,18 @@ if mode == 0:
         #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     if wh == 0:
         my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
-        ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
+        ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\") #
         lgn_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\")
         rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
         #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
         #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
 else:
     my_path = (os.path.dirname(os.path.realpath(__file__)))
+
+### For Blender HDRI ###    
+bldr_path = (os.path.dirname(bpy.app.binary_path))
+bldr_ver = bpy.app.version_string.split('.')
+bldr_fdr = bldr_ver[0] + '.' + bldr_ver[1] 
     
 if platform.system() == 'Windows':
     fbs = '\\'
@@ -85,6 +90,7 @@ if platform.system() == 'Windows':
     ap_image = ("\\Image")
     ap_world = ("\\World")
     ap_action = ("\\Action")
+    bldr_hdri_path = (bldr_path + "\\" + bldr_fdr + "\\datafiles\\studiolights\\world\\")
 else:
     fbs = '/'   #forward/back slashes (MacOs)
     blend_file = ("/ApexShader.blend")
@@ -94,8 +100,9 @@ else:
     ap_material = ("/Material")
     ap_image = ("/Image")
     ap_world = ("/World")
-    ap_action = ("/Action")            
-
+    ap_action = ("/Action")
+    bldr_hdri_path = (bldr_path + "/" + bldr_fdr + "/datafiles/studiolights/world/")  
+               
 
 print("**********************************************")
 print("OS Platform: " + platform.system())
@@ -321,9 +328,35 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
                  ('OP15', "Indoor", ""),
                  ('OP16', "Outdoor", ""),
                  ('OP17', "Outdoor under shade", ""),
-                 ('OP18', "Morning Forest", ""),     
+                 ('OP18', "Morning Forest", ""), 
+                 ('OP19', "-- Blender Built-in HDRI --", ""),
+                 ('OP20', "City", ""),
+                 ('OP21', "Courtyard", ""),
+                 ('OP22', "Forest", ""),
+                 ('OP23', "Interior", ""),
+                 ('OP24', "Night", ""),
+                 ('OP25', "Studio", ""),
+                 ('OP26', "Sunrise", ""),
+                 ('OP27', "Sunset", "")      
                 ]
         )
+
+        
+    cust_enum_hdri_noast : bpy.props.EnumProperty(
+        name = "HDRI",
+        description = "Append default HDRI",
+        default='OP1',
+        items = [('OP1', "Blender Default", ""),
+                 ('OP2', "City", ""),
+                 ('OP3', "Courtyard", ""),
+                 ('OP4', "Forest", ""),
+                 ('OP5', "Interior", ""),
+                 ('OP6', "Night", ""),
+                 ('OP7', "Studio", ""),
+                 ('OP8', "Sunrise", ""),
+                 ('OP9', "Sunset", "")      
+                ]
+        )      
 
         
     my_bool : BoolProperty(
@@ -473,6 +506,9 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
         if link == "biast_archive":
             webbrowser.open_new("https://bit.ly/337Cfw2")
             
+        if link == "biast_archive_mobile":
+            webbrowser.open_new("https://bit.ly/3ArgvxY")            
+            
         if link == "io_anim_seanim":
             webbrowser.open_new("https://github.com/SE2Dev/io_anim_seanim/releases")
             
@@ -558,6 +594,9 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
             
             #for x in range(len(lgnd_list)):
             #    print(lgnd_list[x][0])
+            
+        if link == "discord":
+            webbrowser.open_new("https://discord.gg/gFa4mY7")
 
         return {'FINISHED'}
         
@@ -1095,86 +1134,144 @@ class BUTTON_HDRIFULL(bpy.types.Operator):
         scene = context.scene
         prefs = scene.my_prefs
         hdri = (self.hdri)
+        bldr_hdri = ['City','Courtyard','Forest','Interior','Night','Studio','Sunrise','Sunset']
         
+        if mode == 0:
+            asset_folder = ast_fldr
+        else:
+            asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder 
+
         if platform.system() == 'Windows':
             blend_file = ("\\Assets.blend")
         else:
             blend_file = ("/Assets.blend")
+                               
 
-        if mode == 0:
-            asset_folder = ast_fldr
-        else:
-            asset_folder = bpy.context.preferences.addons['Apex_toolbox'].preferences.asset_folder
- 
+        if hdri == 'hdri_noast': 
+            if prefs.cust_enum_hdri_noast == 'OP1':
+                hdri_name = "World"
+            if prefs.cust_enum_hdri_noast == 'OP2':
+                hdri_name = "City"
+            if prefs.cust_enum_hdri_noast == 'OP3':
+                hdri_name = "Courtyard"
+            if prefs.cust_enum_hdri_noast == 'OP4':
+                hdri_name = "Forest"
+            if prefs.cust_enum_hdri_noast == 'OP5':
+                hdri_name = "Interior"
+            if prefs.cust_enum_hdri_noast == 'OP6':
+                hdri_name = "Night"
+            if prefs.cust_enum_hdri_noast == 'OP7':
+                hdri_name = "Studio"
+            if prefs.cust_enum_hdri_noast == 'OP8':
+                hdri_name = "Sunrise"
+            if prefs.cust_enum_hdri_noast == 'OP9':
+                hdri_name = "Sunset" 
+
+            if platform.system() == 'Windows':
+                blend_file = ("\\ApexShader.blend")
+            else:
+                blend_file = ("/ApexShader.blend")               
+            if hdri_name == "World":
+                if bpy.context.scene.world != hdri_name:
+                    if hdri_name not in bpy.data.worlds:
+                        bpy.ops.wm.append(directory =my_path + blend_file + ap_world, filename =hdri_name)
+                    hdri = bpy.data.worlds[hdri_name]
+                    scene.world = hdri
+            else:
+                if bpy.context.scene.world != 'Blender HDRI':
+                    if 'Blender HDRI' not in bpy.data.worlds:                       
+                        bpy.ops.wm.append(directory =my_path + blend_file + ap_world, filename ='Blender HDRI')
+                    hdri = bpy.data.worlds['Blender HDRI']
+                    scene.world = hdri
+                    hdri_img_path = bldr_hdri_path + hdri_name + '.exr'
+                    hdri_image = bpy.data.images.load(hdri_img_path)
+                    bpy.data.worlds['Blender HDRI'].node_tree.nodes['Environment Texture'].image = hdri_image              
+
+
         if hdri == 'hdri': 
             if prefs.cust_enum_hdri == 'OP1':
                 hdri_name = "World"                    
-
             if prefs.cust_enum_hdri == 'OP2':
-                hdri_name = "Apex Lobby HDRI" 
-                        
+                hdri_name = "Apex Lobby HDRI"          
             if prefs.cust_enum_hdri == 'OP3':
                 hdri_name = "Party crasher HDRI"
-                
             if prefs.cust_enum_hdri == 'OP4':
                 hdri_name = "Encore HDRI"
-                
             if prefs.cust_enum_hdri == 'OP5':
                 hdri_name = "Habitat HDRI"
-                
             if prefs.cust_enum_hdri == 'OP6':
                 hdri_name = "Kings Canyon HDRI"
-                
             if prefs.cust_enum_hdri == 'OP7':
                 hdri_name = "Kings Canyon New HDRI"
-                
             if prefs.cust_enum_hdri == 'OP8':
                 hdri_name = "Kings Canyon Night HDRI"                        
-                
             if prefs.cust_enum_hdri == 'OP9':
                 hdri_name = "Olympus HDRI"
-                
             if prefs.cust_enum_hdri == 'OP10':
                 hdri_name = "Phase Runner HDRI"
-                
             if prefs.cust_enum_hdri == 'OP11':
                 hdri_name = "Storm Point HDRI"
-                
             if prefs.cust_enum_hdri == 'OP12':
                 hdri_name = "Worlds Edge HDRI" 
-                
             if prefs.cust_enum_hdri == 'OP13':
                 hdri_name = "Sky HDRI"
-
             if prefs.cust_enum_hdri == 'OP14':
                 hdri_name = "blank"
-                
             if prefs.cust_enum_hdri == 'OP15':
                 hdri_name = "Indoor"
-                
             if prefs.cust_enum_hdri == 'OP16':
                 hdri_name = "Outdoor"
-                
             if prefs.cust_enum_hdri == 'OP17':
                 hdri_name = "Outdoor under shade"
-                
             if prefs.cust_enum_hdri == 'OP18':
-                hdri_name = "Morning Forest"                                                                                                  
-                
-
-            if hdri_name not in bpy.data.worlds:
-                if hdri_name == 'blank':
-                    pass
-                else:
-                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_world, filename =hdri_name)
-                    hdri = bpy.data.worlds[hdri_name]
+                hdri_name = "Morning Forest" 
+            if prefs.cust_enum_hdri == 'OP19':
+                hdri_name = "blank"
+            if prefs.cust_enum_hdri == 'OP20':
+                hdri_name = "City"
+            if prefs.cust_enum_hdri == 'OP21':
+                hdri_name = "Courtyard"
+            if prefs.cust_enum_hdri == 'OP22':
+                hdri_name = "Forest"
+            if prefs.cust_enum_hdri == 'OP23':
+                hdri_name = "Interior"
+            if prefs.cust_enum_hdri == 'OP24':
+                hdri_name = "Night"
+            if prefs.cust_enum_hdri == 'OP25':
+                hdri_name = "Studio"
+            if prefs.cust_enum_hdri == 'OP26':
+                hdri_name = "Sunrise"
+            if prefs.cust_enum_hdri == 'OP27':
+                hdri_name = "Sunset"                                                                                                 
+            
+            
+            if hdri_name in bldr_hdri:
+                if bpy.context.scene.world != 'Blender HDRI':
+                    if 'Blender HDRI' not in bpy.data.worlds:
+                        if platform.system() == 'Windows':
+                            blend_file = ("\\ApexShader.blend")
+                        else:
+                            blend_file = ("/ApexShader.blend")                         
+                        bpy.ops.wm.append(directory =my_path + blend_file + ap_world, filename ='Blender HDRI')
+                    hdri = bpy.data.worlds['Blender HDRI']
                     scene.world = hdri
-                    print(hdri_name + " has been Appended and applied to the World")            
+                    hdri_img_path = bldr_hdri_path + hdri_name + '.exr'
+                    hdri_image = bpy.data.images.load(hdri_img_path)
+                    bpy.data.worlds['Blender HDRI'].node_tree.nodes['Environment Texture'].image = hdri_image 
             else:
-                if bpy.context.scene.world != hdri_name:
-                    hdri = bpy.data.worlds[hdri_name]
-                    scene.world = hdri
-                    print(hdri_name + " is already inside and it's been applied to the World") 
+                if hdri_name not in bpy.data.worlds:
+                    if hdri_name == 'blank':
+                        pass
+                    else:
+                        bpy.ops.wm.append(directory =asset_folder + blend_file + ap_world, filename =hdri_name)
+                        hdri = bpy.data.worlds[hdri_name]
+                        scene.world = hdri
+                        print(hdri_name + " has been Appended and applied to the World")            
+                else:
+                    if bpy.context.scene.world != hdri_name:
+                        hdri = bpy.data.worlds[hdri_name]
+                        scene.world = hdri
+                        print(hdri_name + " is already inside and it's been applied to the World") 
 
 
         if hdri == 'background': 
@@ -2223,26 +2320,42 @@ class LB_BUTTON_SPAWN(bpy.types.Operator):
             'Loot Ball': [
                 {'name': 'loot_sphere_LOD0_skel'}, 
                 {'name': 'loot_sphere_LOD0_SEModelMesh.006'}
+            ],
+            'Animated Staging': [
+                {'name': 'Animated Staging With Light'}, 
+                {'name': 'Area_left'},
+                {'name': 'Area_overhead'},
+                {'name': 'Area_right'},
+                {'name': 'Floor Plane'},
+                {'name': 'Staging Camera'},
             ]                                                                                                                                                                                                                     
             }   
         
-        #### Main loop for Lobby and Other items ####    
-        for i in range(len(all_lobby_other_items)):
-            item = all_lobby_other_items.get(str(i))
-            split_item = item.split()
+        #### Main loop for Lobby and Other items #### 
+        if lobby_other == 'Animated Staging':
+            if platform.system() == 'Windows':
+                blend_file = ("\\ApexShader.blend")
+            else:
+                blend_file = ("/ApexShader.blend")                         
+            bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files=lobby_other_items.get(lobby_other))
+            print(lobby_other + " Appended")
+        else:                       
+            for i in range(len(all_lobby_other_items)):
+                item = all_lobby_other_items.get(str(i))
+                split_item = item.split()
 
-            if lobby_other == all_lobby_other_items.get(str(i)):
-                
-                ### Lobby Items ###
-                if i in range(*lobby_lobby_range):
-                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=lobby_other_items.get(item))
+                if lobby_other == all_lobby_other_items.get(str(i)):
                     
-                ### Other Items ###                    
-                if i in range(*lobby_other_range):
-                    bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=lobby_other_items.get(item))
-                                                  
-                print(item + " Appended") 
-                break
+                    ### Lobby Items ###
+                    if i in range(*lobby_lobby_range):
+                        bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=lobby_other_items.get(item))
+                        
+                    ### Other Items ###                    
+                    if i in range(*lobby_other_range):
+                        bpy.ops.wm.append(directory =asset_folder + blend_file + ap_object, files=lobby_other_items.get(item))
+                                                      
+                    print(item + " Appended") 
+                    break
             
 
         return {'FINISHED'} 
@@ -2363,7 +2476,91 @@ class HL_BUTTON_SPAWN(bpy.types.Operator):
 
         return {'FINISHED'} 
     
+
+######### Other Effects Buttons ###########    
+class EF_BUTTON_SPAWN(bpy.types.Operator):
+    bl_label = "EF_BUTTON_SPAWN"
+    bl_idname = "object.ef_button_spawn"
+    bl_options = {'REGISTER', 'UNDO'}
+    cool_effect : bpy.props.StringProperty(name= "Added")
+
+    #Operator Properties
+    wfrm_thickness : FloatProperty(
+        name = "Wireframe Thickness",
+        description = "Thickness of the applied wireframe",
+        default = 0.07,
+        min = 0,
+        max = 0.15
+    ) 
+
+    def execute(self, context):
+        cool_effect = (self.cool_effect)
+        wfrm_thickness = (self.wfrm_thickness)
+        sel = bpy.context.selected_objects 
         
+        #### Wireframe Effect #### 
+        if cool_effect == 'wireframe':
+            if not bpy.context.selected_objects:
+                print("Nothing selected. Please select Object to apply Effect")
+            else:
+                for obj in sel:
+                    if obj.type in ["MESH"]:
+                        bpy.context.view_layer.objects.active = obj
+
+                        exists = False
+                        for mod in bpy.context.object.modifiers:
+                            if mod.name == "Wireframe":
+                                exists = True
+
+                        if exists:
+                            mod = bpy.context.object.modifiers["Wireframe"]
+                            mod.thickness = (wfrm_thickness)
+                        else: 
+                            obj.modifiers.new("Wireframe","WIREFRAME")
+                            mod = obj.modifiers["Wireframe"]
+                            mod.thickness = (wfrm_thickness)
+                                
+                    print("Cool Wireframe Effect Applied") 
+        
+        #### Wireframe Clear Effect #### 
+        if cool_effect == 'wireframe_clear':
+            if not bpy.context.selected_objects:
+                print("Nothing selected. Please select Object to apply Effect")
+            else:
+                for obj in sel:
+                    if obj.type in ["MESH"]:
+                        bpy.context.view_layer.objects.active = obj
+
+                        exists = False
+                        for mod in bpy.context.object.modifiers:
+                            if mod.name == "Wireframe":
+                                exists = True
+
+                        if exists:
+                            mod = obj.modifiers["Wireframe"]
+                            obj.modifiers.remove(mod)
+                                
+                    print("Cool Wireframe Effect Cleared")                   
+
+        #### Set Active (Staging spawn in Lobby Other Items) ####        
+        if cool_effect == 'Staging Camera':
+            cam = bpy.data.objects['Staging Camera']
+            bpy.data.scenes['Scene'].camera = cam
+            bpy.ops.object.select_all(action='DESELECT')
+            bpy.context.view_layer.objects.active = None
+            bpy.data.objects['Staging Camera'].select_set(True)
+            bpy.context.view_layer.objects.active = bpy.data.objects['Staging Camera']
+            print("'Staging Camera' Set as Active")
+            del cam
+            
+            
+        #### Add Basic Lights ####    
+        if cool_effect == 'basic lights':
+            bpy.ops.wm.append(directory =my_path + blend_file + ap_collection, filename='Basic Lights Setup')
+                   
+            
+        return {'FINISHED'}             
+                              
     
     #PANEL UI
 ####################################
@@ -2383,7 +2580,7 @@ class AUTOTEX_MENU(bpy.types.Panel):
             
                    
         ######## Update Notifier ########
-        if lts_ver != ver:
+        if lts_ver > ver:
             box = layout.box()
             #box.label(text = "Addon Update Available: " + lts_ver, icon='IMPORT') 
             box.operator('object.lgndtranslate_url', text = "Addon Update Available: " + lts_ver, icon='IMPORT').link = "update"
@@ -2491,45 +2688,49 @@ class AUTOTEX_MENU(bpy.types.Panel):
         row = layout.row()
         icon = 'DOWNARROW_HLT' if context.scene.subpanel_status_2 else 'RIGHTARROW'
         row.prop(context.scene, 'subpanel_status_2', icon=icon, icon_only=True)
-        if assets_set == 0:
-            row.label(text = "Append Shaders", icon= "NODE_MATERIAL")
-        else:
-            row.label(text = "Append Shaders & HDRI", icon= "NODE_MATERIAL")
+
+        row.label(text = "Append Shaders & HDRI", icon= "NODE_MATERIAL")
         # some data on the subpanel
         if context.scene.subpanel_status_2:
-            box = layout.box()
-           
+            box = layout.box()   
             box.prop(prefs, 'cust_enum_shader')
             split = box.split(factor = 0.6)
             col = split.column(align = True)
-            split.operator("object.button_shaders", text = "Add Shader")
-
+            split.operator("object.button_shaders", text = "Add Shader")       
             if assets_set == 0:
-                pass
+                box.prop(prefs, 'cust_enum_hdri_noast', text = "HDRI")
+                split = box.split(factor = 0.5)
+                col = split.column(align = True)
+                col.label(text = "")
+                split.operator("object.button_hdrifull", text = "Set as HDRI").hdri = "hdri_noast"  
             else:
                 box.prop(prefs, 'cust_enum_hdri')
                 split = box.split(factor = 0.5)
                 col = split.column(align = True)
                 col.operator("object.button_hdrifull", text = "Set as Sky").hdri = "background"
-                split.operator("object.button_hdrifull", text = "Set as HDRI").hdri = "hdri"
-                
-                try:
-                    wrld = bpy.context.scene.world.name
-                except:
-                    pass
-                else:
-                    box.label(text='** Current World/HDRI Controls: **')
-                    wrld_0 = bpy.data.worlds[wrld].node_tree.nodes['Background'].inputs['Strength']
-                    wrld_1 = bpy.data.worlds[wrld].node_tree.nodes['Mapping'].inputs['Rotation']
-                    split = box.split(factor = 0.5)
-                    col = split.column(align = True)
-                    col.label(text='Brightness:')
-                    split.prop(wrld_0, "default_value", text = "")
+                split.operator("object.button_hdrifull", text = "Set as HDRI").hdri = "hdri"    
+            try:
+                wrld = bpy.context.scene.world.name
+            except:
+                pass
+            else:
+                box.label(text='** Current World/HDRI Controls: **')
+                wrld_0 = bpy.data.worlds[wrld].node_tree.nodes['Background'].inputs['Strength']
+                if wrld != 'World':
+                    wrld_1 = bpy.data.worlds[wrld].node_tree.nodes['Mapping'].inputs['Rotation']                     
+                split = box.split(factor = 0.5)
+                col = split.column(align = True)
+                col.label(text='Brightness:')
+                split.prop(wrld_0, "default_value", text = "")
+                if wrld != 'World':
                     split = box.split(factor = 0.5)
                     col = split.column(align = True)
                     col.label(text='Rotation:')
                     split.prop(wrld_1, "default_value", text = "")                    
-                                     
+            
+            if assets_set == 0:
+                pass
+            else:                         
                 box.label(text = "*Set as Sky - just a background")
                 box.label(text = "*Set as HDRI - apply lights")
                 box.label(text = "*Not all images can set as Sky")
@@ -2539,7 +2740,11 @@ class AUTOTEX_MENU(bpy.types.Panel):
 
         row = layout.row()  
         row = layout.row()   
-        row.operator('object.lgndtranslate_url', text = "Biast12 Apex PC Assets Archive", icon='URL').link = "biast_archive"    
+        row.operator('object.lgndtranslate_url', text = "Biast12 Apex PC Assets", icon='URL').link = "biast_archive"
+        row = layout.row()
+        row.operator('object.lgndtranslate_url', text = "Biast12 Apex Mobile Assets", icon='URL').link = "biast_archive_mobile" 
+        row = layout.row()  
+        row.operator('object.lgndtranslate_url', text = "Toolbox Discord Server", icon='ORIENTATION_GIMBAL').link = "discord"           
 
 
 
@@ -3141,7 +3346,45 @@ class EFFECTS_PT_panel(bpy.types.Panel):
             """ 
              
 
-              
+######### Other Effects Tab ########### 
+class OTHERS_PT_panel(bpy.types.Panel):
+    bl_parent_id = "OBJECT_PT_panel"
+    bl_label = "OTHER EFFECTS COLLECTION"  
+    bl_space_type = 'VIEW_3D' 
+    bl_region_type = 'UI'
+    bl_options = {"DEFAULT_CLOSED"}
+    
+
+    
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+        prefs = scene.my_prefs
+
+        ######### Animated Staging #########
+        box = layout.box()
+        box.operator('object.lb_button_spawn', text = 'Animated Staging + Camera').lobby_other = 'Animated Staging'
+        try:
+            bpy.data.objects['Staging Camera']
+        except:
+            pass
+        else:               
+            #box = layout.box()
+            split = box.split(factor = 0.5)
+            col = split.column(align = True)
+            col.label(text='')
+            split.operator('object.ef_button_spawn', text = "Set Active").cool_effect = 'Staging Camera'
+                
+        ######### Basic Lights #########
+        box.operator('object.ef_button_spawn', text = 'Basic Lights Setup').cool_effect = 'basic lights'
+        
+        ######### Wireframe Effect #########                
+        box.operator('object.ef_button_spawn', text = 'Cool Wireframe effect to Model').cool_effect = 'wireframe'
+        split = box.split(factor = 0.6)
+        col = split.column(align = True)
+        col.label(text='')
+        split.operator('object.ef_button_spawn', text = 'Clear Effect').cool_effect = 'wireframe_clear'
+
 
 ######### Legends/Weapons Translate Tab ########### 
 class TRANSLATE_PT_panel(bpy.types.Panel):
@@ -3327,7 +3570,8 @@ class UPDATE_PT_panel(bpy.types.Panel):
         split = box.split(factor = 0.4)
         col = split.column(align = True)
         col.label(text="")  
-        split.operator('object.lgndtranslate_url', text ="Check for Updates", icon='URL').link = "check_update"                                                                                                   
+        split.operator('object.lgndtranslate_url', text ="Check for Updates", icon='URL').link = "check_update"  
+                                                                                                         
 
 
     #CLASS REGISTER 
@@ -3353,6 +3597,8 @@ classes = (
         LT_BUTTON_SPAWN,
         LB_BUTTON_SPAWN,
         HL_BUTTON_SPAWN,
+        EF_BUTTON_SPAWN,
+        OTHERS_PT_panel,
         TRANSLATE_PT_panel,
         UPDATE_PT_panel
         )
