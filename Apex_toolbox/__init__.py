@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (3, 3),
+    "version": (3, 4),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
@@ -33,7 +33,7 @@ import sys
 import platform
 
 ## Toolbox vars ##
-ver = "v.3.3"
+ver = "v.3.4"
 lts_ver = ver
 loadImages = True
 texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
@@ -54,7 +54,7 @@ mprt_lts_ver = '0'
 
 
 mode = 1 #0 - Test Mode; 1 - Live mode
-wh = 0   #0 - W; 1 - H
+wh = 1   #0 - W; 1 - H
 
 
 if mode == 0:
@@ -1275,6 +1275,8 @@ class BUTTON_HDRIFULL(bpy.types.Operator):
 
 
         if hdri == 'background': 
+            hdri_name = 'blank'
+            
             if prefs.cust_enum_hdri == 'OP1':
                 hdri_name = "blank"                    
 
