@@ -119,10 +119,18 @@ v3.3 Changes:
 		All Blender HDRI's are licenses as CC0 (Creative common). These were created by Greg Zaal (HDRI Haven https://hdrihaven.com)
 		Link to Biast12 Apex Mobile assets
 		Link to Toolbox discussion discord (if you have any suggestions, want to share anything, or something doesnt work - you can do it there)
+	Changed:
+		Set Valkyrie flames to be animated by default
 	New "Other Effects Tab"
 		Animated Rotational Staging with Camera Setup. Thx to @Deepak_Kaku from Legion+ discord for providing mock up
 		Basic Lights Setup for render models in dark environment. Saw alot of people have no idea how to do it.
 		Basic wireframe modificator effect
 	Assets file NO need to re-download.
+
+	Restart Blender after update.
+
+v3.4 Changes:
+	"Both versions":
+	Fixed: Quick fix for the Error when setting non Apex image as Sky in HDRI tab. Missed one stroke of code, my bad :)
 
 	Restart Blender after update.
