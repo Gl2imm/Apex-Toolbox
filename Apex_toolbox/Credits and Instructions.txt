@@ -36,7 +36,13 @@ A little tool that will help you to texture Apex Models automatically. A small i
 Currently support Original "Apex Shader" that comes with Autotex and new Option S/G Blender. 
 
 Credits: Addon Created by llenoco. There is no link to the github, as the Addon were posted in Legion+ Discord https://discord.gg/ADek6fxVGe
+											
+											
+####################################			
+       Toon Auto_tex (Beta):
+####################################
 
+Apex ToonShader. For Texturing Models Similar to Comics Style. Works Same as AutoTex but with Toon Shader (Beta). Instructions inside Toolbox 
 
 
 ####################################			

@@ -14,7 +14,7 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (3, 4),
+    "version": (3, 5),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
@@ -33,7 +33,7 @@ import sys
 import platform
 
 ## Toolbox vars ##
-ver = "v.3.4"
+ver = "v.3.5"
 lts_ver = ver
 loadImages = True
 texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
@@ -547,8 +547,44 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
             t.write(text)
             bpy.context.area.ui_type = 'TEXT_EDITOR'
             bpy.context.space_data.text = bpy.data.texts['Version_log']
-            bpy.ops.text.jump(line=1)             
-
+            bpy.ops.text.jump(line=1)
+            
+        if link == "toon_shader":
+            texts_exist = bpy.data.texts.get('Toon Shader Instructions')
+            if texts_exist != None:
+                bpy.context.area.ui_type = 'TEXT_EDITOR'
+                bpy.context.space_data.text = bpy.data.texts['Toon Shader Instructions']
+            else:
+                t = bpy.data.texts.new("Toon Shader Instructions")
+                t.write("To switch back to normal view switch from 'TEXT EDITOR' to '3D Viewport'. Or just press 'Shift+F5' \n \n \n")           
+                t.write("Apex Toon Shader (Beta)\n") 
+                t.write("This was inspired by Lightning Boy Studio Toon Shader\n") 
+                t.write("Some nodes and Key light setup were taken from this tutorial https://youtu.be/VmyMbgMh-eQ\n\n") 
+                t.write("Warning:\n") 
+                t.write("1. Please do not expect the model look cool out of the box, for the model to look nice\n") 
+                t.write("   you will have to do some manual adjustments, as well as setting up 'Key Light' and 'Fill Light'\n") 
+                t.write("   directions. They specify directions for the shadow outlines\n") 
+                t.write("2. This Setup Works only in Eevee\n") 
+                t.write("3. This setup does not need Lights or HDRI (Will not work if you add any)\n") 
+                t.write("4. Currently this works with a model only, you may have custom background, etc.\n") 
+                t.write("   if you have other models to include together - you will need to manually add 'Apex ToonShader'\n") 
+                t.write("   and setup model with this shader (no Principal or other shader, as they need lights)\n") 
+                t.write("5. The Outline for the Head is showing up in the Eyes for some models - Go to Modifiers Tab\n") 
+                t.write("   and set Solidify modifier Thickness to -0.015m or less (closer to 0)\n\n") 
+                t.write("Guide:\n") 
+                t.write("1. Import a New Model (Semodel)\n")                     
+                t.write("2. Select the model parts you want to Toon and click 'Toon it'\n") 
+                t.write("3. Use 'Key Light' and 'Fill Light' to specify directions for the shadow outlines\n") 
+                t.write("4. Sometimes Shadows are glitching, you may try set it to 'None' (Material Settings, Shadow Opacity)\n") 
+                t.write("5. Set 'Key Light Color' and 'Fill Light Color' to your liking\n") 
+                t.write("6. ToolBox will show only Key settings, more settings is in the Shader Tab\n") 
+                t.write("7. All the settings needed for this shader to work will be autoset and will be shown in ToolBox\n\n") 
+                t.write("For now it work only this way\n") 
+                t.write("Will update if there any solutions found for other objects in the Scene\n\n") 
+                t.write("Good Luck with your Renders!!")  
+                bpy.context.area.ui_type = 'TEXT_EDITOR'
+                bpy.context.space_data.text = bpy.data.texts['Toon Shader Instructions']
+                bpy.ops.text.jump(line=1)
 
         if link == "asset_file":
             webbrowser.open_new("https://drive.google.com/file/d/14z98OfTWH9Uku2MFssg1bs2qjjVVkOWz/view?usp=sharing")            
@@ -795,6 +831,199 @@ class BUTTON_CUSTOM(bpy.types.Operator):
         return {'FINISHED'}
         
 
+
+############   TOON AUTOTEX   ##############    
+class BUTTON_TOON(bpy.types.Operator):
+    bl_label = "BUTTON_TOON"
+    bl_idname = "object.button_toon"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    
+    def execute(self, context):
+        scene = context.scene
+        prefs = scene.my_prefs
+        skip = ['wraith_base_hair','wraith_base_eyecornea','wraith_base_eyeshadow','wraith_base_eye']
+           
+
+        selection = [obj.name for obj in bpy.context.selected_objects]
+         
+        if bpy.data.node_groups.get('Apex ToonShader') == None:
+            bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex ToonShader')
+        
+        if bpy.data.collections.get('Apex ToonShader') == None:
+            bpy.ops.wm.append(directory =my_path + blend_file + ap_collection, filename ='Apex ToonShader')
+        
+        bpy.context.scene.render.engine = 'BLENDER_EEVEE'
+        bpy.context.space_data.shading.use_scene_lights = True
+        bpy.context.space_data.shading.use_scene_world = True
+        bpy.context.scene.eevee.taa_samples = 64
+        bpy.context.scene.eevee.use_bloom = True
+        bpy.context.scene.eevee.use_gtao = True
+        bpy.context.scene.eevee.use_shadow_high_bitdepth = True
+        bpy.context.scene.view_settings.view_transform = 'Standard'
+        bpy.context.scene.view_settings.look = 'Medium High Contrast'
+        
+           
+        if bpy.context.scene.world != "World":
+            if "World" not in bpy.data.worlds:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_world, filename ="World")
+            set_default = bpy.data.worlds["World"]
+            scene.world = set_default      
+        
+        mat = bpy.data.materials.get("Black Outline")
+        if mat == None:
+            bpy.ops.wm.append(directory =my_path + blend_file + ap_material, filename ='Black Outline')
+            mat = bpy.data.materials.get("Black Outline")        
+            
+        for x in range(len(selection)):
+            bpy.data.objects[selection[x]].select_set(True)
+            x += 1            
+ 
+                    
+        for o in bpy.context.selected_objects:
+            if o.type == 'MESH':    
+                isbase = False
+
+                for i in range(len(skip)):
+                    if skip[i] in o.material_slots:
+                        isbase = True
+                        break
+                
+                if isbase == False:
+                    if "Black Outline" not in o.material_slots:
+                        o.data.materials.append(mat)
+                        #Modifier
+                        exists = False
+                        for mod in o.modifiers:
+                            if mod.name == "OUTLINE_SOLIDIFY":
+                                exists = True
+                        if exists:
+                            mod = bpy.context.object.modifiers["OUTLINE_SOLIDIFY"]
+                            mod.thickness = -0.1
+                        else: 
+                            o.modifiers.new("OUTLINE_SOLIDIFY","SOLIDIFY")
+                            mod = o.modifiers["OUTLINE_SOLIDIFY"]
+                            mod.use_flip_normals = True
+                            mod.use_rim = False
+                            mod.thickness = -0.1
+                            mod.material_offset = 999
+                    else:
+                        pass
+                else:
+                    pass
+
+                
+                for mSlot in o.material_slots:
+                    MatNodeTree = bpy.data.materials[mSlot.name]
+                    try:
+                        imageNode = MatNodeTree.node_tree.nodes["Image Texture"]
+                    except:
+                        print(MatNodeTree.name)
+                        continue
+                    try:
+                        image = os.path.basename(bpy.path.abspath(imageNode.image.filepath))
+                    except:
+                        print(mSlot.name, "missing texture.")
+                    imagepath = os.path.dirname(bpy.path.abspath(imageNode.image.filepath))
+                    imageType = imageNode.image.name.split(".")[0].split('_')[-1]
+                    imageName = MatNodeTree.name
+                    imageFormat = image.split('.')[1]
+                    
+                    if not any(imageType in x for x in texSets):
+                        print(image,"could not be mapped.")        
+                        continue
+
+
+                    MatNodeTree.node_tree.nodes.clear()
+                    
+                    for i in range(len(texSets)):
+                        for j in range(len(texSets[i])):
+                            texImageName = imageName + '_' + texSets[i][j] + '.' + imageFormat
+                            texImage = bpy.data.images.get(texImageName)
+                            texFile = imagepath + fbs + texImageName
+                            if not texImage and loadImages:
+                                if os.path.isfile(texFile):
+                                    texImage = bpy.data.images.load(texFile)
+                            if texImage:
+                                if i > 2:
+                                    texImage.colorspace_settings.name = 'Non-Color'
+                                texImage.alpha_mode = 'CHANNEL_PACKED'
+                                texNode = MatNodeTree.node_tree.nodes.new('ShaderNodeTexImage')
+                                texNode.image = texImage
+                                texNode.name = str(i)
+                                texNode.location = (-50,50-260*i)
+                                break
+                        #print("AAAAAAAAAAAAAAAAA")
+                        #print(texImage)
+                    
+                    if isbase == True:        
+                        if mSlot.name == 'wraith_base_eyecornea' or mSlot.name == 'wraith_base_eyeshadow':
+                            NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                            NodeOutput.location = (800,0)
+                            node_transparency = MatNodeTree.node_tree.nodes.new(type="ShaderNodeBsdfTransparent")
+                            node_transparency.location = 300,200 
+                            MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], node_transparency.outputs[0])                 
+                        else:
+                            NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                            NodeGroup.node_tree = bpy.data.node_groups.get('Apex ToonShader')
+                            MatNodeTree.node_tree.nodes['Group'].name = 'Apex ToonShader'
+                            MatNodeTree.node_tree.nodes['Apex ToonShader'].label = 'Apex ToonShader'
+                            NodeGroup.location = (300,0)
+                            NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                            NodeOutput.location = (800,0)
+                            
+                            node_transparency = MatNodeTree.node_tree.nodes.new(type="ShaderNodeBsdfTransparent")
+                            node_transparency.location = 300,200
+                            node_mix = MatNodeTree.node_tree.nodes.new(type="ShaderNodeMixShader")
+                            node_mix.location = 500,150
+                                
+                            MatNodeTree.node_tree.links.new(node_mix.inputs[1], node_transparency.outputs[0])
+                            MatNodeTree.node_tree.links.new(node_mix.inputs[2], NodeGroup.outputs[0])
+                            MatNodeTree.node_tree.links.new(node_mix.outputs[0], NodeOutput.inputs[0])
+                            if mSlot.name == 'wraith_base_eye':
+                                node_mix.inputs[0].default_value = 1 
+                            
+                        try:
+                            MatNodeTree.node_tree.links.new(NodeGroup.inputs["--- Base Color ---"], MatNodeTree.node_tree.nodes[0].outputs["Color"])
+                        except:
+                            pass
+                        
+                        if mSlot.name == 'wraith_base_hair':
+                            try:
+                                MatNodeTree.node_tree.links.new(node_mix.inputs[0], MatNodeTree.node_tree.nodes[3].outputs["Color"])
+                            except:
+                                pass                            
+
+                    else:  
+                          
+                        NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                        NodeGroup.node_tree = bpy.data.node_groups.get('Apex ToonShader')
+                        MatNodeTree.node_tree.nodes['Group'].name = 'Apex ToonShader'
+                        MatNodeTree.node_tree.nodes['Apex ToonShader'].label = 'Apex ToonShader'
+                        NodeGroup.location = (300,0)
+                        NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                        NodeOutput.location = (500,0)
+                        MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+                            
+                        ColorDict = {
+                            "0": "--- Base Color ---",
+                            "1": "--- Specular map ---",
+                            "2": "--- Emission Map ---",
+                        }
+                                          
+
+                        for slot in ColorDict:
+                            try:
+                                MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                            except:
+                                pass
+                    mSlot.material.blend_method = 'HASHED'
+                    print("Textured",mSlot.name)
+                                 
+                      
+        return {'FINISHED'}
+    
+    
     
 ############   RECOLOR   ##############     
 class BUTTON_CUSTOM2(bpy.types.Operator):
@@ -2661,7 +2890,118 @@ class AUTOTEX_MENU(bpy.types.Panel):
             split.operator("object.button_custom", text = "Texture Model")
             row = layout.row()
             row.label(text = "------------------------------------------------------")            
+ 
+ 
+        ######### Auto_toon ###########
+        row = layout.row()
+        icon = 'DOWNARROW_HLT' if context.scene.subpanel_toon else 'RIGHTARROW'
+        row.prop(context.scene, 'subpanel_toon', icon=icon, icon_only=True)
+        row.label(text = "TOON Auto_tex (Beta)", icon= "UV")
+        # some data on the subpanel
+        if context.scene.subpanel_toon:           
+            box = layout.box()
+            box.operator('object.lgndtranslate_url', text = "Read Instructions", icon='INFO').link = "toon_shader"
+            split = box.split(factor = 0.5)
+            col = split.column(align = True)
+            col.label(text = "Select mesh then:")
+            split.operator("object.button_toon", text = "Toon It")
             
+            key_lights = bpy.data.collections.get('Apex ToonShader')                        
+            if key_lights != None:
+                if bpy.context.selected_objects != None: 
+                    try:
+                        act_mat = bpy.context.object.active_material
+                    except:
+                        pass
+                    try:
+                        toon_shader = bpy.context.object.active_material.node_tree.nodes['Apex ToonShader']
+                    except:
+                        pass
+                    else:
+                        box.label(text="")
+                        box.label(text="Shader Key Settings:")
+                        set_1 = toon_shader.inputs[4]
+                        set_2 = toon_shader.inputs[5]
+                        set_3 = toon_shader.inputs[6]
+                        set_4 = toon_shader.inputs[7]
+                        set_5 = toon_shader.inputs[8]
+                        set_6 = toon_shader.inputs[11]
+                        set_7 = toon_shader.inputs[12]
+                        set_8 = toon_shader.inputs[13]
+                        set_9 = toon_shader.inputs[21]                        
+                        
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text=set_1.name)
+                        split.prop(set_1, "default_value", text = "")
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text=set_2.name)
+                        split.prop(set_2, "default_value", text = "")
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text=set_3.name)
+                        split.prop(set_3, "default_value", text = "")
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text=set_4.name)
+                        split.prop(set_4, "default_value", text = "")
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text=set_5.name)
+                        split.prop(set_5, "default_value", text = "")
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text='Reflection Color')
+                        split.prop(set_6, "default_value", text = "")
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text=set_7.name)
+                        split.prop(set_7, "default_value", text = "")
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text=set_8.name)
+                        split.prop(set_8, "default_value", text = "")
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text=set_9.name)
+                        split.prop(set_9, "default_value", text = "")
+                        box.label(text="If Shadow Glitchy - Set 'None'")
+                        split = box.split(factor = 0.5)
+                        col = split.column(align = True)
+                        col.label(text='Shadow')
+                        split.prop(act_mat, "shadow_method", text = "")
+                        
+    
+                
+                box.label(text="")
+                box.label(text="Settings Modified by Addon:")
+                box.label(text="-- Optional Settings (Can change): --")
+                box.prop(bpy.context.scene.render, "film_transparent", text = "Transparent background")
+                box.prop(bpy.context.scene.view_settings, "view_transform", text = "Color")
+                box.prop(bpy.context.scene.view_settings, "look")
+                
+                box.label(text="")
+                box.label(text="-- Settings needed for Shader: --")                
+                box.prop(bpy.context.scene.render, "engine")
+                box.prop(bpy.context.space_data.shading, "use_scene_lights")
+                box.prop(bpy.context.space_data.shading, "use_scene_world")
+                box.prop(bpy.context.scene.eevee, "taa_samples")
+                box.prop(bpy.context.scene.eevee, "use_bloom")
+                box.prop(bpy.context.scene.eevee, "use_gtao")
+                box.prop(bpy.context.scene.eevee, "use_shadow_high_bitdepth")
+
+            '''
+            wrld_0 = bpy.data.worlds[wrld].node_tree.nodes['Background'].inputs['Strength']
+            if wrld != 'World':
+                wrld_1 = bpy.data.worlds[wrld].node_tree.nodes['Mapping'].inputs['Rotation']                     
+            split = box.split(factor = 0.5)
+            col = split.column(align = True)
+            col.label(text='Brightness:')
+            split.prop(wrld_0, "default_value", text = "")
+            '''    
+            row = layout.row()
+            row.label(text = "------------------------------------------------------")            
                     
         
         ######### Re-color ###########
@@ -3582,7 +3922,8 @@ classes = (
         apexToolsPreferences,
         PROPERTIES_CUSTOM, 
         LGNDTRANSLATE_URL,
-        BUTTON_CUSTOM, 
+        BUTTON_CUSTOM,
+        BUTTON_TOON, 
         BUTTON_CUSTOM2, 
         BUTTON_SHADERS, 
         BUTTON_HDRIFULL, 
@@ -3612,6 +3953,7 @@ def register():
     bpy.types.Scene.my_prefs = bpy.props.PointerProperty(type= PROPERTIES_CUSTOM)
     Scene.subpanel_readme = BoolProperty(default=False)
     Scene.subpanel_status_0 = BoolProperty(default=False)
+    Scene.subpanel_toon = BoolProperty(default=False)
     Scene.subpanel_status_1 = BoolProperty(default=False)
     Scene.subpanel_status_2 = BoolProperty(default=False)
     Scene.subpanel_effects_wraith = BoolProperty(default=False)
@@ -3647,6 +3989,7 @@ def unregister():
     del bpy.types.Scene.my_prefs
     del Scene.subpanel_readme
     del Scene.subpanel_status_0
+    del Scene.subpanel_toon
     del Scene.subpanel_status_1
     del Scene.subpanel_status_2
     del Scene.subpanel_effects_wraith

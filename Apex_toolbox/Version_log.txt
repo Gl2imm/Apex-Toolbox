@@ -134,3 +134,9 @@ v3.4 Changes:
 	Fixed: Quick fix for the Error when setting non Apex image as Sky in HDRI tab. Missed one stroke of code, my bad :)
 
 	Restart Blender after update.
+
+v3.5 Changes:
+	"Both versions":
+	Added: Apex ToonShader. Works Same as AutoTex but with Toon Shader (Beta). Instructions inside Toolbox
+
+	Restart Blender after update.
