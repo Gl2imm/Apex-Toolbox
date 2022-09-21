@@ -26,7 +26,7 @@ Addon can be found on the right side N-panel (Click "N" for it to appear):
 
 ![Addon](https://i.ibb.co/jf4rg6D/addon.png)
 
-The effects are done by me in my free time, some items are shared by useres in these 2 discords:
+The effects are done by me in my free time, some items are shared by users in these 2 discords:
 - Legion+ Discord: https://discord.gg/ADek6fxVGe (#3d-shenanigans)
 - 3D Art Discord: https://discord.gg/VcZh5rC (#apex-legion)
 
