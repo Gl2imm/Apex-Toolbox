@@ -18,6 +18,9 @@ Latest version of addon can be found in Releases page: https://github.com/Gl2imm
 ### Below some of the ready made effects from this add-on (mostly they are animated, some can be also 1 click parenting to the object for easy animation):
 ![Effects](https://i.ibb.co/0jrsmFx/Apex-toolbox.png)
 
+### New item - Apex Toon Shader. Have Fun experimenting with it :) :
+<img src="https://i.ibb.co/cFZCzWz/Ash.png" width="222" height="391" />
+
 It might include some experimental effects:
 
 ![Skydive](https://i.ibb.co/0XJ4cjL/mpc-hc64-uyu-Ymp-Lohw.gif)    <img src="https://i.ibb.co/Hg70mCg/respawn-holo.gif" width="256" height="288" />
