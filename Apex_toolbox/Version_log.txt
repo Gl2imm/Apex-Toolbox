@@ -108,7 +108,6 @@ v3.2 Changes:
 	Effects:
 	Wraith portal - compiled all nodes into one shader group with adjustable settings (transparency, colour, brightness), added drivers for inner circles, so the animation now become cyclic.
 	Added: Weapon Laser sight. Can parent to weapon and adjust to the laser sight location.
-
 	Restart Blender after update.	   
 
 v3.3 Changes:
@@ -126,17 +125,29 @@ v3.3 Changes:
 		Basic Lights Setup for render models in dark environment. Saw alot of people have no idea how to do it.
 		Basic wireframe modificator effect
 	Assets file NO need to re-download.
-
 	Restart Blender after update.
 
 v3.4 Changes:
 	"Both versions":
 	Fixed: Quick fix for the Error when setting non Apex image as Sky in HDRI tab. Missed one stroke of code, my bad :)
-
 	Restart Blender after update.
 
 v3.5 Changes:
 	"Both versions":
 	Added: Apex ToonShader. Works Same as AutoTex but with Toon Shader (Beta). Instructions inside Toolbox
-
+	Restart Blender after update.
+	
+v3.6 Changes:
+	"Both versions":
+	Code:
+	Added code to ignore Legion+ nightly builds in updates tab
+	Improved code for Recolor. Now if the root folder name is not same as materials subfolders names - it will ignore it and take name from one of the subfolder. 
+	Subfolders should still have material name in it and contain part name (eg. _body, _gear, etc).
+	Made some changes for Autotex tab, so now if you modified something in Shader tab and want to revert to original - just Autotex it again, no need re import model. 
+	Added new button in Toolbox:
+	Set Correct Model size - use it right after you import model, it will rotate, scale to correct size and focus to the model automatically, so 3 operations in 1 click.
+	Added new effect:
+	AutoShadow - Turn the character into shadow (Animated).
+	Added new Shader:
+	ApexShader+ - It is a modified version of original ApexShader which now supports iridescenceRampTexture, cavityTexture, opacityMultiplyTexture, new controls been added like bumps, normal, 	Alpha transparency controls, etc. Shader modified by Emi_v7 from Legion+ Discord.
 	Restart Blender after update.

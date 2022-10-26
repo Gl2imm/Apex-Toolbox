@@ -33,16 +33,26 @@ Thats it. Once you specify location of the Assets - all additional options will 
 ####################################
  
 A little tool that will help you to texture Apex Models automatically. A small improvement being done to this addon. Previously if you select the objects and use the addon - it will Append "Apex Shader" and un-select all objects. Well, not anymore. :) 
-Currently support Original "Apex Shader" that comes with Autotex and new Option S/G Blender. 
+Currently support Original "Apex Shader" that comes with Autotex, S/G Blender and ApexShader+. 
 
 Credits: Addon Created by llenoco. There is no link to the github, as the Addon were posted in Legion+ Discord https://discord.gg/ADek6fxVGe
-											
+ApexShader+ - Modified original ApexShader done by @Emi_v7 from Legion+ and 3D Art Discord	
+							
 											
 ####################################			
-       Toon Auto_tex (Beta):
+       Toon Auto_tex:
 ####################################
 
-Apex ToonShader. For Texturing Models Similar to Comics Style. Works Same as AutoTex but with Toon Shader (Beta). Instructions inside Toolbox 
+Apex ToonShader. For Texturing Models Similar to Comics Style. Works Same as AutoTex but with Toon Shader (only default textures in _images folder). Instructions inside Toolbox 
+Credits: This is modified Shader from ToonShader done by LightningBoyStudio. They had allowed to use it in the Toolbox, so you may do your renders with it. Dont forget to check them out, follow, subscibe, likes, this will help them grow https://twitter.com/LightningBoySt1
+
+
+####################################			
+       Auto Shadow (Beta):
+####################################
+
+Turn your legends into shadows (Animated). Just select the meshes and click "Shadow it".
+Credits: Thx @WittyDZN from Legion+ and 3D Art Discord for the idea and for the supporting information and files.
 
 
 ####################################			

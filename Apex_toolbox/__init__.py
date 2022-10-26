@@ -14,14 +14,14 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (3, 5),
+    "version": (3, 6),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
     "warning": "Im noob in python language",
     "category": "Object"
 }
-
+#"version": (3, 6)
 
 import bpy
 import os
@@ -33,10 +33,11 @@ import sys
 import platform
 
 ## Toolbox vars ##
-ver = "v.3.5"
+ver = "v.3.6"
+#ver = "v.3.6"
 lts_ver = ver
 loadImages = True
-texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
+texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture'],['anisoSpecDirTexture'],['iridescenceRampTexture']]
 ## Garlicus List vars ##
 lgnd_list = []
 ver_list = []
@@ -63,13 +64,13 @@ if mode == 0:
         ast_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\")
         lgn_fldr = ("E:\\G-Drive\\Blender\\0. Setups\\Apex\\")
         #lgn_fldr = ''
-        rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
+        #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
         #rec_folder = ("E:\\G-Drive\\Blender\\Apex\\models\\Wraith\\Materials\\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
     if wh == 0:
         my_path = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_toolbox")    
         ast_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\Apex_toolbox\\Apex_Toolbox_Assets\\") #
         lgn_fldr = ("D:\\Personal\\G-Drive\\Blender\\0. Setups\\Apex\\")
-        rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
+        #rec_folder = ("D:\Personal\G-Drive\Blender\Apex\models\Wraith\Materials\wraith_lgnd_v19_liberator_rc01\\") #recolour folder
         #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\Wraith\\pilot_light_wraith_legendary_01\\_images\\") #recolour folder
         #rec_folder = ("D:\\Personal\\G-Drive\\Blender\\Apex\\models\\0. Guns\\flatline_v20_assim_w\\Materials\\flatline_react_v20_assim_rt01_main\\") #recolour folder
 else:
@@ -102,7 +103,9 @@ else:
     ap_world = ("/World")
     ap_action = ("/Action")
     bldr_hdri_path = (bldr_path + "/" + bldr_fdr + "/datafiles/studiolights/world/")  
-               
+
+### For Recolor (Set Absolute path) ### 
+bpy.context.preferences.filepaths.use_relative_paths = False               
 
 print("**********************************************")
 print("OS Platform: " + platform.system())
@@ -255,7 +258,8 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         description = "Shader for recolor",
         default='OP1',
         items = [('OP1', "Apex Shader", ""),
-                 ('OP2', "S/G-Blender", "")    
+                 ('OP2', "Apex Shader+", ""),
+                 ('OP3', "S/G-Blender", "")    
                 ]
         )
         
@@ -277,7 +281,8 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         description = "Shader for Autotex",
         default='OP1',
         items = [('OP1', "Apex Shader", ""),
-                 ('OP2', "S/G-Blender", "")    
+                 ('OP2', "Apex Shader+", ""),
+                 ('OP3', "S/G-Blender", "")    
                 ]
         )
         
@@ -300,9 +305,10 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         description = "Append Shader",
         default='OP1',
         items = [('OP1', "Apex Shader", ""),
-                 ('OP2', "S/G-Blender", ""),
-                 ('OP3', "Apex Cycles (Blue)", ""),
-                 ('OP4', "Apex Mobile (Biast12)", "")     
+                 ('OP2', "Apex Shader+", ""),
+                 ('OP3', "S/G-Blender", ""),
+                 ('OP4', "Apex Cycles (Blue)", ""),
+                 ('OP5', "Apex Mobile (Biast12)", "")     
                 ]
         )
     
@@ -460,8 +466,10 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
                 print("Apex Toolbox Addon: Something Went Wrong While checking Legion+ Online version")
             else:
                 split_1 = full_text.split('437133675/')[1]
-                legion_lts_ver = split_1.split('</id>')[0]          
-            
+                legion_lts_ver = split_1.split('</id>')[0]
+                if legion_lts_ver == 'nightly':
+                    legion_lts_ver = '0'
+                              
             
             ####   Check for update Addons  ####
             if addon_name != None:
@@ -664,8 +672,11 @@ class BUTTON_CUSTOM(bpy.types.Operator):
                         try:
                             imageNode = MatNodeTree.node_tree.nodes["Image Texture"]
                         except:
-                            print(MatNodeTree.name)
-                            continue
+                            try:
+                                imageNode = MatNodeTree.node_tree.nodes["0"]
+                            except:
+                                print(MatNodeTree.name)
+                                continue
                         try:
                             image = os.path.basename(bpy.path.abspath(imageNode.image.filepath))
                         except:
@@ -737,8 +748,153 @@ class BUTTON_CUSTOM(bpy.types.Operator):
                         mSlot.material.blend_method = 'HASHED'
                         print("Textured",mSlot.name)
                         
-    ########## OPTION - 2 (S/G Blender) ############
+
+    ########## OPTION - 2 (Apex Shader+) ############
         if prefs.cust_enum2 == 'OP2':        
+            if bpy.data.node_groups.get('Apex Shader+') == None:
+                selection = [obj.name for obj in bpy.context.selected_objects]
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader+')
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Iridescence Vector')
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Iridescente Output')
+                for x in range(len(selection)):
+                    bpy.data.objects[selection[x]].select_set(True)
+                    x += 1
+            
+            for o in bpy.context.selected_objects:
+                if o.type == 'MESH':
+                    for mSlot in o.material_slots:
+                        MatNodeTree = bpy.data.materials[mSlot.name]
+                        try:
+                            imageNode = MatNodeTree.node_tree.nodes["Image Texture"]
+                        except:
+                            try:
+                                imageNode = MatNodeTree.node_tree.nodes["0"]
+                            except:
+                                print(MatNodeTree.name)
+                                continue
+                        try:
+                            image = os.path.basename(bpy.path.abspath(imageNode.image.filepath))
+                        except:
+                            print(mSlot.name, "missing texture.")
+                        imagepath = os.path.dirname(bpy.path.abspath(imageNode.image.filepath))
+                        imageType = imageNode.image.name.split(".")[0].split('_')[-1]
+                        imageName = MatNodeTree.name
+                        imageFormat = image.split('.')[1]
+                        
+                        if not any(imageType in x for x in texSets):
+                            print(image,"could not be mapped.")        
+                            continue
+
+
+                        MatNodeTree.node_tree.nodes.clear()
+                        
+                        for i in range(len(texSets)):
+                            for j in range(len(texSets[i])):
+                                texImageName = imageName + '_' + texSets[i][j] + '.' + imageFormat
+                                texImage = bpy.data.images.get(texImageName)
+                                texFile = imagepath + fbs + texImageName
+                                if not texImage and loadImages:
+                                    if os.path.isfile(texFile):
+                                        texImage = bpy.data.images.load(texFile)
+                                if texImage:
+                                    ird_tex = False
+                                    if i > 2:
+                                        texImage.colorspace_settings.name = 'Non-Color'
+                                    texImage.alpha_mode = 'CHANNEL_PACKED'
+                                    texNode = MatNodeTree.node_tree.nodes.new('ShaderNodeTexImage')
+                                    texNode.image = texImage
+                                    texNode.name = str(i)
+                                    if i == 10:
+                                        ird_tex = True
+                                        texNode.location = (750,-200)
+                                    else:
+                                        texNode.location = (-50,50-260*i)                                      
+                                    break
+                                
+                                
+                        
+                        NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                        NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader+')
+                        NodeGroup.location = (300,0)
+                        NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                        if ird_tex == True:
+                            NodeOutput.location = (1300,50)
+                            NodeOutput.target = 'CYCLES'
+                            NodeOutput_ev = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                            NodeOutput_ev.location = (1300,-100)
+                            NodeOutput_ev.target = 'EEVEE'
+                            ird_vec = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                            ird_vec.node_tree = bpy.data.node_groups.get('Iridescence Vector')
+                            ird_vec.location = (500,-150)
+                            ird_out = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup') 
+                            ird_out.node_tree = bpy.data.node_groups.get('Iridescente Output')
+                            ird_out.location = (1100,0) 
+                            MatNodeTree.node_tree.links.new(ird_out.inputs[0], NodeGroup.outputs[0]) 
+                            MatNodeTree.node_tree.links.new(ird_out.inputs[1], NodeGroup.outputs[1])
+                            MatNodeTree.node_tree.links.new(ird_out.inputs[2], NodeGroup.outputs[2])
+                            MatNodeTree.node_tree.links.new(ird_out.inputs[3], NodeGroup.outputs[3])
+                            MatNodeTree.node_tree.links.new(ird_vec.inputs[0], NodeGroup.outputs[2]) 
+                            MatNodeTree.node_tree.links.new(ird_vec.outputs[0], MatNodeTree.node_tree.nodes[texNode.name].inputs[0])  
+                            MatNodeTree.node_tree.links.new(ird_out.outputs[0], NodeOutput.inputs[0])  
+                            MatNodeTree.node_tree.links.new(ird_out.outputs[1], NodeOutput_ev.inputs[0])
+                        else:
+                            NodeOutput.location = (500,50)
+                            NodeOutput.target = 'CYCLES'
+                            MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+                            NodeOutput_ev = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                            NodeOutput_ev.location = (500,-100)
+                            NodeOutput_ev.target = 'EEVEE'
+                            MatNodeTree.node_tree.links.new(NodeOutput_ev.inputs[0], NodeGroup.outputs[1])
+
+                        #if ird_tex == True:
+                              
+                        ColorDict = {
+                            "0": "Albedo",
+                            "1": "Specular",
+                            "2": "Emission",
+                            "3": "SSS (Subsurface Scattering)",
+                            "4": "Alpha//OpacityMult",     
+                            "5": "Normal Map",
+                            "6": "Glossiness",
+                            "7": "AO (Ambient Occlussion)",
+                            "8": "Cavity",
+                            "9": " ",
+                            "10": "Color",
+                            
+                        }
+                        AlphaDict = {
+                            "0": "Alpha//OpacityMult",
+                            "3": "SSS Alpha",
+                        }
+                        
+                        if mSlot.name == 'wraith_base_eyeshadow':
+                            for slot in AlphaDict:
+                                try:
+                                    MatNodeTree.node_tree.links.new(NodeGroup.inputs[AlphaDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Alpha"])
+                                except:
+                                    pass
+                        for slot in ColorDict:
+                            try:
+                                if ird_tex == True:
+                                    if slot == '0':
+                                        MatNodeTree.node_tree.links.new(ird_out.inputs["Albedo"], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                        MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                    elif slot == '4':
+                                        MatNodeTree.node_tree.links.new(ird_out.inputs["opacityMultiply Texture"], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                    elif slot == '10':
+                                        MatNodeTree.node_tree.links.new(ird_out.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                    else:
+                                       MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                else:
+                                    MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"]) 
+                            except:
+                                pass                                
+                        mSlot.material.blend_method = 'HASHED'
+                        print("Textured",mSlot.name)  
+
+
+    ########## OPTION - 3 (S/G Blender) ############
+        if prefs.cust_enum2 == 'OP3':        
             if bpy.data.node_groups.get('S/G-Blender') == None:
                 selection = [obj.name for obj in bpy.context.selected_objects]
                 bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='S/G-Blender')
@@ -753,8 +909,11 @@ class BUTTON_CUSTOM(bpy.types.Operator):
                         try:
                             imageNode = MatNodeTree.node_tree.nodes["Image Texture"]
                         except:
-                            print(MatNodeTree.name)
-                            continue
+                            try:
+                                imageNode = MatNodeTree.node_tree.nodes["0"]
+                            except:
+                                print(MatNodeTree.name)
+                                continue
                         try:
                             image = os.path.basename(bpy.path.abspath(imageNode.image.filepath))
                         except:
@@ -1023,7 +1182,174 @@ class BUTTON_TOON(bpy.types.Operator):
                       
         return {'FINISHED'}
     
+
+
+############   AUTO SHADOW   ##############    
+class BUTTON_SHADOW(bpy.types.Operator):
+    bl_label = "BUTTON_SHADOW"
+    bl_idname = "object.button_shadow"
+    bl_options = {'REGISTER', 'UNDO'}
+    shadow : bpy.props.StringProperty(name= "Added")
     
+    
+    
+    def execute(self, context):
+        scene = context.scene
+        prefs = scene.my_prefs  
+        shadow = (self.shadow)
+        shdw_mat = ['Shadow_big', 'Shadow_med', 'Shadow_med_face', 'shadow_black', 'shadow_eye']  
+        body_parts = [
+                "eye",       #0 - eye
+                "eyecornea", #1 - eye
+                "glass",     #2 - eye
+                "lense",     #3 - eye
+                "eyeshadow", #4 - black
+                "teeth",     #5 - black
+                "head",      #6 - face
+                "helmet",    #7 - face
+                "hair",      #8 - face
+                "body",      #9 - big
+                "suit",      #10 - big
+                "v_arms",    #11 - med
+                "boots",     #12 - med
+                "gauntlet",  #13 - med
+                "jumpkit",   #14 - med
+                "gear"       #15 - med
+                ]        
+
+        shadow_items = {
+            'Eyes': [
+                {'name': 'Shadow eyes'},            
+                {'name': 'Shadow fog'}, 
+                {'name': 'Shadow left eye'},
+                {'name': 'Shadow right eye'},
+            ]                                                                                                                                                                    
+            }  
+            
+        shdw_bones = ['def_c_noseBridge', 'def_c_top_rope_12']
+            
+        if shadow == "Shadow":    
+            selection = [obj.name for obj in bpy.context.selected_objects]
+            bpy.context.scene.render.fps = 30
+            
+            print("############# TEXTURING SHADOW START #############")
+            
+            if bpy.data.objects.get('Shadow eyes') == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files =shadow_items.get("Eyes"))        
+            
+            for x in range(len(shdw_mat)):
+                mat = bpy.data.materials.get(shdw_mat[x])
+                if mat == None:
+                    bpy.ops.wm.append(directory =my_path + blend_file + ap_material, filename =shdw_mat[x])
+                
+            for x in range(len(selection)):
+                bpy.data.objects[selection[x]].select_set(True)
+                x += 1             
+             
+            for o in bpy.context.selected_objects:
+                if o.type == 'MESH':
+                    mat_exist = False
+                    try:
+                        mat_part = o.material_slots[0].name.rsplit('_', 1)[1] 
+                        mat_name = o.material_slots[0].name
+                        mat_exist = True
+                    except:
+                        print("Unable to find any Material. Shadow Material cannot assign") 
+                    
+                    if mat_exist == True:
+                        if mat_part in body_parts:
+                            if body_parts.index(mat_part) in range(0,2):
+                                mat = bpy.data.materials.get(shdw_mat[4])
+                                o.data.materials.clear()
+                                o.data.materials.append(mat)
+                                print(mat_name + " *Assigned Shadow eye material*")
+                            if body_parts.index(mat_part) in range(2,4):
+                                bpy.data.objects[o.name].hide_set(True)
+                                bpy.data.objects[o.name].hide_render = True
+                                print(mat_name + " *Set as Hidden*")                                
+                            if body_parts.index(mat_part) in range(4,6):
+                                mat = bpy.data.materials.get(shdw_mat[3])
+                                o.data.materials.clear()
+                                o.data.materials.append(mat)
+                                print(mat_name + " *Assigned Shadow black material*") 
+                            if body_parts.index(mat_part) in range(6,9):
+                                mat = bpy.data.materials.get(shdw_mat[2])
+                                o.data.materials.clear()
+                                o.data.materials.append(mat)
+                                print(mat_name + " *Assigned Shadow face material*")  
+                            if body_parts.index(mat_part) in range(9,11):
+                                mat = bpy.data.materials.get(shdw_mat[0])
+                                o.data.materials.clear()
+                                o.data.materials.append(mat)
+                                print(mat_name + " *Assigned Shadow big material*")  
+                            if body_parts.index(mat_part) in range(11,16):
+                                mat = bpy.data.materials.get(shdw_mat[1])
+                                o.data.materials.clear()
+                                o.data.materials.append(mat)
+                                print(mat_name + " *Assigned Shadow med material*")    
+                        else:
+                            print(mat_name + " *Skipped*")                                                                                           
+            print("############# TEXTURING SHADOW END #############")
+        
+        
+        #######  ADJUST AND PARENT SHADOW EYE  #######
+        if shadow == "Eyes_parent":
+            sel_objects = bpy.context.selected_objects
+            sel_names = [obj.name for obj in bpy.context.selected_objects]
+            
+            if bpy.data.objects.get('Shadow eyes') == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_object, files =shadow_items.get("Eyes"))  
+                bpy.ops.object.select_all(action='DESELECT')   
+                bpy.context.view_layer.objects.active = None  
+                bpy.data.objects[sel_names[0]].select_set(True)  
+                bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]   
+            
+            if not bpy.context.selected_objects:
+                print("Nothing selected. Please select Model Bones in Object Mode")
+            else:
+                if len(sel_objects) > 1:
+                    print("More than 1 Object slected. Please select only 1 Bone Object")
+                else: 
+                    if sel_objects[0].type == 'ARMATURE':
+                        for x in range(len(shdw_bones)):
+                            if sel_objects[0].pose.bones.get(shdw_bones[x]) != None:
+                                get_nose_bone = sel_objects[0].pose.bones.get(shdw_bones[x])
+                                nose_bone = bpy.data.objects[sel_names[0]].pose.bones[get_nose_bone.name].bone 
+                                break              
+                    
+                        if nose_bone != None:
+                            bpy.ops.object.posemode_toggle()
+                            bpy.context.object.data.bones.active = nose_bone
+                            nose_bone.select = True
+                            bpy.ops.view3d.snap_cursor_to_selected()               
+                            bpy.ops.object.posemode_toggle()
+                            bpy.data.objects['Shadow eyes'].location = bpy.context.scene.cursor.location
+                            if nose_bone.name == 'def_c_top_rope_12':
+                                bpy.data.objects['Shadow eyes'].location = 0.0005311064887791872, -0.15554966032505035, 1.686505675315857
+                            bpy.ops.view3d.snap_cursor_to_center()
+                                             
+                            bpy.ops.object.select_all(action='DESELECT')
+                            bpy.context.view_layer.objects.active = None 
+                            bpy.data.objects['Shadow eyes'].select_set(True) 
+                            bpy.context.view_layer.objects.active = bpy.data.objects['Shadow eyes']        
+                            boneToSelect = bpy.data.objects['Shadow eyes'].pose.bones['Bone'].bone
+                            bpy.context.object.data.bones.active = boneToSelect
+                            
+                            bpy.context.view_layer.objects.active = None 
+                            bpy.data.objects[sel_names[0]].select_set(True) 
+                            bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]]    
+                            boneToSelect2 = bpy.data.objects[sel_names[0]].pose.bones[nose_bone.name].bone
+                            bpy.context.object.data.bones.active = boneToSelect2
+                            boneToSelect2.select = True  
+                            bpy.ops.object.parent_set(type='BONE')
+                            
+                            bpy.ops.object.select_all(action='DESELECT')
+                            bpy.context.view_layer.objects.active = None
+                            bpy.data.objects[sel_names[0]].select_set(True)
+                            bpy.context.view_layer.objects.active = bpy.data.objects[sel_names[0]] 
+                            print("Parenting Shadow Eyes to " + sel_names[0] + " Done")
+                                                              
+        return {'FINISHED'}                                
     
 ############   RECOLOR   ##############     
 class BUTTON_CUSTOM2(bpy.types.Operator):
@@ -1035,14 +1361,18 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
         scene = context.scene
         prefs = scene.my_prefs
         rec_alpha = prefs.rec_alpha
-        texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture']]
+        texSets = [['albedoTexture'],['specTexture'],['emissiveTexture'],['scatterThicknessTexture'],['opacityMultiplyTexture'],['normalTexture'],['glossTexture'],['aoTexture'],['cavityTexture'],['anisoSpecDirTexture'],['iridescenceRampTexture']]
         ttf_texSets = [['col'],['spc'],['ilm'],['nml'],['gls'],['ao']]
         
-        if mode == 0:
-            recolor_folder = rec_folder
-        else:
-            recolor_folder = prefs.recolor_folder
-            
+        recolor_folder = prefs.recolor_folder
+        
+        
+        #print("Realpath") 
+        #print(os.path.realpath(recolor_folder)) 
+        #print("ABS") 
+        #print(os.path.abspath(recolor_folder)) 
+        #print("Dirname") 
+        #print(os.path.dirname(os.path.realpath(recolor_folder)))   
             
         ######## Check if Asset Folder installed ######## 
         if mode == 0:
@@ -1088,9 +1418,21 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                     x += 1
                 print("Appended Apex Shader")
 
-
-    ########## OPTION - 2 (S/G-Blender) ############
+    ########## OPTION - 2 (Apex Shader+) ############
         if prefs.cust_enum == 'OP2':
+            print("\n######## RECOLORING MODEL: ########")
+            if bpy.data.node_groups.get('Apex Shader+') == None:
+                selection = [obj.name for obj in bpy.context.selected_objects]
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader+')
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Iridescence Vector')
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Iridescente Output')
+                for x in range(len(selection)):
+                    bpy.data.objects[selection[x]].select_set(True)
+                    x += 1
+                print("Apex Shader+ Shader")
+                
+    ########## OPTION - 3 (S/G-Blender) ############
+        if prefs.cust_enum == 'OP3':
             print("\n######## RECOLORING MODEL: ########")
             if bpy.data.node_groups.get('S/G-Blender') == None:
                 selection = [obj.name for obj in bpy.context.selected_objects]
@@ -1148,6 +1490,24 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                         
                         ######## Legend Codes ########    
                         if weapon == 0:
+                            
+                            ######## Check folders in the recolor folder ######## 
+                            body_part_found = 0
+                            subf_name = None
+                            rec_dir = os.listdir(recolor_folder)
+                            #print(rec_dir)
+                            for x in range(len(rec_dir)):
+                                if body_part_found == 1:
+                                    break
+                                else:
+                                    for i in range(len(body_parts)):
+                                        if body_parts[i] in rec_dir[x]:
+                                            print("Found: " + body_parts[i] + " in " + rec_dir[x])
+                                            body_part_found = 1
+                                            subf_name = rec_dir[x].rsplit('_' + body_parts[i])[0]
+                                            break  
+                            ######## Check folders in the recolor folder ########
+                        
                             if foldername == "_images":              #normal autotex
                                 foldername = mSlot_clean  
                             else:                                    #with sub folders
@@ -1155,6 +1515,9 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                                     folderpath = recolor_folder + foldername + "_" + body_parts[b]
                                     foldername = foldername + "_" + body_parts[b]  
                                 else: 
+                                    if subf_name != None:
+                                        if foldername != subf_name:
+                                            foldername = subf_name
                                     folderpath = recolor_folder + foldername + "_" + imgBodyPart
                                     foldername = foldername + "_" + imgBodyPart                                     
                                     if ttf == "skn":   #TTF Texturing
@@ -1204,13 +1567,18 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                                         print(foldername + '_' + texSets[i][j] + ".png" + " Not in folder. Skipping.")
                                         texImage = None
                                     if texImage:
+                                        ird_tex = False
                                         if i > 2:
                                             texImage.colorspace_settings.name = 'Non-Color'
                                         texImage.alpha_mode = 'CHANNEL_PACKED'
                                         texNode = MatNodeTree.node_tree.nodes.new('ShaderNodeTexImage')
                                         texNode.image = texImage
                                         texNode.name = str(i)
-                                        texNode.location = (-50,50-260*i)
+                                        if i == 10:
+                                            ird_tex = True
+                                            texNode.location = (750,-200)
+                                        else:
+                                            texNode.location = (-50,50-260*i)
                                         break 
                                     
                             ########## OPTION - 1 (Apex Shader) ############        
@@ -1247,8 +1615,65 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                                     "3": "SSS Alpha",
                                 }
                                 
-                            ########## OPTION - 2 (S/G-Blender) ############
-                            if prefs.cust_enum == 'OP2': 
+                            ########## OPTION - 2 (Apex Shader+) ############
+                            if prefs.cust_enum == 'OP2':
+                                NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                                NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader+')
+                                NodeGroup.location = (300,0)
+                                NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                                if ird_tex == True:
+                                    NodeOutput.location = (1300,50)
+                                    NodeOutput.target = 'CYCLES'
+                                    NodeOutput_ev = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                                    NodeOutput_ev.location = (1300,-100)
+                                    NodeOutput_ev.target = 'EEVEE'
+                                    ird_vec = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
+                                    ird_vec.node_tree = bpy.data.node_groups.get('Iridescence Vector')
+                                    ird_vec.location = (500,-150)
+                                    ird_out = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup') 
+                                    ird_out.node_tree = bpy.data.node_groups.get('Iridescente Output')
+                                    ird_out.location = (1100,0) 
+                                    MatNodeTree.node_tree.links.new(ird_out.inputs[0], NodeGroup.outputs[0]) 
+                                    MatNodeTree.node_tree.links.new(ird_out.inputs[1], NodeGroup.outputs[1])
+                                    MatNodeTree.node_tree.links.new(ird_out.inputs[2], NodeGroup.outputs[2])
+                                    MatNodeTree.node_tree.links.new(ird_out.inputs[3], NodeGroup.outputs[3])
+                                    MatNodeTree.node_tree.links.new(ird_vec.inputs[0], NodeGroup.outputs[2]) 
+                                    MatNodeTree.node_tree.links.new(ird_vec.outputs[0], MatNodeTree.node_tree.nodes[texNode.name].inputs[0])  
+                                    MatNodeTree.node_tree.links.new(ird_out.outputs[0], NodeOutput.inputs[0])  
+                                    MatNodeTree.node_tree.links.new(ird_out.outputs[1], NodeOutput_ev.inputs[0])
+                                else:
+                                    NodeOutput.location = (500,50)
+                                    NodeOutput.target = 'CYCLES'
+                                    MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+                                    NodeOutput_ev = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
+                                    NodeOutput_ev.location = (500,-100)
+                                    NodeOutput_ev.target = 'EEVEE'
+                                    MatNodeTree.node_tree.links.new(NodeOutput_ev.inputs[0], NodeGroup.outputs[1])
+
+                                #if ird_tex == True:
+                                      
+                                ColorDict = {
+                                    "0": "Albedo",
+                                    "1": "Specular",
+                                    "2": "Emission",
+                                    "3": "SSS (Subsurface Scattering)",
+                                    "4": "Alpha//OpacityMult",     
+                                    "5": "Normal Map",
+                                    "6": "Glossiness",
+                                    "7": "AO (Ambient Occlussion)",
+                                    "8": "Cavity",
+                                    "9": " ",
+                                    "10": "Color",
+                                    
+                                }
+                                AlphaDict = {
+                                    "0": "Alpha//OpacityMult",
+                                    "3": "SSS Alpha",
+                                }
+                                                            
+                                
+                            ########## OPTION - 3 (S/G-Blender) ############
+                            if prefs.cust_enum == 'OP3': 
                                 NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
                                 NodeGroup.node_tree = bpy.data.node_groups.get('S/G-Blender')
                                 NodeGroup.location = (300,0)
@@ -1290,11 +1715,30 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                                         pass
                             else:
                                 pass
-                            for slot in ColorDict:
-                                try:
-                                    MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                except:
-                                    pass
+                            
+                            if prefs.cust_enum == 'OP2':
+                                for slot in ColorDict:
+                                    try:
+                                        if ird_tex == True:
+                                            if slot == '0':
+                                                MatNodeTree.node_tree.links.new(ird_out.inputs["Albedo"], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                                MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                            elif slot == '4':
+                                                MatNodeTree.node_tree.links.new(ird_out.inputs["opacityMultiply Texture"], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                            elif slot == '10':
+                                                MatNodeTree.node_tree.links.new(ird_out.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                            else:
+                                               MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                        else:
+                                            MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"]) 
+                                    except:
+                                        pass                                 
+                            else:
+                                for slot in ColorDict:
+                                    try:
+                                        MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                    except:
+                                        pass
                             mSlot.material.blend_method = 'HASHED'
                             print("Textured",mSlot_clean) 
                             print("  ")                               
@@ -1332,18 +1776,24 @@ class BUTTON_SHADERS(bpy.types.Operator):
             else:
                 print("Apex Shader Already exist")
         if prefs.cust_enum_shader == 'OP2':
+            if bpy.data.node_groups.get('Apex Shader+') == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader+')
+                print("Apex Shader+ Appended")
+            else:
+                print("Apex Shader+ Already exist")                
+        if prefs.cust_enum_shader == 'OP3':
             if bpy.data.node_groups.get('S/G-Blender') == None:
                 bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='S/G-Blender')
                 print("S/G-Blender Appended")
             else:
                 print("S/G-Blender Already exist")
-        if prefs.cust_enum_shader == 'OP3':
+        if prefs.cust_enum_shader == 'OP4':
             if bpy.data.node_groups.get('Apex Cycles (Blue)') == None:
                 bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Cycles (Blue)')
                 print("Apex Cycles (Blue) Appended")
             else:
                 print("Apex Cycles (Blue) Already exist")
-        if prefs.cust_enum_shader == 'OP4':
+        if prefs.cust_enum_shader == 'OP5':
             if bpy.data.node_groups.get('Apex Mobile Shader (Biast12)') == None:
                 bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Mobile Shader (Biast12)')
                 print("Apex Mobile Shader (Biast12) Appended")
@@ -2788,7 +3238,29 @@ class EF_BUTTON_SPAWN(bpy.types.Operator):
         #### Add Basic Lights ####    
         if cool_effect == 'basic lights':
             bpy.ops.wm.append(directory =my_path + blend_file + ap_collection, filename='Basic Lights Setup')
-                   
+            
+            
+        #### Adjust Model ####    
+        if cool_effect == 'adjust_model':
+            if not bpy.context.selected_objects:
+                print("Nothing selected. Please select Model Bones in Object Mode")
+            else:
+                selection = [obj.name for obj in bpy.context.selected_objects]
+                for o in bpy.context.selected_objects:
+                    if o.type == 'ARMATURE':
+                        bpy.ops.object.select_all(action='DESELECT')   
+                        bpy.context.view_layer.objects.active = None  
+                        bpy.data.objects[o.name].select_set(True)  
+                        bpy.context.view_layer.objects.active = bpy.data.objects[o.name]                                                    
+                        bpy.ops.transform.rotate(value=1.5708, orient_axis='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(True, False, False))
+                        bpy.ops.transform.resize(value=(0.0254, 0.0254, 0.0254), orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL')
+                        bpy.ops.view3d.view_all()
+                        for x in range(len(selection)):
+                            bpy.data.objects[selection[x]].select_set(True)
+                            x += 1                        
+                        break
+                    else:
+                        print("No Armature found in selected objects")    
             
         return {'FINISHED'}             
                               
@@ -2873,8 +3345,9 @@ class AUTOTEX_MENU(bpy.types.Panel):
             
             
             row.label(text = "------------------------------------------------------")
-
-
+        
+        row = layout.row()
+        row.operator('object.ef_button_spawn', text = "Set Correct Model Size").cool_effect = 'adjust_model'
 
         ######### Auto_tex ###########
         row = layout.row()
@@ -2892,11 +3365,32 @@ class AUTOTEX_MENU(bpy.types.Panel):
             row.label(text = "------------------------------------------------------")            
  
  
+        ######### Auto_shadow ###########
+        row = layout.row()
+        icon = 'DOWNARROW_HLT' if context.scene.subpanel_shadow else 'RIGHTARROW'
+        row.prop(context.scene, 'subpanel_shadow', icon=icon, icon_only=True)
+        row.label(text = "Auto_shadow (Beta)", icon= "GHOST_ENABLED")
+        # some data on the subpanel
+        if context.scene.subpanel_shadow:           
+            box = layout.box()
+            split = box.split(factor = 0.5)
+            col = split.column(align = True)
+            col.label(text = "Select mesh:")
+            split.operator("object.button_shadow", text = "Shadow It").shadow = "Shadow"
+            split = box.split(factor = 0.3)
+            col = split.column(align = True)
+            col.label(text='Eyes:')
+            split.operator('object.button_shadow', text = "Adjust and Parent").shadow = "Eyes_parent"  
+            box.label(text='*Select Only Legend bones for parenting')           
+            row = layout.row()
+            row.label(text = "------------------------------------------------------") 
+            
+ 
         ######### Auto_toon ###########
         row = layout.row()
         icon = 'DOWNARROW_HLT' if context.scene.subpanel_toon else 'RIGHTARROW'
         row.prop(context.scene, 'subpanel_toon', icon=icon, icon_only=True)
-        row.label(text = "TOON Auto_tex (Beta)", icon= "UV")
+        row.label(text = "TOON Auto_tex", icon= "UV")
         # some data on the subpanel
         if context.scene.subpanel_toon:           
             box = layout.box()
@@ -3014,8 +3508,13 @@ class AUTOTEX_MENU(bpy.types.Panel):
         if context.scene.subpanel_status_1:
             box = layout.box()
             box.label(text = "Select Texture Folder")
-
             box.prop(prefs, 'recolor_folder')
+            
+            #aa = bpy.ops.buttons.directory_browse
+            #box.prop(bpy.ops.buttons.directory_browse, 'relative_path')
+            #box.prop(bpy.context.preferences.filepaths, 'use_relative_paths')
+            #print(os.path.realpath(prefs.recolor_folder))
+            
             box.prop(prefs, 'rec_alpha')
             box.prop(prefs, 'cust_enum')
             split = box.split(factor = 0.5)
@@ -3924,6 +4423,7 @@ classes = (
         LGNDTRANSLATE_URL,
         BUTTON_CUSTOM,
         BUTTON_TOON, 
+        BUTTON_SHADOW,
         BUTTON_CUSTOM2, 
         BUTTON_SHADERS, 
         BUTTON_HDRIFULL, 
@@ -3953,6 +4453,7 @@ def register():
     bpy.types.Scene.my_prefs = bpy.props.PointerProperty(type= PROPERTIES_CUSTOM)
     Scene.subpanel_readme = BoolProperty(default=False)
     Scene.subpanel_status_0 = BoolProperty(default=False)
+    Scene.subpanel_shadow = BoolProperty(default=False)
     Scene.subpanel_toon = BoolProperty(default=False)
     Scene.subpanel_status_1 = BoolProperty(default=False)
     Scene.subpanel_status_2 = BoolProperty(default=False)
@@ -3989,6 +4490,7 @@ def unregister():
     del bpy.types.Scene.my_prefs
     del Scene.subpanel_readme
     del Scene.subpanel_status_0
+    del Scene.subpanel_shadow
     del Scene.subpanel_toon
     del Scene.subpanel_status_1
     del Scene.subpanel_status_2
