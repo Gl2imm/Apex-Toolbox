@@ -512,10 +512,7 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
             webbrowser.open_new("https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/edit#gid=0")        
 
         if link == "biast_archive":
-            webbrowser.open_new("https://bit.ly/337Cfw2")
-            
-        if link == "biast_archive_mobile":
-            webbrowser.open_new("https://bit.ly/3ArgvxY")            
+            webbrowser.open_new("https://bit.ly/337Cfw2")      
             
         if link == "io_anim_seanim":
             webbrowser.open_new("https://github.com/SE2Dev/io_anim_seanim/releases")
@@ -3581,9 +3578,7 @@ class AUTOTEX_MENU(bpy.types.Panel):
 
         row = layout.row()  
         row = layout.row()   
-        row.operator('object.lgndtranslate_url', text = "Biast12 Apex PC Assets", icon='URL').link = "biast_archive"
-        row = layout.row()
-        row.operator('object.lgndtranslate_url', text = "Biast12 Apex Mobile Assets", icon='URL').link = "biast_archive_mobile" 
+        row.operator('object.lgndtranslate_url', text = "Biast12 Apex Asset Archives", icon='URL').link = "biast_archive"
         row = layout.row()  
         row.operator('object.lgndtranslate_url', text = "Toolbox Discord Server", icon='ORIENTATION_GIMBAL').link = "discord"           
 
