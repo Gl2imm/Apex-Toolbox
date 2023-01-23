@@ -12,7 +12,7 @@ Version update log, can be found here: https://github.com/Gl2imm/Apex-Toolbox/bl
 
 Latest version of addon can be found in Releases page: https://github.com/Gl2imm/Apex-Toolbox/releases
 
-- Buy Coffee: https://buy.stripe.com/7sI2cd3495IGbYc8wz
+- Buy me a Coffee: https://buy.stripe.com/7sI2cd3495IGbYc8wz
 
 ### Main Addon Features:
 ![Features](https://i.ibb.co/XpZs7Xh/Features-List.png)
