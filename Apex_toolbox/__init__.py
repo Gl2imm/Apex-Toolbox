@@ -14,11 +14,11 @@
 bl_info = {
     "name": "Apex Toolbox",
     "author": "Random Blender Dude",
-    "version": (3, 6),
+    "version": (3, 6, 2),
     "blender": (2, 90, 0),
     "location": "Operator",
     "description": "Apex models toolbox",
-    "warning": "Im noob in python language",
+    "warning": "Highly Addictive!",
     "category": "Object"
 }
 #"version": (3, 6)
@@ -32,8 +32,10 @@ import webbrowser
 import sys
 import platform
 
+
+
 ## Toolbox vars ##
-ver = "v.3.6"
+ver = "v.3.7_beta-2"
 #ver = "v.3.6"
 lts_ver = ver
 loadImages = True
@@ -55,7 +57,7 @@ mprt_lts_ver = '0'
 
 
 mode = 1 #0 - Test Mode; 1 - Live mode
-wh = 1   #0 - W; 1 - H
+wh = 0   #0 - W; 1 - H
 
 
 if mode == 0:
@@ -258,7 +260,7 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         description = "Shader for recolor",
         default='OP1',
         items = [('OP1', "Apex Shader", ""),
-                 ('OP2', "Apex Shader+", ""),
+                 ('OP2', "Apex Shader+_v3.4", ""),
                  ('OP3', "S/G-Blender", "")    
                 ]
         )
@@ -281,7 +283,7 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         description = "Shader for Autotex",
         default='OP1',
         items = [('OP1', "Apex Shader", ""),
-                 ('OP2', "Apex Shader+", ""),
+                 ('OP2', "Apex Shader+_v3.4", ""),
                  ('OP3', "S/G-Blender", "")    
                 ]
         )
@@ -305,7 +307,7 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
         description = "Append Shader",
         default='OP1',
         items = [('OP1', "Apex Shader", ""),
-                 ('OP2', "Apex Shader+", ""),
+                 ('OP2', "Apex Shader+_v3.4", ""),
                  ('OP3', "S/G-Blender", ""),
                  ('OP4', "Apex Cycles (Blue)", ""),
                  ('OP5', "Apex Mobile (Biast12)", "")     
@@ -389,29 +391,6 @@ class PROPERTIES_CUSTOM(bpy.types.PropertyGroup):
     '''                    
     
     
-    Horizon : BoolProperty(name="", description="Horizon Skins", default = False)
-    Ash : BoolProperty(name="", description="Ash Skins", default = False)
-    Wraith : BoolProperty(name="", description="Wraith Skins", default = False)
-    Vantage : BoolProperty(name="", description="Vantage Skins", default = False)
-    Seer : BoolProperty(name="", description="Seer Skins", default = False)
-    Pathfinder : BoolProperty(name="", description="Pathfinder Skins", default = False)
-    Valkyrie : BoolProperty(name="", description="Valkyrie Skins", default = False)
-    Newcastle : BoolProperty(name="", description="Newcastle Skins", default = False)
-    Rampart : BoolProperty(name="", description="Rampart Skins", default = False)
-    Octane : BoolProperty(name="", description="Octane Skins", default = False)
-    Fuse : BoolProperty(name="", description="Fuse Skins", default = False)
-    Mad_Maggie : BoolProperty(name="", description="Maggie Skins", default = False)
-    Revenant : BoolProperty(name="", description="Revenant Skins", default = False)
-    Bangalore : BoolProperty(name="", description="Bangalore Skins", default = False)
-    Mirage : BoolProperty(name="", description="Mirage Skins", default = False)
-    Loba : BoolProperty(name="", description="Loba Skins", default = False)
-    Lifeline : BoolProperty(name="", description="Lifeline Skins", default = False)
-    Wattson : BoolProperty(name="", description="Wattson Skins", default = False) 
-    Caustic : BoolProperty(name="", description="Caustic Skins", default = False) 
-    Bloodhound : BoolProperty(name="", description="Bloodhound Skins", default = False) 
-    Crypto : BoolProperty(name="", description="Crypto Skins", default = False) 
-    Gibraltar : BoolProperty(name="", description="Gibraltar Skins", default = False) 
-    
     
     ####   Check for update addon  ####
     url = 'https://github.com/Gl2imm/Apex-Toolbox/releases.atom'
@@ -459,16 +438,19 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
             global cast_lts_ver
             global semodel_lts_ver
             global mprt_lts_ver
-            legion_url = 'https://github.com/r-ex/LegionPlus/releases.atom'        
+            legion_url = 'https://github.com/r-ex/LegionPlus/releases.atom'  
+         
             try:
                 full_text = requests.get(legion_url, allow_redirects=True).text
             except:
                 print("Apex Toolbox Addon: Something Went Wrong While checking Legion+ Online version")
             else:
-                split_1 = full_text.split('437133675/')[1]
+                split_1 = full_text.split('437133675/')[2]
+                print(split_1)
                 legion_lts_ver = split_1.split('</id>')[0]
                 if legion_lts_ver == 'nightly':
                     legion_lts_ver = '0'
+
                               
             
             ####   Check for update Addons  ####
@@ -507,12 +489,14 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
                                     split_1 = full_text.split('433190309/')[1]
                                     mprt_lts_ver = split_1.split('</id>')[0]         
         
+        if link == "buy coffee":
+            webbrowser.open_new("https://buy.stripe.com/7sI2cd3495IGbYc8wz")
 
-        if link == "garlicus_table":
+        if link == "garlicus_list":
             webbrowser.open_new("https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/edit#gid=0")        
 
         if link == "biast_archive":
-            webbrowser.open_new("https://bit.ly/337Cfw2")      
+            webbrowser.open_new("https://biast12.site/")            
             
         if link == "io_anim_seanim":
             webbrowser.open_new("https://github.com/SE2Dev/io_anim_seanim/releases")
@@ -601,40 +585,6 @@ class LGNDTRANSLATE_URL(bpy.types.Operator):
             bpy.context.area.ui_type = 'TEXT_EDITOR'
             bpy.context.space_data.text = bpy.data.texts['Your Favourite Addon Link']
             '''
-        if link == "garlicus":   
-            url = 'https://docs.google.com/spreadsheets/d/123c1OigzmI4UaSZIEcKbIJFjgXVfAmXFrXQmM1dZMOU/gviz/tq?tqx=out:json&tq&gid=0'
-            full_text = requests.get(url, allow_redirects=True).text
-            split_1 = full_text.split('"rows":[')[1]
-            replace_1 = split_1.replace('],"parsedNumHeaders":0}});', '|')
-            replace_2 = replace_1.replace("}]},{", "}]}|{")
-            replace_3 = replace_2.replace('null', '"null"')
-            replace_4 = replace_3.replace('["null",{"v":', '["null",')
-            replace_5 = replace_4.replace('},{', ',')
-            replace_6 = replace_5.replace('","v":"', '","')
-            replace_7 = replace_6.replace('"},"', '","')
-            replace_8 = replace_7.replace('{"v":"', '"')
-            replace_9 = replace_8.replace('}]}', ']}')
-            replace_10 = replace_9.replace('{"c":["', '"')
-            replace_11 = replace_10.replace('"]}', '"').rstrip('|')
-            replace_12 = replace_11.replace('Octane// Pendejo', 'Octane')
-            replace_13 = replace_12.replace('Mad Maggie ', 'Mad_Maggie')
-            replace_14 = replace_13.replace('Caustic // Gas daddy', 'Caustic')
-            split_2 = replace_14.split('|')
-            global lgnd_list
-            global ver_list
-            del lgnd_list[:]
-            del ver_list[:]
-            
-            i = 0
-            for x in split_2:
-                if i < 3:
-                    ver_list.append(x.strip('"').split('","'))
-                else:
-                    lgnd_list.append(x.strip('"').split('","'))
-                i +=1    
-            
-            #for x in range(len(lgnd_list)):
-            #    print(lgnd_list[x][0])
             
         if link == "discord":
             webbrowser.open_new("https://discord.gg/gFa4mY7")
@@ -748,11 +698,9 @@ class BUTTON_CUSTOM(bpy.types.Operator):
 
     ########## OPTION - 2 (Apex Shader+) ############
         if prefs.cust_enum2 == 'OP2':        
-            if bpy.data.node_groups.get('Apex Shader+') == None:
+            if bpy.data.node_groups.get('Apex Shader+_v3.4') == None:
                 selection = [obj.name for obj in bpy.context.selected_objects]
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader+')
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Iridescence Vector')
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Iridescente Output')
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader+_v3.4')
                 for x in range(len(selection)):
                     bpy.data.objects[selection[x]].select_set(True)
                     x += 1
@@ -794,100 +742,52 @@ class BUTTON_CUSTOM(bpy.types.Operator):
                                     if os.path.isfile(texFile):
                                         texImage = bpy.data.images.load(texFile)
                                 if texImage:
-                                    ird_tex = False
                                     if i > 2:
                                         texImage.colorspace_settings.name = 'Non-Color'
                                     texImage.alpha_mode = 'CHANNEL_PACKED'
                                     texNode = MatNodeTree.node_tree.nodes.new('ShaderNodeTexImage')
                                     texNode.image = texImage
                                     texNode.name = str(i)
-                                    if i == 10:
-                                        ird_tex = True
-                                        texNode.location = (750,-200)
-                                    else:
-                                        texNode.location = (-50,50-260*i)                                      
+                                    texNode.location = (-50,50-260*i)
                                     break
                                 
                                 
-                        
+
                         NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
-                        NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader+')
+                        NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader+_v3.4')
                         NodeGroup.location = (300,0)
                         NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
-                        if ird_tex == True:
-                            NodeOutput.location = (1300,50)
-                            NodeOutput.target = 'CYCLES'
-                            NodeOutput_ev = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
-                            NodeOutput_ev.location = (1300,-100)
-                            NodeOutput_ev.target = 'EEVEE'
-                            ird_vec = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
-                            ird_vec.node_tree = bpy.data.node_groups.get('Iridescence Vector')
-                            ird_vec.location = (500,-150)
-                            ird_out = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup') 
-                            ird_out.node_tree = bpy.data.node_groups.get('Iridescente Output')
-                            ird_out.location = (1100,0) 
-                            MatNodeTree.node_tree.links.new(ird_out.inputs[0], NodeGroup.outputs[0]) 
-                            MatNodeTree.node_tree.links.new(ird_out.inputs[1], NodeGroup.outputs[1])
-                            MatNodeTree.node_tree.links.new(ird_out.inputs[2], NodeGroup.outputs[2])
-                            MatNodeTree.node_tree.links.new(ird_out.inputs[3], NodeGroup.outputs[3])
-                            MatNodeTree.node_tree.links.new(ird_vec.inputs[0], NodeGroup.outputs[2]) 
-                            MatNodeTree.node_tree.links.new(ird_vec.outputs[0], MatNodeTree.node_tree.nodes[texNode.name].inputs[0])  
-                            MatNodeTree.node_tree.links.new(ird_out.outputs[0], NodeOutput.inputs[0])  
-                            MatNodeTree.node_tree.links.new(ird_out.outputs[1], NodeOutput_ev.inputs[0])
-                        else:
-                            NodeOutput.location = (500,50)
-                            NodeOutput.target = 'CYCLES'
-                            MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
-                            NodeOutput_ev = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
-                            NodeOutput_ev.location = (500,-100)
-                            NodeOutput_ev.target = 'EEVEE'
-                            MatNodeTree.node_tree.links.new(NodeOutput_ev.inputs[0], NodeGroup.outputs[1])
-
-                        #if ird_tex == True:
-                              
+                        NodeOutput.location = (500,0)
+                        MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+                                               
                         ColorDict = {
                             "0": "Albedo",
                             "1": "Specular",
                             "2": "Emission",
-                            "3": "SSS (Subsurface Scattering)",
-                            "4": "Alpha//OpacityMult",     
+                            "3": "SSS Map",
+                            "4": "Alpha",     
                             "5": "Normal Map",
                             "6": "Glossiness",
-                            "7": "AO (Ambient Occlussion)",
-                            "8": "Cavity",
-                            "9": " ",
-                            "10": "Color",
-                            
+                            "7": "Ambient Occlusion",
+                            "8": "Cavity"
                         }
                         AlphaDict = {
-                            "0": "Alpha//OpacityMult",
+                            "0": "Alpha",
                             "3": "SSS Alpha",
                         }
-                        
-                        if mSlot.name == 'wraith_base_eyeshadow':
-                            for slot in AlphaDict:
-                                try:
-                                    MatNodeTree.node_tree.links.new(NodeGroup.inputs[AlphaDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Alpha"])
-                                except:
-                                    pass
+
+                        for slot in AlphaDict:
+                            try:
+                                MatNodeTree.node_tree.links.new(NodeGroup.inputs[AlphaDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Alpha"])
+                            except:
+                                pass
                         for slot in ColorDict:
                             try:
-                                if ird_tex == True:
-                                    if slot == '0':
-                                        MatNodeTree.node_tree.links.new(ird_out.inputs["Albedo"], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                        MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                    elif slot == '4':
-                                        MatNodeTree.node_tree.links.new(ird_out.inputs["opacityMultiply Texture"], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                    elif slot == '10':
-                                        MatNodeTree.node_tree.links.new(ird_out.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                    else:
-                                       MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                else:
-                                    MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"]) 
+                                MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
                             except:
-                                pass                                
+                                pass
                         mSlot.material.blend_method = 'HASHED'
-                        print("Textured",mSlot.name)  
+                        print("Textured",mSlot.name)
 
 
     ########## OPTION - 3 (S/G Blender) ############
@@ -1418,15 +1318,13 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
     ########## OPTION - 2 (Apex Shader+) ############
         if prefs.cust_enum == 'OP2':
             print("\n######## RECOLORING MODEL: ########")
-            if bpy.data.node_groups.get('Apex Shader+') == None:
+            if bpy.data.node_groups.get('Apex Shader+_v3.4') == None:
                 selection = [obj.name for obj in bpy.context.selected_objects]
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader+')
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Iridescence Vector')
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Iridescente Output')
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader+_v3.4')
                 for x in range(len(selection)):
                     bpy.data.objects[selection[x]].select_set(True)
                     x += 1
-                print("Apex Shader+ Shader")
+                print("Apex Shader+ v3.4 Shader")
                 
     ########## OPTION - 3 (S/G-Blender) ############
         if prefs.cust_enum == 'OP3':
@@ -1615,56 +1513,25 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                             ########## OPTION - 2 (Apex Shader+) ############
                             if prefs.cust_enum == 'OP2':
                                 NodeGroup = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
-                                NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader+')
+                                NodeGroup.node_tree = bpy.data.node_groups.get('Apex Shader+_v3.4')
                                 NodeGroup.location = (300,0)
                                 NodeOutput = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
-                                if ird_tex == True:
-                                    NodeOutput.location = (1300,50)
-                                    NodeOutput.target = 'CYCLES'
-                                    NodeOutput_ev = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
-                                    NodeOutput_ev.location = (1300,-100)
-                                    NodeOutput_ev.target = 'EEVEE'
-                                    ird_vec = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup')
-                                    ird_vec.node_tree = bpy.data.node_groups.get('Iridescence Vector')
-                                    ird_vec.location = (500,-150)
-                                    ird_out = MatNodeTree.node_tree.nodes.new('ShaderNodeGroup') 
-                                    ird_out.node_tree = bpy.data.node_groups.get('Iridescente Output')
-                                    ird_out.location = (1100,0) 
-                                    MatNodeTree.node_tree.links.new(ird_out.inputs[0], NodeGroup.outputs[0]) 
-                                    MatNodeTree.node_tree.links.new(ird_out.inputs[1], NodeGroup.outputs[1])
-                                    MatNodeTree.node_tree.links.new(ird_out.inputs[2], NodeGroup.outputs[2])
-                                    MatNodeTree.node_tree.links.new(ird_out.inputs[3], NodeGroup.outputs[3])
-                                    MatNodeTree.node_tree.links.new(ird_vec.inputs[0], NodeGroup.outputs[2]) 
-                                    MatNodeTree.node_tree.links.new(ird_vec.outputs[0], MatNodeTree.node_tree.nodes[texNode.name].inputs[0])  
-                                    MatNodeTree.node_tree.links.new(ird_out.outputs[0], NodeOutput.inputs[0])  
-                                    MatNodeTree.node_tree.links.new(ird_out.outputs[1], NodeOutput_ev.inputs[0])
-                                else:
-                                    NodeOutput.location = (500,50)
-                                    NodeOutput.target = 'CYCLES'
-                                    MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
-                                    NodeOutput_ev = MatNodeTree.node_tree.nodes.new('ShaderNodeOutputMaterial')
-                                    NodeOutput_ev.location = (500,-100)
-                                    NodeOutput_ev.target = 'EEVEE'
-                                    MatNodeTree.node_tree.links.new(NodeOutput_ev.inputs[0], NodeGroup.outputs[1])
-
-                                #if ird_tex == True:
-                                      
+                                NodeOutput.location = (500,0)
+                                MatNodeTree.node_tree.links.new(NodeOutput.inputs[0], NodeGroup.outputs[0])
+                                 
                                 ColorDict = {
                                     "0": "Albedo",
                                     "1": "Specular",
                                     "2": "Emission",
-                                    "3": "SSS (Subsurface Scattering)",
-                                    "4": "Alpha//OpacityMult",     
+                                    "3": "SSS Map",
+                                    "4": "Alpha",     
                                     "5": "Normal Map",
                                     "6": "Glossiness",
-                                    "7": "AO (Ambient Occlussion)",
-                                    "8": "Cavity",
-                                    "9": " ",
-                                    "10": "Color",
-                                    
+                                    "7": "Ambient Occlusion",
+                                    "8": "Cavity"
                                 }
                                 AlphaDict = {
-                                    "0": "Alpha//OpacityMult",
+                                    "0": "Alpha",
                                     "3": "SSS Alpha",
                                 }
                                                             
@@ -1712,30 +1579,12 @@ class BUTTON_CUSTOM2(bpy.types.Operator):
                                         pass
                             else:
                                 pass
-                            
-                            if prefs.cust_enum == 'OP2':
-                                for slot in ColorDict:
-                                    try:
-                                        if ird_tex == True:
-                                            if slot == '0':
-                                                MatNodeTree.node_tree.links.new(ird_out.inputs["Albedo"], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                                MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                            elif slot == '4':
-                                                MatNodeTree.node_tree.links.new(ird_out.inputs["opacityMultiply Texture"], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                            elif slot == '10':
-                                                MatNodeTree.node_tree.links.new(ird_out.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                            else:
-                                               MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                        else:
-                                            MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"]) 
-                                    except:
-                                        pass                                 
-                            else:
-                                for slot in ColorDict:
-                                    try:
-                                        MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
-                                    except:
-                                        pass
+
+                            for slot in ColorDict:
+                                try:
+                                    MatNodeTree.node_tree.links.new(NodeGroup.inputs[ColorDict[slot]], MatNodeTree.node_tree.nodes[slot].outputs["Color"])
+                                except:
+                                    pass
                             mSlot.material.blend_method = 'HASHED'
                             print("Textured",mSlot_clean) 
                             print("  ")                               
@@ -1773,11 +1622,11 @@ class BUTTON_SHADERS(bpy.types.Operator):
             else:
                 print("Apex Shader Already exist")
         if prefs.cust_enum_shader == 'OP2':
-            if bpy.data.node_groups.get('Apex Shader+') == None:
-                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader+')
-                print("Apex Shader+ Appended")
+            if bpy.data.node_groups.get('Apex Shader+_v3.4') == None:
+                bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='Apex Shader+_v3.4')
+                print("Apex Shader+_v3.4 Appended")
             else:
-                print("Apex Shader+ Already exist")                
+                print("Apex Shader+_v3.4 Already exist")                
         if prefs.cust_enum_shader == 'OP3':
             if bpy.data.node_groups.get('S/G-Blender') == None:
                 bpy.ops.wm.append(directory =my_path + blend_file + ap_node, filename ='S/G-Blender')
@@ -2028,6 +1877,142 @@ class BUTTON_HDRIFULL(bpy.types.Operator):
 
         return {'FINISHED'}  
 
+
+
+######### IK Bones set ########### 
+class BUTTON_IKBONE(bpy.types.Operator):
+    bl_label = "BUTTON_IKBONE"
+    bl_idname = "object.button_ikbone"
+    bl_options = {'REGISTER', 'UNDO'}
+    ik_b : bpy.props.StringProperty(name= "Added")
+
+    def execute(self, context):
+        scene = context.scene
+        prefs = scene.my_prefs
+        ik_b = (self.ik_b)
+        
+        bones_to_select = ['def_l_wrist','def_r_wrist','def_l_elbow','def_r_elbow','def_l_ankle','def_r_ankle','def_l_knee','def_r_knee']
+        constr_bones = ['def_l_wrist','def_r_wrist','def_l_ankle','def_r_ankle']
+        adj_bones_f = ['def_l_knee','def_r_knee']
+        ik_bone_names = ['HandIK.L','HandIK.R','LegIK.L','LegIK.R']
+        ik_pole_names = ['ElbowIK.L','ElbowIK.R','KneeIK.L','KneeIK.R']
+        ik_pole_move_f = ['KneeIK.L','KneeIK.R']
+        ik_pole_move_b = ['ElbowIK.L','ElbowIK.R']
+
+
+        if bpy.context.selected_objects[0].type == 'ARMATURE': 
+            arm = bpy.context.selected_objects[0]
+            
+            ##### GOTO Edit Mode #####
+            if context.active_object.mode == 'EDIT':
+                pass
+            else:
+                bpy.ops.object.editmode_toggle()
+            
+            
+            ##### Create Poles and Targets #####    
+            bpy.ops.armature.select_all(action='DESELECT')
+            for bone in arm.data.edit_bones:
+                if bone.name in bones_to_select:
+                    bone.select_head = True
+                    bone.select_tail = True   
+            bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked":False}, TRANSFORM_OT_translate={"value":(0, 0.06, 0), "orient_axis_ortho":'X', "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(False, True, False),})
+            bpy.ops.armature.select_more()
+            bpy.ops.armature.parent_clear(type='CLEAR')
+            
+            
+            ##### Rename all Selected Bones #####   
+            for bone in bpy.context.selected_bones:
+                if bone.name == 'def_l_elbow.001':
+                    bone.name = 'ElbowIK.L'
+                if bone.name == 'def_l_wrist.001':
+                    bone.name = 'HandIK.L'
+                if bone.name == 'def_r_elbow.001':
+                    bone.name = 'ElbowIK.R'
+                if bone.name == 'def_r_wrist.001':
+                    bone.name = 'HandIK.R'
+                if bone.name == 'def_l_ankle.001':
+                    bone.name = 'LegIK.L'
+                if bone.name == 'def_r_ankle.001':
+                    bone.name = 'LegIK.R'
+                if bone.name == 'def_l_knee.001':
+                    bone.name = 'KneeIK.L'
+                if bone.name == 'def_r_knee.001':
+                    bone.name = 'KneeIK.R'    
+            
+                    
+                               
+            ##### MOVE Pole Bones #####
+            bpy.ops.armature.select_all(action='DESELECT')
+            for bone in arm.data.edit_bones:
+                if bone.name in ik_pole_move_b:
+                    bone.select_head = True
+                    bone.select_tail = True                                                    
+                bpy.ops.transform.translate(value=(0, 0.25, 0), orient_axis_ortho='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, True, False))
+                bpy.ops.armature.select_all(action='DESELECT')
+                if bone.name in ik_pole_move_f:
+                    bone.select_head = True
+                    bone.select_tail = True                                                    
+                bpy.ops.transform.translate(value=(-0, -0.75, -0), orient_axis_ortho='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, True, False))
+                bpy.ops.armature.select_all(action='DESELECT')
+                
+                ##### small bone adjustments #####
+                if bone.name in adj_bones_f:
+                    bone.select_head = True
+                    bone.select_tail = True                                                    
+                bpy.ops.transform.translate(value=(-0, -0.002, -0), orient_axis_ortho='X', orient_type='GLOBAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, True, False))
+                bpy.ops.armature.select_all(action='DESELECT')                
+                  
+            
+            
+            ##### GOTO Pose Mode #####
+            bpy.ops.object.editmode_toggle()
+            if context.active_object.mode == 'POSE':
+                pass
+            else:
+                bpy.ops.object.posemode_toggle()
+
+
+            ##### Add Constrains #####
+            for x in range(len(constr_bones)):
+                ik_bone = arm.pose.bones[constr_bones[x]].bone
+                bpy.context.selected_objects[0].pose.bones[ik_bone.name].bone.select = True
+                bpy.context.selected_objects[0].data.bones.active = ik_bone
+                bpy.ops.pose.constraint_add(type='IK')
+                constr = bpy.context.object.pose.bones[constr_bones[x]].constraints["IK"]
+                constr.target = arm
+                constr.subtarget = ik_bone_names[x]
+                constr.pole_target = arm
+                constr.pole_subtarget = ik_pole_names[x]
+                if x == 1:
+                    constr.pole_angle = 1.5708
+                if x == 3:
+                    constr.pole_angle = 3.14159
+                constr.iterations = 500
+                if x <= 1:
+                    constr.chain_count = 4
+                else:
+                    constr.chain_count = 3
+                    
+                    
+            ##### Limit Distance IK Poles ##### 
+            for x in range(len(ik_pole_names)): 
+                lim_bone = arm.pose.bones[ik_pole_names[x]].bone 
+                bpy.context.selected_objects[0].pose.bones[lim_bone.name].bone.select = True
+                bpy.context.selected_objects[0].data.bones.active = lim_bone
+                bpy.ops.pose.constraint_add(type='LIMIT_DISTANCE')
+                limit = bpy.context.object.pose.bones[ik_pole_names[x]].constraints["Limit Distance"]
+                limit.target = arm
+                limit.subtarget = constr_bones[x]
+                if x >= 2:
+                    limit.distance = 1
+                else:
+                    limit.distance = 0.5
+
+
+        return {'FINISHED'} 
+    
+    
 
 ######### Wraith Buttons ###########    
     
@@ -3576,11 +3561,44 @@ class AUTOTEX_MENU(bpy.types.Panel):
             row = layout.row()
             row.label(text = "------------------------------------------------------")
 
+
+        ######### Animation ###########
+        # subpanel
+        row = layout.row()
+        icon = 'DOWNARROW_HLT' if context.scene.subpanel_ikbone else 'RIGHTARROW'
+        row.prop(context.scene, 'subpanel_ikbone', icon=icon, icon_only=True)
+
+        row.label(text = "Animation & Bones", icon= "BONE_DATA")
+        # some data on the subpanel
+        if context.scene.subpanel_ikbone:
+            box = layout.box() 
+            try:
+                if len(bpy.context.selected_objects) == 1: 
+                    box.prop(bpy.context.object, 'show_in_front', text='Show Bones In Front')
+                    box.prop(bpy.context.object.data, 'show_names', text='Show Bones Names')
+                else:
+                    box.enabled = False
+                    box.label(text='Select Bones', icon='ERROR')                    
+            except:
+                pass
+                            
+            box.label(text = "Select Legend Bones Then:")
+            box.operator("object.button_ikbone", text = "Add IK Bones")  
+                
+            row = layout.row()
+            row.label(text = "------------------------------------------------------")
+            
+            
+            
         row = layout.row()  
         row = layout.row()   
-        row.operator('object.lgndtranslate_url', text = "Biast12 Apex Asset Archives", icon='URL').link = "biast_archive"
+        row.operator('object.lgndtranslate_url', text = "Biast12 Apex PC Assets", icon='URL').link = "biast_archive"
+        row = layout.row()   
+        row.operator('object.lgndtranslate_url', text = "Garlicus Skins list", icon='URL').link = "garlicus_list"
         row = layout.row()  
-        row.operator('object.lgndtranslate_url', text = "Toolbox Discord Server", icon='ORIENTATION_GIMBAL').link = "discord"           
+        row.operator('object.lgndtranslate_url', text = "Toolbox Discord Server", icon='ORIENTATION_GIMBAL').link = "discord"  
+        row = layout.row() 
+        row.operator('object.lgndtranslate_url', text = "Buy me a Coffee! ;)", icon='URL').link = "buy coffee"          
 
 
 
@@ -4221,7 +4239,7 @@ class OTHERS_PT_panel(bpy.types.Panel):
         col.label(text='')
         split.operator('object.ef_button_spawn', text = 'Clear Effect').cool_effect = 'wireframe_clear'
 
-
+'''
 ######### Legends/Weapons Translate Tab ########### 
 class TRANSLATE_PT_panel(bpy.types.Panel):
     bl_parent_id = "OBJECT_PT_panel"
@@ -4295,7 +4313,7 @@ class TRANSLATE_PT_panel(bpy.types.Panel):
         #1 - In game name	
         #2 - Legion name	
         #3 - Material (If needed)        
-
+'''
 
 
 ######### Updates Tracker ########### 
@@ -4403,7 +4421,7 @@ class UPDATE_PT_panel(bpy.types.Panel):
                 if addon_name[x] == addon[3]:
                     if mprt_lts_ver > addon_ver[x]:
                         box.operator('object.lgndtranslate_url', text = addon_name[x] + " New Ver." + str(mprt_lts_ver), icon='IMPORT').link = "mprt" 
-        split = box.split(factor = 0.4)
+        split = box.split(factor = 0.2)
         col = split.column(align = True)
         col.label(text="")  
         split.operator('object.lgndtranslate_url', text ="Check for Updates", icon='URL').link = "check_update"  
@@ -4421,7 +4439,8 @@ classes = (
         BUTTON_SHADOW,
         BUTTON_CUSTOM2, 
         BUTTON_SHADERS, 
-        BUTTON_HDRIFULL, 
+        BUTTON_HDRIFULL,
+        BUTTON_IKBONE, 
         WR_BUTTON_PORTAL,
         SEER_BUTTON_SPAWN,
         SKY_BUTTON_SPAWN, 
@@ -4437,7 +4456,6 @@ classes = (
         HL_BUTTON_SPAWN,
         EF_BUTTON_SPAWN,
         OTHERS_PT_panel,
-        TRANSLATE_PT_panel,
         UPDATE_PT_panel
         )
         
@@ -4450,6 +4468,7 @@ def register():
     Scene.subpanel_status_0 = BoolProperty(default=False)
     Scene.subpanel_shadow = BoolProperty(default=False)
     Scene.subpanel_toon = BoolProperty(default=False)
+    Scene.subpanel_ikbone = BoolProperty(default=False)
     Scene.subpanel_status_1 = BoolProperty(default=False)
     Scene.subpanel_status_2 = BoolProperty(default=False)
     Scene.subpanel_effects_wraith = BoolProperty(default=False)
@@ -4487,6 +4506,7 @@ def unregister():
     del Scene.subpanel_status_0
     del Scene.subpanel_shadow
     del Scene.subpanel_toon
+    del Scene.subpanel_ikbone
     del Scene.subpanel_status_1
     del Scene.subpanel_status_2
     del Scene.subpanel_effects_wraith

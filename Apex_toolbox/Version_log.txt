@@ -151,3 +151,10 @@ v3.6 Changes:
 	Added new Shader:
 	ApexShader+ - It is a modified version of original ApexShader which now supports iridescenceRampTexture, cavityTexture, opacityMultiplyTexture, new controls been added like bumps, normal, 	Alpha transparency controls, etc. Shader modified by Emi_v7 from Legion+ Discord.
 	Restart Blender after update.
+
+v3.7 Changes:
+	"Both versions":
+	Updated the obsolete links
+	removed the Skin Translate list (link still remain there)
+	Added Animation and Bones tab with some quick actions related to Bones and Animation
+	Updated Apex Shader+ to v3.4
